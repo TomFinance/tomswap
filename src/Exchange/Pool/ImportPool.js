@@ -34,7 +34,6 @@ const ImportPool = () => {
                         <li className="on"><a href="#;">Pool</a></li>
                     </ul>
                     <GridBtnWrap>
-                        <Link to="/exchange/pool/create-pool" className="add_btn">Create Pool</Link>
                         <Link to="/exchange/pool/add-liquidity" className="add_btn">Add Liquidity</Link>
                     </GridBtnWrap>
                     <div className="liquidity">

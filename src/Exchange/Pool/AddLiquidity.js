@@ -2,13 +2,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
-import Web3 from 'web3'
 
 import { mq } from 'assets/Responsive'
 import LiquidityTokenModal from './LiquidityTokenModal'
-import { CONTRACT_ABI, CONTRACT_ADDRESS } from 'config'
-import { conventDecimal } from 'utils/utils'
-import { createPreviewPrice, createCheckApprove, createConfirmApprove, createImportCreate } from 'utils/importCreate'
+import { accountLocalStorage, conventDecimal } from 'utils/utils'
+import { createPreviewPrice, createCheckApprove, createConfirmApprove, createImportCreate, getCheckPairContract, addLiquidityPreview, getTokenBalance } from 'utils/importCreate'
 import ConfirmModal from 'Exchange/ConfirmModal'
 import LoadingModal from '../LoadingModal'
 
@@ -54,8 +52,6 @@ const CreateBtn = styled.button`
         ? 'rgba(234,182,64,0.2) !important'
         : '#eab640 !important'};
 `
-
-const etherWeb3 = new Web3(window.ethereum)
 
 const AddLiquidity = () => {
     const [pageType, setPageType] = useState('add liquidity')
@@ -104,35 +100,63 @@ const AddLiquidity = () => {
     }
 
     const checkPairContract = useCallback(async () => {
-        if (addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress && addLiquidityInputA.amount && addLiquidityInputB.amount) {
-            const factoryContract = new etherWeb3.eth.Contract(CONTRACT_ABI.FACTORY, CONTRACT_ADDRESS.FACTORY)
-            const pairAddress = await factoryContract.methods.getPair(addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress).call()
-
-            setPageType(Number(pairAddress) === 0 ? 'create pool' : 'add liquidity')
-
-            setCheckApprove({
-                a: await createCheckApprove(addLiquidityInputA.tokenAddress, addLiquidityInputA.amount),
-                b: await createCheckApprove(addLiquidityInputB.tokenAddress, addLiquidityInputB.amount),
-            })
+        if (addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress) {
+            setPageType(await getCheckPairContract(addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress) ? 'add liquidity' : 'create pool')
         }
-    }, [addLiquidityInputA.amount, addLiquidityInputA.tokenAddress, addLiquidityInputB.amount, addLiquidityInputB.tokenAddress])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress])
 
     useEffect(() => {
         checkPairContract()
     }, [checkPairContract])
 
-    const checkClacPrice = useCallback(async () => {
-        if (addLiquidityInputA.amount && addLiquidityInputB.amount) {
-            const calcText = await createPreviewPrice(addLiquidityInputA, addLiquidityInputB)
-
-            setCalcPricesText({
-                left: calcText['0'],
-                center: calcText['1'],
-                right: pageType === 'create pool' ? '100.00%' : '123.12%'
+    const checkoutApproved = useCallback(async () => {
+        if (addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress && addLiquidityInputA.amount && addLiquidityInputB.amount) {
+            setCheckApprove({
+                a: await createCheckApprove(addLiquidityInputA.tokenAddress, addLiquidityInputA.amount, addLiquidityInputA.decimals),
+                b: await createCheckApprove(addLiquidityInputB.tokenAddress, addLiquidityInputB.amount, addLiquidityInputB.decimals),
             })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [addLiquidityInputA, addLiquidityInputB])
+    }, [addLiquidityInputA.amount, addLiquidityInputB.amount])
+
+    useEffect(() => {
+        checkoutApproved()
+    }, [checkoutApproved])
+
+    const checkClacPrice = useCallback(async () => {
+        if (addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress) {
+            if (addLiquidityInputA.amount) {
+                if (pageType === 'add liquidity') {
+                    const calcText = await addLiquidityPreview(addLiquidityInputA, addLiquidityInputB)
+
+                    setCalcPricesText({
+                        left: calcText['0'],
+                        center: calcText['1'],
+                        right: calcText['2']
+                    })
+                    setAddLiquidityInputB({
+                        ...addLiquidityInputB,
+                        amount: calcText['3']
+                    })
+                } else if (addLiquidityInputB.amount && pageType === 'create pool') {
+                    const calcText = await createPreviewPrice(addLiquidityInputA, addLiquidityInputB)
+
+                    setCalcPricesText({
+                        left: calcText['0'],
+                        center: calcText['1'],
+                        right: '100.00%'
+                    })
+                }
+            } else {
+                setAddLiquidityInputB({
+                    ...addLiquidityInputB,
+                    amount: ''
+                })
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [addLiquidityInputA.amount, addLiquidityInputB.amount, addLiquidityInputB.tokenAddress])
 
     useEffect(() => {
         checkClacPrice()
@@ -142,6 +166,22 @@ const AddLiquidity = () => {
         setShowModal({ confirm: false, loading: true })
         try {
             await processFunc()
+
+            const myAccountAddress = accountLocalStorage.getMyAccountAddress()
+
+            const resultA = await getTokenBalance(addLiquidityInputA.tokenAddress, myAccountAddress)
+            const resultB = await getTokenBalance(addLiquidityInputB.tokenAddress, myAccountAddress)
+
+            setAddLiquidityInputA({
+                ...resultA,
+                amount: '',
+            })
+
+            setAddLiquidityInputB({
+                ...resultB,
+                amount: '',
+            })
+
             setShowModal({ confirm: false, loading: false })
         } catch (error) {
             setShowModal({ confirm: false, loading: false })
@@ -205,15 +245,15 @@ const AddLiquidity = () => {
                                     <p>Prices and pool share</p>
                                     <ul>
                                         <li>
-                                            <span>{calcPricesText.left}</span>
+                                            <span>{Number(calcPricesText.left).toPrecision(12)}</span>
                                             <p>{`${addLiquidityInputA.symbol.toUpperCase()} per ${addLiquidityInputB.symbol.toUpperCase()} `}</p>
                                         </li>
                                         <li>
-                                            <span>{calcPricesText.center}</span>
+                                            <span>{Number(calcPricesText.center).toPrecision(12)}</span>
                                             <p>{`${addLiquidityInputB.symbol.toUpperCase()} per ${addLiquidityInputA.symbol.toUpperCase()} `}</p>
                                         </li>
                                         <li>
-                                            <span>{calcPricesText.right}</span>
+                                            <span>{Number(calcPricesText.right).toPrecision(12)}%</span>
                                             <p>Share of Pool</p>
                                         </li>
                                     </ul>
@@ -223,10 +263,10 @@ const AddLiquidity = () => {
                         {addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress && (
                             <AppoveBtnWrap>
                                 {addLiquidityInputA.symbol !== 'ETH' && (
-                                    <AppoveBtn className={`enter enter02`} disabledBtn={checkApprove.a} disabled={checkApprove.a} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputA.tokenAddress, addLiquidityInputA.amount); await checkPairContract() })}>{`Approve ${addLiquidityInputA.symbol.toUpperCase()} `}</AppoveBtn>
+                                    <AppoveBtn className={`enter enter02`} disabledBtn={checkApprove.a} disabled={checkApprove.a} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputA.tokenAddress, addLiquidityInputA.amount, addLiquidityInputA.decimals); await checkPairContract() })}>{`Approve ${addLiquidityInputA.symbol.toUpperCase()} `}</AppoveBtn>
                                 )}
                                 {addLiquidityInputB.symbol !== 'ETH' && (
-                                    <AppoveBtn className={`enter enter02`} disabledBtn={checkApprove.b} disabled={checkApprove.b} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputB.tokenAddress, addLiquidityInputB.amount); await checkPairContract() })}>{`Approve ${addLiquidityInputB.symbol.toUpperCase()} `}</AppoveBtn>
+                                    <AppoveBtn className={`enter enter02`} disabledBtn={checkApprove.b} disabled={checkApprove.b} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputB.tokenAddress, addLiquidityInputB.amount, addLiquidityInputB.decimals); await checkPairContract() })}>{`Approve ${addLiquidityInputB.symbol.toUpperCase()} `}</AppoveBtn>
                                 )}
                             </AppoveBtnWrap>
                         )}
@@ -250,7 +290,7 @@ const AddLiquidity = () => {
                 </div>
             </Wrapper>
             {showModal.confirm && (
-                <ConfirmModal aToken={addLiquidityInputA} bToken={addLiquidityInputB} calcData={calcPricesText} confirmFunc={() => loadingConfirm(() => createImportCreate(addLiquidityInputA, addLiquidityInputB))} />
+                <ConfirmModal aToken={addLiquidityInputA} bToken={addLiquidityInputB} calcData={calcPricesText} confirmFunc={() => loadingConfirm(async () => await createImportCreate(addLiquidityInputA, addLiquidityInputB))} />
             )}
             {showModal.loading && (
                 <LoadingModal setShowModal={setShowModal} />

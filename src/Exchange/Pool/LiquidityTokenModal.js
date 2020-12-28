@@ -4,38 +4,24 @@ import Web3 from "web3"
 import useInput from 'utils/hook/useInput'
 import { PRESET_TOKEN, CONTRACT_ABI } from 'config'
 import { accountLocalStorage, conventDecimal } from 'utils/utils'
+import { getTokenBalance } from 'utils/importCreate'
 
 const TokenItem = styled.article`
     cursor: pointer;
 `
 
-const etherWeb3 = new Web3(window.ethereum)
-const myAccountAddress = accountLocalStorage.getMyAccountAddress()
-
 const LiquidityTokenModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
-    const [tokenList, setTokenList] = useState([{ symbol: 'STV', tokenAddress: '0xA3686f63b2E16aD3948f9a1DA329de1Ae161D865' }, { symbol: 'DAV', tokenAddress: '0xF0cA52FeFCce1153A033d13E5387CD5b98E900C1' }, { symbol: 'NOAH', tokenAddress: '0x153D8c4c4105d120B35085e24068888116bC2732' }, { symbol: 'HUNT', tokenAddress: '0xFE54F701299c06131B287Fa44770634A692d0CEd' }, { symbol: 'HANK', tokenAddress: '0xD3683bDbFD2C1e81d53c899A2dC47D2c788c7B2d' }, { symbol: 'TOM2', tokenAddress: '0xbf7920D000A06C06c3b63902f0BbA33126C2e844' }])
+    // const [tokenList, setTokenList] = useState([{ symbol: 'STV', tokenAddress: '0xA3686f63b2E16aD3948f9a1DA329de1Ae161D865' }, { symbol: 'DAV', tokenAddress: '0xF0cA52FeFCce1153A033d13E5387CD5b98E900C1' }, { symbol: 'NOAH', tokenAddress: '0x153D8c4c4105d120B35085e24068888116bC2732' }, { symbol: 'HUNT', tokenAddress: '0xFE54F701299c06131B287Fa44770634A692d0CEd' }, { symbol: 'HANK', tokenAddress: '0xD3683bDbFD2C1e81d53c899A2dC47D2c788c7B2d' }, { symbol: 'TOM2', tokenAddress: '0xbf7920D000A06C06c3b63902f0BbA33126C2e844' }])
+    const [tokenList, setTokenList] = useState([])
     const [tempTokenList, setTempTokenList] = useState(null)
     const searchTokenInput = useInput('')
-
-    const getTokenBalance = async (tokenAddress, account) => {
-        const contractObject = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, tokenAddress)
-
-        return {
-            name: await contractObject.methods.name().call(),
-            symbol: await contractObject.methods.symbol().call(),
-            totalSupply: await contractObject.methods.totalSupply().call(),
-            decimals: await contractObject.methods.decimals().call(),
-            balance: await contractObject.methods.balanceOf(account).call(),
-            tokenAddress,
-        }
-    }
 
     const getInitTokenList = useCallback(
         async () => {
             setTokenList(
                 await Promise.all(Object.keys(PRESET_TOKEN)
                     .map(key => {
-                        return getTokenBalance(PRESET_TOKEN[key], myAccountAddress)
+                        return getTokenBalance(PRESET_TOKEN[key], accountLocalStorage.getMyAccountAddress())
                     })
                 )
             )
@@ -51,7 +37,7 @@ const LiquidityTokenModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
 
         if (tokenAddress) {
             try {
-                const tokenInfo = await getTokenBalance(tokenAddress, myAccountAddress)
+                const tokenInfo = await getTokenBalance(tokenAddress, accountLocalStorage.getMyAccountAddress())
                 setTempTokenList([tokenInfo])
             } catch (err) {
                 setTempTokenList([])
