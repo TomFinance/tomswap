@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 
 const SettingModal = ({ currentAccount, currentBalance }) => {
-    const [showSetting, setShowSetting] = useState(false)
+    // const [showSetting, setShowSetting] = useState(false)
     const [showMore, setShowMore] = useState(false)
-    const [showUpdate, setShowUpdate] = useState(true)
+    const [showUpdate, setShowUpdate] = useState(false)
 
     return currentAccount ? (
         <div className="global">
             <div className="menu_bar">
                 <p className="eth">{`${currentBalance.toFixed(4)} ETH`}</p>
                 <p className="eth_num">{`${currentAccount.slice(0, 8)}...${currentAccount.slice(-4)}`}</p>
-                <div className="setting">
+                {/* <div className="setting">
                     <a href="#;" className="set_icon" onClick={() => setShowSetting(!showSetting)}> </a>
                     {showSetting && (
                         <div className="set_box">
@@ -74,7 +74,7 @@ const SettingModal = ({ currentAccount, currentBalance }) => {
                             <a href="#;" className="close" onClick={() => setShowSetting(false)}>닫기</a>
                         </div>
                     )}
-                </div>
+                </div> */}
                 <div className="more" onClick={() => setShowMore(!showMore)}>
                     {showMore && (
                         <ul>

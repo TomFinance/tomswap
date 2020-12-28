@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const Header = ({ currentAccount, history }) => {
+    const [showMyAccount, setShowMyAccount] = useState(false)
+
     return (
         <>
             <header>
@@ -17,27 +19,29 @@ const Header = ({ currentAccount, history }) => {
                             <li><a href="#;">Info</a></li> */}
                         </ul>
                         {currentAccount ? (
-                            <button >My Wallet</button>
+                            <button onClick={() => setShowMyAccount(true)}>My Wallet</button>
                         ) : (
                                 <button >Unlock wallet</button>
                             )}
                     </div>
                 </nav>
             </header>
-            <div id="my_pop" className="popup_wrap">
-                <div className="popup">
-                    <div className="pop_con">
-                        <h3>My Account</h3>
-                        <div className="my_icon">
-                            <i><img src="../assets/images/ico/ico_my_account.png" alt="" /></i>
-                            <strong>0.000</strong>
-                            <p>TOM2 Balance</p>
+            {showMyAccount && (
+                <div id="my_pop" className="popup_wrap">
+                    <div className="popup">
+                        <div className="pop_con">
+                            <h3>My Account</h3>
+                            <div className="my_icon">
+                                <i><img src="../assets/images/ico/ico_my_account.png" alt="" /></i>
+                                <strong>0.000</strong>
+                                <p>TOM2 Balance</p>
+                            </div>
+                            <a href="#;">View on Etherscan</a>
                         </div>
-                        <a href="#;">View on Etherscan</a>
+                        <a href="#;" className="pop_close" onClick={() => setShowMyAccount(false)}>Cancel</a>
                     </div>
-                    <a href="#;" className="pop_close">Cancel</a>
                 </div>
-            </div>
+            )}
         </>
     )
 }

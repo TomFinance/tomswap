@@ -11,3 +11,7 @@ export const accountLocalStorage = {
         return localStorage.removeItem('accountAddress')
     }
 }
+
+export const conventDecimal = (accountBalance, decimals) => {
+    return (accountBalance / Math.pow(10, decimals)).toFixed(decimals)
+}

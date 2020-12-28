@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import Swap from './Swap'
-import ImportPool from './ImportPool'
+import ImportPool from './Pool/ImportPool'
 
 const Exchange = ({ match: { params: { route } }, history }) => {
 
