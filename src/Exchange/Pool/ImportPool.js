@@ -1,88 +1,137 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
+import { getCheckPairContract, myPositionCheck } from 'utils/web3Utils'
+import LiquidityTokenModal from './LiquidityTokenModal'
+import { positionLocalStorage } from 'utils/utils'
 
-const Wrapper = styled.div`
-    padding: 115px 0 538px;
-    .sub_wrap {
-        margin: 0 auto;
+const NotFoundBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    &.found {
+        margin-top: 20px;
+        & > p:last-of-type {
+            font-weight: 500;
+            color: #eab640;
+            cursor: pointer;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
     }
 `
 
-const GridBtnWrap = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-`
+const ImportPool = ({ history }) => {
+    const [checkPair, setCheckPair] = useState(null)
+    const [addLiquidityInputA, setAddLiquidityInputA] = useState({
+        name: '',
+        symbol: 'Select',
+        balance: '',
+        decimals: '',
+        totalSupply: '',
+        tokenAddress: '',
+        show: false
+    })
+    const [addLiquidityInputB, setAddLiquidityInputB] = useState({
+        name: '',
+        symbol: '',
+        balance: '',
+        decimals: '',
+        totalSupply: '',
+        tokenAddress: '',
+        show: false
+    })
 
-const ImportPool = () => {
-    const [loading, setLoading] = useState(true)
+    const checkPairContract = useCallback(async () => {
+        if (addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress) {
+            setCheckPair(await myPositionCheck(addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress))
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress])
 
     useEffect(() => {
-        setTimeout(() => {
-            setLoading(false)
-        }, 1000)
-    }, [])
+        checkPairContract()
+    }, [checkPairContract])
+
+    const onClickManagePool = () => {
+        positionLocalStorage.setMyPositionList(addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress)
+        history.push('/exchange/pool')
+    }
 
     return (
-        <div>
-            <Wrapper className="wrapper">
-                <div className="sub_wrap sub_wrap04">
-                    <ul>
-                        <li><Link to={'/exchange/swap'}>Swap</Link></li>
-                        <li className="on"><a href="#;">Pool</a></li>
-                    </ul>
-                    <GridBtnWrap>
-                        <Link to="/exchange/pool/add-liquidity" className="add_btn">Add Liquidity</Link>
-                    </GridBtnWrap>
-                    <div className="liquidity">
-                        <div className="li_tit">Your Liquidity
-							<a href="#;" className="q_ico">
-                                <div className="help_box">Find a token…</div>
-                            </a>
+        <>
+            <div className="wrapper">
+                <div className="sub_wrap liqu_wrap sub_wrap05">
+                    <div className="tit">
+                        <Link to={'/exchange/pool'} className="prev"><img src="/images/ico/ico_arrow_back.png" alt="뒤로가기" /></Link>
+                        <span>Import Pool</span>
+                        <a href="#;" className="q_ico">
+                            <div className="help_box">Find a token…</div>
+                        </a>
+                    </div>
+                    <div className="import_wrap">
+                        <div className="select" onClick={() => setAddLiquidityInputA({ ...addLiquidityInputA, show: true })}>
+                            <p className="txt"><a href="#token_pop" className="pop_call">
+                                {/* <img src="/images/ico/ico_eth01.png" alt="" /> */}
+                                {addLiquidityInputA.symbol}</a>
+                            </p>
+                            <ul>
+                                <li><a href="#;"><img src="/images/ico/ico_eth01.png" alt="" />ETH1</a></li>
+                                <li><a href="#;"><img src="/images/ico/ico_eth01.png" alt="" />ETH2</a></li>
+                                <li><a href="#;"><img src="/images/ico/ico_eth01.png" alt="" />ETH3</a></li>
+                            </ul>
                         </div>
-                        <div id="jsLiquidityBox">
-                            {loading ? (
-                                <div className="box">
-                                    <p className="load_txt">Loading…</p>
-                                </div>
-                            ) : (
-                                    <div className="box box_in">
-                                        <div className="loaded_txt">
-                                            <p className="etu">
-                                                <span className="icon01"><img src="/images/ico/ico_eth01.png"
-                                                    alt="" /></span>
-                                                <span className="icon02"><img src="/images/ico/ico_eth02.png"
-                                                    alt="" /></span>
-										ETU/USDT
-									</p>
-                                            <dl>
-                                                <dt>Pooled ETH</dt>
-                                                <dd className="eth01">0.001000</dd>
-                                                <dt>Pooled USDT</dt>
-                                                <dd className="eth02">0.000000</dd>
-                                                <dt>Your pool tokens:</dt>
-                                                <dd>0.0000001234</dd>
-                                                <dt>Your pool share:</dt>
-                                                <dd>0.00%</dd>
-                                            </dl>
-                                        </div>
-                                    </div>
-                                )}
-                            <div className="btns">
-                                <a href="#;">View pair analytics</a>
-                                <div className="two_btn">
-                                    <a href="./add_liquidity.html" className="add">Add</a>
-                                    <a href="./remove_liquidity.html" className="remove">Remove</a>
-                                </div>
-                            </div>
+                        <div className="select select02" onClick={() => setAddLiquidityInputB({ ...addLiquidityInputB, show: true })}>
+                            <p className="txt"><a href="#token_pop" className="pop_call">{addLiquidityInputB.symbol || 'Select a Token'}</a></p>
+                            <ul>
+                                <li><a href="#;"><img src="/images/ico/ico_eth02.png" alt="" />USDT1</a></li>
+                                <li><a href="#;"><img src="/images/ico/ico_eth02.png" alt="" />USDT2</a></li>
+                                <li><a href="#;"><img src="/images/ico/ico_eth02.png" alt="" />USDT3</a></li>
+                            </ul>
                         </div>
                     </div>
-                    <p className="join_txt">Don’t see a pool you joined? <em>Import it.</em></p>
+                    {checkPair !== null && (
+                        <>
+                            {checkPair ? (
+                                <>
+                                    <div className="position">
+                                        <p>Your position</p>
+                                        <dl>
+                                            <dt className="bold etu">
+                                                {/* <span className="icon01"><img src="/images/ico/ico_eth01.png" alt="" /></span> */}
+                                                {/* <span className="icon02"><img src="/images/ico/ico_eth02.png" alt="" /></span> */}
+                                                {` ${addLiquidityInputA.symbol}/${addLiquidityInputB.symbol}`}
+                                            </dt>
+                                            <dd className="bold">{checkPair.lpToken.toPrecision(12)}</dd>
+                                            <dt>{addLiquidityInputA.symbol}</dt>
+                                            <dd>{checkPair.token0Value.toPrecision(12)}</dd>
+                                            <dt>{addLiquidityInputB.symbol}</dt>
+                                            <dd>{checkPair.token1Value.toPrecision(12)}</dd>
+                                        </dl>
+                                    </div>
+                                    <NotFoundBox className='found'>
+                                        <p>Pool Found!</p>
+                                        <p onClick={onClickManagePool}>Manage this pool.</p>
+                                    </NotFoundBox>
+                                </>
+                            ) : (
+                                    <NotFoundBox className="position">
+                                        <p>Not Found</p>
+                                    </NotFoundBox>
+                                )}
+                        </>
+                    )}
                 </div>
-            </Wrapper>
-        </div>
+            </div>
+            {addLiquidityInputA.show && (
+                <LiquidityTokenModal addLiquidityInput={addLiquidityInputA} setAddLiquidityInput={setAddLiquidityInputA} />
+            )}
+            {addLiquidityInputB.show && (
+                <LiquidityTokenModal addLiquidityInput={addLiquidityInputB} setAddLiquidityInput={setAddLiquidityInputB} />
+            )}
+        </>
     )
 }
 

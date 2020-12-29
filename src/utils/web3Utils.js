@@ -1,6 +1,6 @@
 import Web3 from "web3"
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
-import { accountLocalStorage } from "./utils"
+import { accountLocalStorage, positionLocalStorage } from "./utils"
 import { metaMaskSendTx } from "./metaMask"
 
 const etherWeb3 = new Web3(window.ethereum)
@@ -114,6 +114,10 @@ export const addLiquidityGatherPairData = async (tokenAddressA, tokenAddressB) =
 
     const token0Contract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, tokenAddressA)
     const token1Contract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, tokenAddressB)
+
+    const token0Symbol = await token0Contract.methods.symbol().call()
+    const token1Symbol = await token1Contract.methods.symbol().call()
+
     const token0Decimals = await token0Contract.methods.decimals().call()
     const token1Decimals = await token1Contract.methods.decimals().call()
 
@@ -124,13 +128,18 @@ export const addLiquidityGatherPairData = async (tokenAddressA, tokenAddressB) =
     const pairSupply = await pairContract.methods.totalSupply().call()
     const pairDecimals = await pairContract.methods.decimals().call()
 
+    const pairContractBalance = await pairContract.methods.balanceOf(accountLocalStorage.getMyAccountAddress()).call()
+
     return {
+        token0Symbol,
         token0Reserve,
-        token0Decimals,
         token1Reserve,
+        token1Symbol,
+        token0Decimals,
         token1Decimals,
         pairSupply,
-        pairDecimals
+        pairDecimals,
+        pairContractBalance
     }
 }
 
@@ -168,5 +177,27 @@ export const addLiquidityPreview = async (aToken, bToken) => {
         '1': calcText['1'],
         '2': `${((totalShare - pairSupply) / totalShare * 100)}`,
         '3': calcTokenAmountB,
+    }
+}
+
+export const myPositionCheck = async (tokenAddressA, tokenAddressB) => {
+    const pairData = await addLiquidityGatherPairData(tokenAddressA, tokenAddressB)
+
+    if (!pairData) {
+        return false
+    }
+
+    const lpToken = pairData.pairContractBalance * Math.pow(0.1, pairData.pairDecimals)
+    const persent = pairData.pairContractBalance / pairData.pairSupply
+    const token0Value = pairData.token0Reserve * Math.pow(0.1, pairData.token0Decimals) * persent
+    const token1Value = pairData.token1Reserve * Math.pow(0.1, pairData.token1Decimals) * persent
+
+    return {
+        lpToken,
+        persent,
+        token0Symbol: pairData.token0Symbol,
+        token0Value,
+        token1Symbol: pairData.token1Symbol,
+        token1Value,
     }
 }

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { mq } from 'assets/Responsive'
 import LiquidityTokenModal from './LiquidityTokenModal'
 import { accountLocalStorage, conventDecimal } from 'utils/utils'
-import { createPreviewPrice, createCheckApprove, createConfirmApprove, createImportCreate, getCheckPairContract, addLiquidityPreview, getTokenBalance } from 'utils/importCreate'
+import { createPreviewPrice, createCheckApprove, createConfirmApprove, createImportCreate, getCheckPairContract, addLiquidityPreview, getTokenBalance } from 'utils/web3Utils'
 import ConfirmModal from 'Exchange/ConfirmModal'
 import LoadingModal from '../LoadingModal'
 
@@ -101,7 +101,7 @@ const AddLiquidity = () => {
 
     const checkPairContract = useCallback(async () => {
         if (addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress) {
-            setPageType(await getCheckPairContract(addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress) ? 'add liquidity' : 'create pool')
+            setPageType(await getCheckPairContract(addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress) ? 'add liquidity' : 'create pair')
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress])
@@ -139,7 +139,7 @@ const AddLiquidity = () => {
                         ...addLiquidityInputB,
                         amount: calcText['3']
                     })
-                } else if (addLiquidityInputB.amount && pageType === 'create pool') {
+                } else if (addLiquidityInputB.amount && pageType === 'create pair') {
                     const calcText = await createPreviewPrice(addLiquidityInputA, addLiquidityInputB)
 
                     setCalcPricesText({
@@ -196,7 +196,7 @@ const AddLiquidity = () => {
                         <div className="tit">
                             <Link to="/exchange/pool" className="prev"><img src="/images/ico/ico_arrow_back.png"
                                 alt="뒤로가기" /></Link>
-                            <span>{pageType === 'add liquidity' ? 'Add Liquidity' : 'Create Pool'}</span>
+                            <span>{pageType === 'add liquidity' ? 'Add Liquidity' : 'Create Pair'}</span>
                             <a href="#;" className="q_ico">
                                 <div className="help_box">Find a token…</div>
                             </a>
