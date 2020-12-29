@@ -1,6 +1,6 @@
 import React from 'react'
 
-const LoadingModal = ({ setShowModal }) => {
+const LoadingModal = ({ init, setShowModal }) => {
     return (
         <div id="loading_pop" className="popup_wrap">
             <div className="popup">
@@ -22,7 +22,7 @@ const LoadingModal = ({ setShowModal }) => {
                     {/* <p>Swapping 0.1 ETH for 60.0000 USDT</p> */}
                     {/* <span>Confirm this transaction in your wallet</span> */}
                 </div>
-                <button className="pop_close" onClick={() => setShowModal({ confirm: false, loading: false })}>닫기</button>
+                <button className="pop_close" onClick={() => setShowModal(init)}>닫기</button>
             </div>
         </div >
     )

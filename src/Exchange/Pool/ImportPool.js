@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
-import { getCheckPairContract, myPositionCheck } from 'utils/web3Utils'
+import { myPositionCheck } from 'utils/web3Utils'
 import LiquidityTokenModal from './LiquidityTokenModal'
-import { positionLocalStorage } from 'utils/utils'
+import { convertDecimal, positionLocalStorage } from 'utils/utils'
 
 const NotFoundBox = styled.div`
     display: flex;
@@ -24,7 +24,7 @@ const NotFoundBox = styled.div`
 `
 
 const ImportPool = ({ history }) => {
-    const [checkPair, setCheckPair] = useState(null)
+    const [pairData, setPairData] = useState(null)
     const [addLiquidityInputA, setAddLiquidityInputA] = useState({
         name: '',
         symbol: 'Select',
@@ -46,7 +46,7 @@ const ImportPool = ({ history }) => {
 
     const checkPairContract = useCallback(async () => {
         if (addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress) {
-            setCheckPair(await myPositionCheck(addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress))
+            setPairData(await myPositionCheck(addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress])
@@ -92,9 +92,9 @@ const ImportPool = ({ history }) => {
                             </ul>
                         </div>
                     </div>
-                    {checkPair !== null && (
+                    {pairData !== null && (
                         <>
-                            {checkPair ? (
+                            {pairData ? (
                                 <>
                                     <div className="position">
                                         <p>Your position</p>
@@ -104,11 +104,11 @@ const ImportPool = ({ history }) => {
                                                 {/* <span className="icon02"><img src="/images/ico/ico_eth02.png" alt="" /></span> */}
                                                 {` ${addLiquidityInputA.symbol}/${addLiquidityInputB.symbol}`}
                                             </dt>
-                                            <dd className="bold">{checkPair.lpToken.toPrecision(12)}</dd>
+                                            <dd className="bold">{convertDecimal(pairData.lpToken, pairData.pairDecimals)}</dd>
                                             <dt>{addLiquidityInputA.symbol}</dt>
-                                            <dd>{checkPair.token0Value.toPrecision(12)}</dd>
+                                            <dd>{convertDecimal(pairData.token0Value, pairData.token0Decimals, pairData.persent)}</dd>
                                             <dt>{addLiquidityInputB.symbol}</dt>
-                                            <dd>{checkPair.token1Value.toPrecision(12)}</dd>
+                                            <dd>{convertDecimal(pairData.token1Value, pairData.token1Decimals, pairData.persent)}</dd>
                                         </dl>
                                     </div>
                                     <NotFoundBox className='found'>

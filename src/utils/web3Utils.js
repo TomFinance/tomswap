@@ -1,6 +1,6 @@
 import Web3 from "web3"
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
-import { accountLocalStorage, positionLocalStorage } from "./utils"
+import { accountLocalStorage } from "./utils"
 import { metaMaskSendTx } from "./metaMask"
 
 const etherWeb3 = new Web3(window.ethereum)
@@ -187,17 +187,72 @@ export const myPositionCheck = async (tokenAddressA, tokenAddressB) => {
         return false
     }
 
-    const lpToken = pairData.pairContractBalance * Math.pow(0.1, pairData.pairDecimals)
+    const lpToken = pairData.pairContractBalance
     const persent = pairData.pairContractBalance / pairData.pairSupply
-    const token0Value = pairData.token0Reserve * Math.pow(0.1, pairData.token0Decimals) * persent
-    const token1Value = pairData.token1Reserve * Math.pow(0.1, pairData.token1Decimals) * persent
+    const token0Value = pairData.token0Reserve
+    const token1Value = pairData.token1Reserve
 
     return {
         lpToken,
         persent,
+        pairDecimals: pairData.pairDecimals,
         token0Symbol: pairData.token0Symbol,
         token0Value,
+        token0Decimals: pairData.token0Decimals,
         token1Symbol: pairData.token1Symbol,
         token1Value,
+        token1Decimals: pairData.token1Decimals,
+    }
+}
+
+export const checkRemoveLiquidityApprove = async (tokenAddressA, tokenAddressB, myLpToken) => {
+    const factoryContract = new etherWeb3.eth.Contract(CONTRACT_ABI.FACTORY, CONTRACT_ADDRESS.FACTORY)
+    const pairAddress = await factoryContract.methods.getPair(tokenAddressA, tokenAddressB).call()
+    const pairContract = new etherWeb3.eth.Contract(CONTRACT_ABI.PAIR, pairAddress)
+
+    const pairTokenAllowance = await pairContract.methods.allowance(accountLocalStorage.getMyAccountAddress(), CONTRACT_ADDRESS.ROUTER).call()
+
+    return pairTokenAllowance >= myLpToken
+}
+
+export const requestRemoveLiquidityApprove = async (tokenAddressA, tokenAddressB, myLpToken) => {
+    const factoryContract = new etherWeb3.eth.Contract(CONTRACT_ABI.FACTORY, CONTRACT_ADDRESS.FACTORY)
+    const pairAddress = await factoryContract.methods.getPair(tokenAddressA, tokenAddressB).call()
+    const pairContract = new etherWeb3.eth.Contract(CONTRACT_ABI.PAIR, pairAddress)
+
+    const pairTokenAllowance = await pairContract.methods.allowance(accountLocalStorage.getMyAccountAddress(), CONTRACT_ADDRESS.ROUTER).call()
+
+    if (pairTokenAllowance < myLpToken) {
+        await metaMaskSendTx({
+            from: accountLocalStorage.getMyAccountAddress(),
+            to: pairAddress,
+            data: pairContract.methods.approve(
+                CONTRACT_ADDRESS.ROUTER,
+                (2n ** 256n - 1n).toString()
+            ).encodeABI()
+        })
+    }
+}
+
+export const requestRemoveLiquidity = async (myPosition, removePersent) => {
+    try {
+        const routerContract = new etherWeb3.eth.Contract(CONTRACT_ABI.ROUTER, CONTRACT_ADDRESS.ROUTER)
+
+        await metaMaskSendTx({
+            from: accountLocalStorage.getMyAccountAddress(),
+            to: CONTRACT_ADDRESS.ROUTER,
+            data: routerContract.methods.removeLiquidity(
+                myPosition.tokenAddressA,
+                myPosition.tokenAddressB,
+                Math.floor(myPosition.lpToken * removePersent),
+                Math.floor(Number(myPosition.token0Value) * removePersent * 0.995),
+                Math.floor(Number(myPosition.token1Value) * removePersent * 0.995),
+                accountLocalStorage.getMyAccountAddress(),
+                Math.floor((+new Date()) / 1000) + 3600
+            ).encodeABI(),
+            value: 0x0
+        })
+    } catch (error) {
+        console.log(error)
     }
 }

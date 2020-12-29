@@ -293,7 +293,7 @@ const AddLiquidity = () => {
                 <ConfirmModal aToken={addLiquidityInputA} bToken={addLiquidityInputB} calcData={calcPricesText} confirmFunc={() => loadingConfirm(async () => await createImportCreate(addLiquidityInputA, addLiquidityInputB))} />
             )}
             {showModal.loading && (
-                <LoadingModal setShowModal={setShowModal} />
+                <LoadingModal init={{ confirm: false, loading: false }} setShowModal={setShowModal} />
             )}
             {addLiquidityInputA.show && (
                 <LiquidityTokenModal addLiquidityInput={addLiquidityInputA} setAddLiquidityInput={setAddLiquidityInputA} />

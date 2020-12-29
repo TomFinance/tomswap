@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
-import { positionLocalStorage } from 'utils/utils'
+import { convertDecimal, positionLocalStorage } from 'utils/utils'
 import { myPositionCheck } from 'utils/web3Utils'
 
 const Wrapper = styled.div`
@@ -20,7 +20,7 @@ const GridBtnWrap = styled.div`
 
 const Pool = () => {
     const [loading, setLoading] = useState(true)
-    const [positionList, setPositionList] = useState([])
+    const [positionList, setPositionList] = useState(null)
 
     useEffect(() => {
         setTimeout(() => {
@@ -71,35 +71,37 @@ const Pool = () => {
                                 <div className="help_box">Find a token…</div>
                             </a>
                         </div>
-                        {loading ? (
+                        {(loading || positionList === null) ? (
                             <div className="box">
                                 <p className="load_txt">Loading…</p>
                             </div>
                         ) : (
                                 <>
                                     {positionList?.map((position, idx) => {
+                                        console.log(position)
+
                                         return (
                                             <div key={idx} onClick={() => onClickPosition(position, idx)}>
                                                 <div className="box box_in">
                                                     <div className="loaded_txt">
                                                         <p className="etu">
-                                                            <span className="icon01">
-                                                                {/* <img src="/images/ico/ico_eth01.png" alt="" /> */}
+                                                            {/* <span className="icon01">
+                                                                <img src="/images/ico/ico_eth01.png" alt="" />
                                                             </span>
                                                             <span className="icon02">
-                                                                {/* <img src="/images/ico/ico_eth02.png" alt="" /> */}
-                                                            </span>
+                                                                <img src="/images/ico/ico_eth02.png" alt="" />
+                                                            </span> */}
                                                             {`${position.token0Symbol}/${position.token1Symbol}`}</p>
                                                         {position.show && (
                                                             <dl>
                                                                 <dt>{`Pooled ${position.token0Symbol}`}</dt>
-                                                                {/* <dd className="eth01">{position.token0Value.toPrecision(12)}</dd> */}
-                                                                <dd>{position.token0Value.toPrecision(12)}</dd>
+                                                                {/* <dd className="eth01">{convertDecimal(position.token0Value, position.token0Decimals)}</dd> */}
+                                                                <dd>{convertDecimal(position.token0Value, position.token0Decimals, position.persent)}</dd>
                                                                 <dt>{`Pooled ${position.token1Symbol}`}</dt>
-                                                                {/* <dd className="eth02">{position.token1Value.toPrecision(12)}</dd> */}
-                                                                <dd>{position.token1Value.toPrecision(12)}</dd>
+                                                                {/* <dd className="eth02">{convertDecimal(position.token1Value, position.token1Decimals)}</dd> */}
+                                                                <dd>{convertDecimal(position.token1Value, position.token1Decimals, position.persent)}</dd>
                                                                 <dt>Your pool tokens:</dt>
-                                                                <dd>{position.lpToken.toPrecision(12)}</dd>
+                                                                <dd>{convertDecimal(position.lpToken, position.pairDecimals)}</dd>
                                                                 <dt>Your pool share:</dt>
                                                                 <dd>{position.persent.toPrecision(12)}%</dd>
                                                             </dl>
@@ -110,8 +112,8 @@ const Pool = () => {
                                                     <div className="btns">
                                                         <a href="#;">View pair analytics</a>
                                                         <div className="two_btn">
-                                                            <Link to="/exchange/pool/add-liquidity" className="add">Add</Link>
-                                                            <Link to="/exchange/pool/remove-liquidity" className="remove">Remove</Link>
+                                                            <Link to={{ pathname: '/exchange/pool/add-liquidity', data: position }} className="add">Add</Link>
+                                                            <Link to={{ pathname: '/exchange/pool/remove-liquidity', data: position }} className="remove">Remove</Link>
                                                         </div>
                                                     </div>
                                                 )}

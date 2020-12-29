@@ -7,6 +7,7 @@ import Exchange from 'Exchange/Exchange'
 import Tom2Stake from 'Tom2/Tom2Stake'
 import AddLiquidity from 'Exchange/Pool/AddLiquidity'
 import ImportPool from 'Exchange/Pool/ImportPool'
+import RemoveLiquidity from 'Exchange/Pool/RemoveLiquidity'
 
 function Body() {
     return (
@@ -14,7 +15,7 @@ function Body() {
             <Route exact path="/" component={Home} />
             <Route exact path="/exchange/import-pool" component={ImportPool} />
             <Route exact path="/exchange/pool/add-liquidity" component={AddLiquidity} />
-            <Route exact path="/exchange/pool/remove-liquidity" component={AddLiquidity} />
+            <Route exact path="/exchange/pool/remove-liquidity" component={RemoveLiquidity} />
             <Route exact path="/exchange/:route" component={Exchange} />
             <Route exact path="/tom2" component={Tom2} />
             <Route exact path="/tom2/detail/:route" component={Tom2Stake} />
