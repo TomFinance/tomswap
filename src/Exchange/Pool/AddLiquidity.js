@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 import { mq } from 'assets/Responsive'
 import LiquidityTokenModal from './LiquidityTokenModal'
-import { accountLocalStorage, conventDecimal } from 'utils/utils'
+import { accountLocalStorage, convertDecimal } from 'utils/utils'
 import { createPreviewPrice, createCheckApprove, createConfirmApprove, createImportCreate, getCheckPairContract, addLiquidityPreview, getTokenBalance } from 'utils/web3Utils'
 import ConfirmModal from 'Exchange/ConfirmModal'
 import LoadingModal from '../LoadingModal'
@@ -47,12 +47,6 @@ const AppoveBtn = styled.button`
         : 'rgba(234,182,64,0.3) !important'};
 `
 
-const CreateBtn = styled.button`
-    background-color: ${props => props.disabledBtn
-        ? 'rgba(234,182,64,0.2) !important'
-        : '#eab640 !important'};
-`
-
 const AddLiquidity = () => {
     const [pageType, setPageType] = useState('add liquidity')
     const [showModal, setShowModal] = useState({
@@ -86,8 +80,8 @@ const AddLiquidity = () => {
         right: ''
     })
     const [checkApprove, setCheckApprove] = useState({
-        a: true,
-        b: true
+        a: false,
+        b: false
     })
 
     const onChangeAmount = (e, state, setState) => {
@@ -205,14 +199,13 @@ const AddLiquidity = () => {
                             <div className="top">
                                 <div className="fl from">
                                     <span>Input</span>
-                                    <p>{`Balance : ${conventDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals)
-                                        } `}</p>
+                                    <p>{`Balance : ${convertDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals)} `}</p>
                                 </div>
                                 <div className="fr max">
                                     <input id="Create_0_Preview" type="text" placeholder={'0.0'} value={addLiquidityInputA.amount} onChange={e => onChangeAmount(e, addLiquidityInputA, setAddLiquidityInputA)} disabled={addLiquidityInputA.symbol === 'Select'} />
                                     <div>
-                                        {addLiquidityInputA.amount !== conventDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals) && Number(addLiquidityInputA.balance) ? (
-                                            <MaxBtn onClick={() => setAddLiquidityInputA({ ...addLiquidityInputA, amount: conventDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals) })} >Max</MaxBtn>
+                                        {addLiquidityInputA.amount !== convertDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals) && Number(addLiquidityInputA.balance) ? (
+                                            <MaxBtn onClick={() => setAddLiquidityInputA({ ...addLiquidityInputA, amount: convertDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals) })} >Max</MaxBtn>
                                         ) : null}
                                         <a href="#token_pop" className="eth pop_call" onClick={() => setAddLiquidityInputA({ ...addLiquidityInputA, show: true })}>{addLiquidityInputA.symbol}</a>
                                     </div>
@@ -221,13 +214,13 @@ const AddLiquidity = () => {
                             <div className="btm">
                                 <div className="fl">
                                     <span>Input</span>
-                                    <p>{`Balance: ${conventDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals)} `}</p>
+                                    <p>{`Balance: ${convertDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals)} `}</p>
                                 </div>
                                 <div className="fr">
                                     <input id="Create_1_Preview" type="text" placeholder={'0.0'} value={addLiquidityInputB.amount} onChange={e => onChangeAmount(e, addLiquidityInputB, setAddLiquidityInputB)} disabled={addLiquidityInputB.symbol === 'Select'} />
                                     <div className="token">
-                                        {addLiquidityInputB.amount !== conventDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals) && Number(addLiquidityInputB.balance) ? (
-                                            <strong onClick={() => setAddLiquidityInputB({ ...addLiquidityInputB, amount: conventDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals) })} >Max</strong>
+                                        {addLiquidityInputB.amount !== convertDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals) && Number(addLiquidityInputB.balance) ? (
+                                            <strong onClick={() => setAddLiquidityInputB({ ...addLiquidityInputB, amount: convertDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals) })} >Max</strong>
                                         ) : null}
                                         <a href="#token_pop" className="pop_call" onClick={() => setAddLiquidityInputB({ ...addLiquidityInputB, show: true })} >{addLiquidityInputB.symbol}</a>
                                         <ul className="token">
@@ -270,7 +263,7 @@ const AddLiquidity = () => {
                                 )}
                             </AppoveBtnWrap>
                         )}
-                        <CreateBtn className="enter on pop_call" disabledBtn={!checkApprove.a || !checkApprove.b} disabled={!checkApprove.a || !checkApprove.b} onClick={() => setShowModal({ confirm: true, loading: false })} >{pageType === 'add liquidity' ? 'Supply' : 'Create'}</CreateBtn>
+                        <button className={`enter pop_call ${checkApprove.a && checkApprove.b ? 'on' : ''}`} disabled={!checkApprove.a || !checkApprove.b} onClick={() => setShowModal({ confirm: true, loading: false })} >{pageType === 'add liquidity' ? 'Supply' : 'Create'}</button>
                     </div>
                     {/* <div className="position">
                         <p>Your position</p>

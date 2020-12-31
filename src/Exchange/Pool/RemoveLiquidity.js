@@ -3,7 +3,6 @@ import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 import { checkRemoveLiquidityApprove, requestRemoveLiquidityApprove, requestRemoveLiquidity } from 'utils/web3Utils'
 import LoadingModal from 'Exchange/LoadingModal'
-import { convertDecimal } from 'utils/utils'
 
 const PositionTitle = styled.div`
     display: flex;
@@ -103,10 +102,10 @@ const RemoveLiquidity = ({ history, location }) => {
                         </div>
                         <div className="weth">
                             <dl>
-                                <dt>{removeValue ? Number(myPosition.token0Value * Math.pow(0.1, myPosition.token0Decimals) * myPosition.persent) * (removeValue / 100) : '-'}</dt>
+                                <dt>{removeValue ? (myPosition.token0ViewValue * (removeValue / 100)).toPrecision(12) : '-'}</dt>
                                 {/* <dd className="ico ico03">ETH</dd> */}
                                 <dd className="ico">{myPosition.token0Symbol}</dd>
-                                <dt>{removeValue ? Number(myPosition.token1Value * Math.pow(0.1, myPosition.token1Decimals) * myPosition.persent) * (removeValue / 100) : '-'}</dt>
+                                <dt>{removeValue ? (myPosition.token1ViewValue * (removeValue / 100)).toPrecision(12) : '-'}</dt>
                                 {/* <dd className="ico ico04">USDT</dd> */}
                                 <dd className="ico">{myPosition.token1Symbol}</dd>
                             </dl>
@@ -114,9 +113,9 @@ const RemoveLiquidity = ({ history, location }) => {
                         </div>
                         <dl className="weth price">
                             <dt>Price:</dt>
-                            <dd>{`1 ${myPosition.token0Symbol} = ${(Number(myPosition.token1Value * Math.pow(0.1, myPosition.token1Decimals) * myPosition.persent) / Number(myPosition.token0Value * Math.pow(0.1, myPosition.token0Decimals) * myPosition.persent)).toPrecision(12)} ${myPosition.token1Symbol}`}</dd>
+                            <dd>{`1 ${myPosition.token0Symbol} = ${(myPosition.token1ViewValue / myPosition.token0ViewValue).toPrecision(12)} ${myPosition.token1Symbol}`}</dd>
                             <dt></dt>
-                            <dd className="shadow">{`1 ${myPosition.token1Symbol} = ${(Number(myPosition.token0Value * Math.pow(0.1, myPosition.token0Decimals) * myPosition.persent) / Number(myPosition.token1Value * Math.pow(0.1, myPosition.token1Decimals) * myPosition.persent)).toPrecision(12)} ${myPosition.token0Symbol}`}</dd>
+                            <dd className="shadow">{`1 ${myPosition.token1Symbol} = ${(myPosition.token0ViewValue / myPosition.token1ViewValue).toPrecision(12)} ${myPosition.token0Symbol}`}</dd>
                         </dl>
                         <WarningText>Output is estimated. If the price changes by more than 0.5% your transaction will revert.</WarningText>
                         <div className="two_btn">
@@ -137,13 +136,13 @@ const RemoveLiquidity = ({ history, location }) => {
                                 </span> */}
                                     {`${myPosition.token0Symbol}/${myPosition.token1Symbol}`}
                                 </dt>
-                                <dd className="bold">{convertDecimal(myPosition.lpToken, myPosition.pairDecimals)}</dd>
+                                <dd className="bold">{myPosition.lpTokenView.toPrecision(12)}</dd>
                             </PositionTitle>
                             <dd className="bold">{ }</dd>
                             <dt>{myPosition.token0Symbol}</dt>
-                            <dd>{convertDecimal(myPosition.token0Value, myPosition.token0Decimals, myPosition.persent)}</dd>
+                            <dd>{myPosition.token0ViewValue.toPrecision(12)}</dd>
                             <dt>{myPosition.token1Symbol}</dt>
-                            <dd>{convertDecimal(myPosition.token1Value, myPosition.token1Decimals, myPosition.persent)}</dd>
+                            <dd>{myPosition.token1ViewValue.toPrecision(12)}</dd>
                         </dl>
                     </div>
                 </>

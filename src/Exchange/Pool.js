@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
-import { convertDecimal, positionLocalStorage } from 'utils/utils'
+import { positionLocalStorage } from 'utils/utils'
 import { myPositionCheck } from 'utils/web3Utils'
 
 const Wrapper = styled.div`
@@ -35,8 +35,9 @@ const Pool = () => {
     }
 
     const checkPairContract = useCallback(async () => {
+        const localStorageSavePositionList = positionLocalStorage.getMyPositionList() || []
         const tempPositionList = await Promise.all(
-            positionLocalStorage.getMyPositionList().map(async position => {
+            localStorageSavePositionList.map(async position => {
                 const tokenAddressArr = position.split('_')
                 return {
                     show: false,
@@ -78,8 +79,6 @@ const Pool = () => {
                         ) : (
                                 <>
                                     {positionList?.map((position, idx) => {
-                                        console.log(position)
-
                                         return (
                                             <div key={idx} onClick={() => onClickPosition(position, idx)}>
                                                 <div className="box box_in">
@@ -96,12 +95,12 @@ const Pool = () => {
                                                             <dl>
                                                                 <dt>{`Pooled ${position.token0Symbol}`}</dt>
                                                                 {/* <dd className="eth01">{convertDecimal(position.token0Value, position.token0Decimals)}</dd> */}
-                                                                <dd>{convertDecimal(position.token0Value, position.token0Decimals, position.persent)}</dd>
+                                                                <dd>{position.token0ViewValue.toPrecision(12)}</dd>
                                                                 <dt>{`Pooled ${position.token1Symbol}`}</dt>
                                                                 {/* <dd className="eth02">{convertDecimal(position.token1Value, position.token1Decimals)}</dd> */}
-                                                                <dd>{convertDecimal(position.token1Value, position.token1Decimals, position.persent)}</dd>
+                                                                <dd>{position.token1ViewValue.toPrecision(12)}</dd>
                                                                 <dt>Your pool tokens:</dt>
-                                                                <dd>{convertDecimal(position.lpToken, position.pairDecimals)}</dd>
+                                                                <dd>{position.lpTokenView.toPrecision(12)}</dd>
                                                                 <dt>Your pool share:</dt>
                                                                 <dd>{position.persent.toPrecision(12)}%</dd>
                                                             </dl>

@@ -5,6 +5,11 @@ const etherWeb3 = new Web3(window.ethereum)
 
 export const metaMaskIsInstalled = () => Boolean(window.ethereum && window.ethereum.isMetaMask)
 
+export const getMetaMaskMyAccount = async () => {
+    const response = await window.ethereum.request({ method: 'eth_requestAccounts' })
+    return response[0]
+}
+
 export const metaMaskGetAccount = async () => {
     return accountLocalStorage.getMyAccountAddress()
 }

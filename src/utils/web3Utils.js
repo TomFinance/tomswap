@@ -1,10 +1,11 @@
 import Web3 from "web3"
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
 import { accountLocalStorage } from "./utils"
-import { metaMaskSendTx } from "./metaMask"
+import { getMetaMaskMyAccount, metaMaskSendTx } from "./metaMask"
 
 const etherWeb3 = new Web3(window.ethereum)
 
+// #region - Account
 export const getTokenBalance = async (tokenAddress, account) => {
     const contractObject = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, tokenAddress)
 
@@ -17,7 +18,9 @@ export const getTokenBalance = async (tokenAddress, account) => {
         tokenAddress,
     }
 }
+// #endregion
 
+// #region - Pool
 export const createCalculatePrice = (addLiquidityInputA, addLiquidityInputB) => {
     if (!addLiquidityInputA.amount || !addLiquidityInputB.amount) { return false }
     if (!addLiquidityInputA.tokenAddress
@@ -179,7 +182,9 @@ export const addLiquidityPreview = async (aToken, bToken) => {
         '3': calcTokenAmountB,
     }
 }
+// #endregion
 
+// #region - Remove Liquidity
 export const myPositionCheck = async (tokenAddressA, tokenAddressB) => {
     const pairData = await addLiquidityGatherPairData(tokenAddressA, tokenAddressB)
 
@@ -188,19 +193,25 @@ export const myPositionCheck = async (tokenAddressA, tokenAddressB) => {
     }
 
     const lpToken = pairData.pairContractBalance
+    const lpTokenView = pairData.pairContractBalance * Math.pow(0.1, pairData.pairDecimals)
     const persent = pairData.pairContractBalance / pairData.pairSupply
     const token0Value = pairData.token0Reserve
     const token1Value = pairData.token1Reserve
+    const token0ViewValue = token0Value * Math.pow(0.1, pairData.token0Decimals) * persent
+    const token1ViewValue = token1Value * Math.pow(0.1, pairData.token1Decimals) * persent
 
     return {
         lpToken,
+        lpTokenView,
         persent,
         pairDecimals: pairData.pairDecimals,
         token0Symbol: pairData.token0Symbol,
         token0Value,
+        token0ViewValue,
         token0Decimals: pairData.token0Decimals,
         token1Symbol: pairData.token1Symbol,
         token1Value,
+        token1ViewValue,
         token1Decimals: pairData.token1Decimals,
     }
 }
@@ -256,3 +267,114 @@ export const requestRemoveLiquidity = async (myPosition, removePersent) => {
         console.log(error)
     }
 }
+// #endregion
+
+// #region - Swap
+export const swapGatherPairData = async (tokenAddressA, tokenAddressB) => {
+    const factoryContract = new etherWeb3.eth.Contract(CONTRACT_ABI.FACTORY, CONTRACT_ADDRESS.FACTORY)
+    const pairAddress = await factoryContract.methods.getPair(tokenAddressA, tokenAddressB).call()
+
+    if (pairAddress === 0) {
+        return false
+    }
+
+    const pairContract = new etherWeb3.eth.Contract(CONTRACT_ABI.PAIR, pairAddress)
+    const pairToken0 = await pairContract.methods.token0().call()
+    const pairToken1 = await pairContract.methods.token1().call()
+
+    const token0Contract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, tokenAddressA)
+    const token1Contract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, tokenAddressB)
+    const token0Decimals = await token0Contract.methods.decimals().call()
+    const token1Decimals = await token1Contract.methods.decimals().call()
+
+    const tokenReserves = await pairContract.methods.getReserves().call()
+    const token0Reserve = pairToken0 === tokenAddressA ? tokenReserves._reserve0 : tokenReserves._reserve1
+    const token1Reserve = pairToken1 === tokenAddressB ? tokenReserves._reserve1 : tokenReserves._reserve0
+
+    const pairSupply = await pairContract.methods.totalSupply().call()
+    const pairDecimals = await pairContract.methods.decimals().call()
+
+    return {
+        token0Reserve,
+        token0Decimals,
+        token1Reserve,
+        token1Decimals,
+        pairSupply,
+        pairDecimals
+    }
+}
+
+export const swapQuotePrice = async (tokenA, tokenB) => {
+    const pairData = await swapGatherPairData(tokenA.tokenAddress, tokenB.tokenAddress)
+
+    if (!pairData) {
+        return false
+    }
+
+    const token0Reserve = (pairData.token0Reserve / Math.pow(10, pairData.token0Decimals))
+    const token1Reserve = (pairData.token1Reserve / Math.pow(10, pairData.token1Decimals))
+
+    const token0Input = Number(tokenA.amount)
+    const token0Expect = token0Reserve + token0Input * 0.997
+    const token1Expect = token0Reserve * token1Reserve / token0Expect
+
+    const token1Output = Math.floor((token1Reserve - token1Expect) * Math.pow(10, pairData.token1Decimals)) / Math.pow(10, pairData.token1Decimals)
+
+    const token0SwapPrice = token1Output / token0Input
+    const token1SwapPrice = token0Input / token1Output
+    const token1OriginPrice = token0Reserve / token1Reserve
+    const impactRate = (token1SwapPrice - token1OriginPrice) / token1SwapPrice
+
+    const token1MinOut = Math.floor(token1Output * 0.995 * Math.pow(10, pairData.token1Decimals)) / Math.pow(10, pairData.token1Decimals)
+
+    return {
+        token0Reserve,
+        token1Reserve,
+        token0Input,
+        token1Output,
+        token0Expect,
+        token1Expect,
+        token0Price: token0SwapPrice,
+        token1Price: token1SwapPrice,
+        impactRate,
+        token1MinOut
+    }
+}
+
+export const swapPreviewPrice = async (tokenA, tokenB) => {
+    const quotePrice = await swapQuotePrice(tokenA, tokenB)
+
+    if (!quotePrice) {
+        return false
+    }
+
+    return {
+        amount: quotePrice.token1Output,
+        tokenPriceA: quotePrice.token1Price,
+        tokenPriceB: quotePrice.token0Price,
+        impactRate: quotePrice.impactRate,
+        minimumReceived: quotePrice.token1MinOut
+    }
+}
+
+export const swapRequestTx = async (tokenA, tokenB) => {
+    const routerContract = new etherWeb3.eth.Contract(CONTRACT_ABI.ROUTER, CONTRACT_ADDRESS.ROUTER)
+    const quotePrice = await swapQuotePrice(tokenA, tokenB)
+
+    await metaMaskSendTx({
+        from: await getMetaMaskMyAccount(),
+        to: CONTRACT_ADDRESS.ROUTER,
+        data: routerContract.methods.swapExactTokensForTokens(
+            tokenA.amount * Math.pow(10, tokenA.decimals),
+            quotePrice.token1MinOut * Math.pow(10, tokenB.decimals),
+            [
+                tokenA.tokenAddress,
+                tokenB.tokenAddress
+            ],
+            accountLocalStorage.getMyAccountAddress(),
+            Math.floor((+new Date()) / 1000) + 3600
+        ).encodeABI(),
+        value: 0x0
+    })
+}
+// #endregion

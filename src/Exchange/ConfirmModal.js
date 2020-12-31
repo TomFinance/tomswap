@@ -16,8 +16,10 @@ const ConfirmModal = ({ aToken, bToken, calcData, confirmFunc }) => {
                     </div>
                     <dl className="output">
                         <dt>Prices and pool share</dt>
-                        <dd className="ico ico02">{Number(aToken.amount).toPrecision(12)}</dd>
-                        <dd className="ico ico01">{Number(bToken.amount).toPrecision(12)}</dd>
+                        {/* <dd className="ico ico01">{Number(bToken.amount).toPrecision(12)}</dd> */}
+                        {/* <dd className="ico ico02">{Number(aToken.amount).toPrecision(12)}</dd> */}
+                        <dd className="ico">{Number(bToken.amount).toPrecision(12)}</dd>
+                        <dd className="ico">{Number(aToken.amount).toPrecision(12)}</dd>
                         <dt>{`${UpperTokenSymbolA} per ${UpperTokenSymbolB} `}</dt>
                         <dd>{`1 ${UpperTokenSymbolB} = ${Number(calcData.left).toPrecision(12)} ${UpperTokenSymbolA}`}</dd>
                         <dt></dt>

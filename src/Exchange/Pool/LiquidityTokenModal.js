@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import useInput from 'utils/hook/useInput'
 import { PRESET_TOKEN } from 'config'
-import { accountLocalStorage, conventDecimal } from 'utils/utils'
+import { accountLocalStorage, convertDecimal } from 'utils/utils'
 import { getTokenBalance } from 'utils/web3Utils'
 
 const TokenItem = styled.article`
@@ -77,7 +77,7 @@ const LiquidityTokenModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
                                                 <TokenItem key={idx} onClick={() => onClickToken(token)}>
                                                     <dt className="not-found">{token.symbol}</dt>
                                                     {token.balance ? (
-                                                        <dd className="stv_value">{conventDecimal(token.balance, token.decimals)}</dd>
+                                                        <dd className="stv_value">{convertDecimal(token.balance, token.decimals)}</dd>
                                                     ) : (
                                                             <dd className="stv_value">{0}</dd>
                                                         )}
@@ -91,7 +91,7 @@ const LiquidityTokenModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
                                                 return (
                                                     <TokenItem key={idx} onClick={() => onClickToken(tempToken)}>
                                                         <dt className="not-found">{tempToken.symbol}</dt>
-                                                        <dd className="stv_value">{conventDecimal(tempToken.balance, tempToken.decimals)}</dd>
+                                                        <dd className="stv_value">{convertDecimal(tempToken.balance, tempToken.decimals)}</dd>
                                                     </TokenItem>
                                                 )
                                             })}

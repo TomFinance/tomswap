@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 import { myPositionCheck } from 'utils/web3Utils'
 import LiquidityTokenModal from './LiquidityTokenModal'
-import { convertDecimal, positionLocalStorage } from 'utils/utils'
+import { positionLocalStorage } from 'utils/utils'
 
 const NotFoundBox = styled.div`
     display: flex;
@@ -104,11 +104,11 @@ const ImportPool = ({ history }) => {
                                                 {/* <span className="icon02"><img src="/images/ico/ico_eth02.png" alt="" /></span> */}
                                                 {` ${addLiquidityInputA.symbol}/${addLiquidityInputB.symbol}`}
                                             </dt>
-                                            <dd className="bold">{convertDecimal(pairData.lpToken, pairData.pairDecimals)}</dd>
+                                            <dd className="bold">{pairData.lpTokenView.toPrecision(12)}</dd>
                                             <dt>{addLiquidityInputA.symbol}</dt>
-                                            <dd>{convertDecimal(pairData.token0Value, pairData.token0Decimals, pairData.persent)}</dd>
+                                            <dd>{pairData.token0ViewValue.toPrecision(12)}</dd>
                                             <dt>{addLiquidityInputB.symbol}</dt>
-                                            <dd>{convertDecimal(pairData.token1Value, pairData.token1Decimals, pairData.persent)}</dd>
+                                            <dd>{pairData.token1ViewValue.toPrecision(12)}</dd>
                                         </dl>
                                     </div>
                                     <NotFoundBox className='found'>

@@ -32,10 +32,6 @@ export const positionLocalStorage = {
     }
 }
 
-export const conventDecimal = (accountBalance, decimals) => {
-    return (accountBalance / Math.pow(10, decimals)).toFixed(decimals)
-}
-
 export const convertDecimal = (value, decimals, persent) => {
     return persent
         ? Number(value * Math.pow(0.1, decimals) * persent).toPrecision(12)
