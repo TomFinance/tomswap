@@ -1,7 +1,24 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { getTotalSupply } from 'utils/web3Utils'
 
 const Home = () => {
+    const [balanceObj, setBalanceObj] = useState({
+        myTomBalance: 0,
+        totalSupply: 0
+    })
+
+    useEffect(() => {
+        getTotalSupply()
+            .then(res => {
+                setBalanceObj({
+                    ...balanceObj,
+                    totalSupply: res
+                })
+            })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
     return (
         <div>
             <div className="main_top">
@@ -25,7 +42,7 @@ const Home = () => {
                     </div>
                     <div className="supply">
                         <p>Current Total supply</p>
-                        <strong>0.00000000</strong>
+                        <strong>{typeof balanceObj.totalSupply === 'number' ? Number(balanceObj.totalSupply) > 0 ? Number(balanceObj.totalSupply).toPrecision(12) : (0).toPrecision(12) : '-'}</strong>
                         <div className="pend">
                             <p>APY</p>
                             <span>10.00000000 TOM2</span>

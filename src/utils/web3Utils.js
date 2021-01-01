@@ -1,12 +1,38 @@
 import Web3 from "web3"
-import { CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
-import { accountLocalStorage } from "./utils"
+import axios from "axios"
+import { checkETH, filterdETH } from "./utils"
 import { getMetaMaskMyAccount, metaMaskSendTx } from "./metaMask"
+import { ETH_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI, AUTUMN_NAMELESS_STAR, TMTG_LBXC_ABI, TMTG_LBXC_POOL } from "config"
 
 const etherWeb3 = new Web3(window.ethereum)
 
+// #region - ETH
+export const getBalance = async account => {
+    return window.ethereum.request({ method: 'eth_getBalance', params: [account, 'latest'] })
+}
+// #endregion
+
+// #region - Home
+export const getTotalSupply = async () => {
+    const res = await etherWeb3.eth.getBlockNumber()
+
+    return Number((res - 11234809) * 0.0558)
+}
+// #endregion
+
 // #region - Account
 export const getTokenBalance = async (tokenAddress, account) => {
+    if (tokenAddress === ETH_ADDRESS) {
+        return {
+            name: 'ETH',
+            symbol: 'ETH',
+            totalSupply: '',
+            decimals: 18,
+            balance: await getBalance(account),
+            tokenAddress: 'ETHER'
+        }
+    }
+
     const contractObject = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, tokenAddress)
 
     return {
@@ -18,6 +44,93 @@ export const getTokenBalance = async (tokenAddress, account) => {
         tokenAddress,
     }
 }
+// #endregion
+
+// #region - Tom2
+const callUniswap = query => {
+    return new Promise((resolve) => {
+        axios({
+            url: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2',
+            method: 'post',
+            data: {
+                query,
+            },
+        }).then((res) => {
+            resolve(res.data.data)
+        })
+    })
+}
+
+const readContract = (poolSymbol, field) => {
+    if (poolSymbol === 'TMTG_LBXC') {
+        const TMTG_LBXC_web3 = new Web3(AUTUMN_NAMELESS_STAR)
+        const TMTG_LBXC = new TMTG_LBXC_web3.eth.Contract(TMTG_LBXC_ABI, TMTG_LBXC_POOL)
+
+        console.log(TMTG_LBXC.methods.totalStaked().call())
+
+        switch (field) {
+            case 'totalStaked':
+                return TMTG_LBXC.methods.totalStaked().call() // lp total stkae amount
+            case 'rewardPerBlock':
+                return TMTG_LBXC.methods.rewardPerBlock().call()
+            default:
+                return false
+        }
+    }
+}
+
+export const calculateAPY = async poolSymbol => {
+    const COFPairData = (
+        await callUniswap(`{
+                pair (id:"0x6b16a8e3697e9690cf17a9f5203e0ce1350b4ca6"){
+                    id
+                    reserve0
+                    reserve1
+                }
+            }`)
+    ).pair //tom/eth reserve0 -> ETH  reserve1 -> TOM
+    const LPPairData = (
+        await callUniswap(`{
+                pair (id:"0x096df24df15b00891b647b6ddbe3fc825841d090"){
+                    id
+                    totalSupply
+                    reserveETH
+                    token1Price
+                }
+            }`)
+    ).pair //tmgeth
+    const LP1PairData = (
+        await callUniswap(`{
+                pair (id:"0x25ea93b7432fed90758828691897901a30b4c7d9"){
+                    id
+                    totalSupply
+                    reserve0
+                }
+            }`)
+    ).pair //tmtg/lbxc
+
+    const tom_price = COFPairData.reserve0 / COFPairData.reserve1
+
+    //console.log("ETH Amount" + COFPairData.reserve0);
+    //console.log("TOM Amount" + COFPairData.reserve1);
+    //console.log("TOM Price " + COFPairData.reserve0 / COFPairData.reserve1);
+    //console.log("tmtg TOtal Supply " + LPPairData.totalSupply);
+    //console.log("tmtg reserve eth " + LPPairData.reserveETH);
+    //console.log("tmtg/lbxc TOtal Supply " + LP1PairData.totalSupply); //tmtg/lbxc lp total
+    //console.log("tmtg/lbxc reserve0 " + LP1PairData.reserve0); // tmtg/lbxc tmtg amount
+    //console.log("token1price " + LPPairData.token1Price); // tmtg price
+
+    if ((await readContract(poolSymbol, 'totalStaked')) === 0) {
+        return 'Infinity'
+    }
+
+    const PPB =
+        (tom_price * (await readContract(poolSymbol, 'rewardPerBlock'))) /
+        (await readContract(poolSymbol, 'totalStaked')) /
+        (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
+    return (((PPB * 86400 * 365) / 13) * 100)
+}
+
 // #endregion
 
 // #region - Pool
@@ -48,27 +161,27 @@ export const createPreviewPrice = async (addLiquidityInputA, addLiquidityInputB)
 
 export const getCheckPairContract = async (tokenAddressA, tokenAddressB) => {
     const factoryContract = new etherWeb3.eth.Contract(CONTRACT_ABI.FACTORY, CONTRACT_ADDRESS.FACTORY)
-    const pairAddress = await factoryContract.methods.getPair(tokenAddressA, tokenAddressB).call()
+    const pairAddress = await factoryContract.methods.getPair(checkETH(tokenAddressA), checkETH(tokenAddressB)).call()
 
     return Number(pairAddress) !== 0
 }
 
 export const createCheckApprove = async (tokenAddress, amount, decimals) => {
-    const token0Contract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, tokenAddress)
+    const token0Contract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, checkETH(tokenAddress))
 
-    const tokenAllowance = await token0Contract.methods.allowance(accountLocalStorage.getMyAccountAddress(), CONTRACT_ADDRESS.ROUTER).call()
+    const tokenAllowance = await token0Contract.methods.allowance(await getMetaMaskMyAccount(), CONTRACT_ADDRESS.ROUTER).call()
 
-    return tokenAllowance >= Number(amount) * Math.pow(10, decimals)
+    return tokenAddress === ETH_ADDRESS ? true : tokenAllowance >= Number(amount) * Math.pow(10, decimals)
 }
 
 export const createConfirmApprove = async (tokenAddress, amount, decimals) => {
     const token0Contract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, tokenAddress)
 
-    const tokenAllowance = await token0Contract.methods.allowance(accountLocalStorage.getMyAccountAddress(), CONTRACT_ADDRESS.ROUTER).call()
+    const tokenAllowance = await token0Contract.methods.allowance(await getMetaMaskMyAccount(), CONTRACT_ADDRESS.ROUTER).call()
 
     if (Number(tokenAllowance) < Number(amount) * Math.pow(10, decimals)) {
         await metaMaskSendTx({
-            from: accountLocalStorage.getMyAccountAddress(),
+            from: await getMetaMaskMyAccount(),
             to: tokenAddress,
             data: token0Contract.methods.approve(
                 CONTRACT_ADDRESS.ROUTER,
@@ -81,26 +194,47 @@ export const createConfirmApprove = async (tokenAddress, amount, decimals) => {
 export const createImportCreate = async (aToken, bToken) => {
     const routerContract = new etherWeb3.eth.Contract(CONTRACT_ABI.ROUTER, CONTRACT_ADDRESS.ROUTER)
 
-    etherWeb3.utils.toChecksumAddress(accountLocalStorage.getMyAccountAddress())
+    etherWeb3.utils.toChecksumAddress(await getMetaMaskMyAccount())
     etherWeb3.utils.toChecksumAddress(CONTRACT_ADDRESS.ROUTER)
-    etherWeb3.utils.toChecksumAddress(aToken.tokenAddress)
-    etherWeb3.utils.toChecksumAddress(bToken.tokenAddress)
+    etherWeb3.utils.toChecksumAddress(checkETH(aToken.tokenAddress))
+    etherWeb3.utils.toChecksumAddress(checkETH(bToken.tokenAddress))
 
-    await metaMaskSendTx({
-        from: accountLocalStorage.getMyAccountAddress(),
-        to: CONTRACT_ADDRESS.ROUTER,
-        data: routerContract.methods.addLiquidity(
-            aToken.tokenAddress,
-            bToken.tokenAddress,
-            Number(aToken.amount) * Math.pow(10, aToken.decimals),
-            Number(bToken.amount) * Math.pow(10, bToken.decimals),
-            Number(aToken.amount) * Math.pow(10, aToken.decimals),
-            Number(bToken.amount) * Math.pow(10, bToken.decimals),
-            accountLocalStorage.getMyAccountAddress(),
-            Math.floor((+new Date()) / 1000) + 3600
-        ).encodeABI(),
-        value: 0x0
-    })
+    const ethIdx = filterdETH(aToken.tokenAddress, bToken.tokenAddress)
+
+    if (ethIdx >= 0) {
+        const token = [aToken, bToken][1 - ethIdx]
+        const ethToken = [aToken, bToken][ethIdx]
+
+        await metaMaskSendTx({
+            from: await getMetaMaskMyAccount(),
+            to: CONTRACT_ADDRESS.ROUTER,
+            data: routerContract.methods.addLiquidityETH(
+                token.tokenAddress,
+                Math.floor(Number(token.amount) * Math.pow(10, token.decimals)),
+                Math.floor(Number(token.amount) * 0.995 * Math.pow(10, aToken.decimals)),
+                Math.floor(Number(ethToken.amount) * 0.995 * Math.pow(10, bToken.decimals)),
+                await getMetaMaskMyAccount(),
+                Math.floor((+new Date()) / 1000) + 3600
+            ).encodeABI(),
+            value: Math.floor(Number(ethToken.amount) * Math.pow(10, ethToken.decimals))
+        })
+    } else {
+        await metaMaskSendTx({
+            from: await getMetaMaskMyAccount(),
+            to: CONTRACT_ADDRESS.ROUTER,
+            data: routerContract.methods.addLiquidity(
+                aToken.tokenAddress,
+                bToken.tokenAddress,
+                Math.floor(Number(aToken.amount) * Math.pow(10, aToken.decimals)),
+                Math.floor(Number(bToken.amount) * Math.pow(10, bToken.decimals)),
+                Math.floor(Number(aToken.amount) * 0.995 * Math.pow(10, aToken.decimals)),
+                Math.floor(Number(bToken.amount) * 0.995 * Math.pow(10, bToken.decimals)),
+                await getMetaMaskMyAccount(),
+                Math.floor((+new Date()) / 1000) + 3600
+            ).encodeABI(),
+            value: 0x0
+        })
+    }
 }
 
 export const addLiquidityGatherPairData = async (tokenAddressA, tokenAddressB) => {
@@ -131,7 +265,7 @@ export const addLiquidityGatherPairData = async (tokenAddressA, tokenAddressB) =
     const pairSupply = await pairContract.methods.totalSupply().call()
     const pairDecimals = await pairContract.methods.decimals().call()
 
-    const pairContractBalance = await pairContract.methods.balanceOf(accountLocalStorage.getMyAccountAddress()).call()
+    const pairContractBalance = await pairContract.methods.balanceOf(await getMetaMaskMyAccount()).call()
 
     return {
         token0Symbol,
@@ -147,7 +281,7 @@ export const addLiquidityGatherPairData = async (tokenAddressA, tokenAddressB) =
 }
 
 export const addLiquidityPreview = async (aToken, bToken) => {
-    const pairData = await addLiquidityGatherPairData(aToken.tokenAddress, bToken.tokenAddress)
+    const pairData = await addLiquidityGatherPairData(checkETH(aToken.tokenAddress), checkETH(bToken.tokenAddress))
 
     if (!pairData) {
         return false
@@ -186,7 +320,7 @@ export const addLiquidityPreview = async (aToken, bToken) => {
 
 // #region - Remove Liquidity
 export const myPositionCheck = async (tokenAddressA, tokenAddressB) => {
-    const pairData = await addLiquidityGatherPairData(tokenAddressA, tokenAddressB)
+    const pairData = await addLiquidityGatherPairData(checkETH(tokenAddressA), checkETH(tokenAddressB))
 
     if (!pairData) {
         return false
@@ -208,34 +342,32 @@ export const myPositionCheck = async (tokenAddressA, tokenAddressB) => {
         token0Symbol: pairData.token0Symbol,
         token0Value,
         token0ViewValue,
-        token0Decimals: pairData.token0Decimals,
-        token1Symbol: pairData.token1Symbol,
+        token1Symbol: tokenAddressB === ETH_ADDRESS ? 'ETH' : pairData.token1Symbol,
         token1Value,
         token1ViewValue,
-        token1Decimals: pairData.token1Decimals,
     }
 }
 
 export const checkRemoveLiquidityApprove = async (tokenAddressA, tokenAddressB, myLpToken) => {
     const factoryContract = new etherWeb3.eth.Contract(CONTRACT_ABI.FACTORY, CONTRACT_ADDRESS.FACTORY)
-    const pairAddress = await factoryContract.methods.getPair(tokenAddressA, tokenAddressB).call()
+    const pairAddress = await factoryContract.methods.getPair(checkETH(tokenAddressA), checkETH(tokenAddressB)).call()
     const pairContract = new etherWeb3.eth.Contract(CONTRACT_ABI.PAIR, pairAddress)
 
-    const pairTokenAllowance = await pairContract.methods.allowance(accountLocalStorage.getMyAccountAddress(), CONTRACT_ADDRESS.ROUTER).call()
+    const pairTokenAllowance = await pairContract.methods.allowance(await getMetaMaskMyAccount(), CONTRACT_ADDRESS.ROUTER).call()
 
     return pairTokenAllowance >= myLpToken
 }
 
 export const requestRemoveLiquidityApprove = async (tokenAddressA, tokenAddressB, myLpToken) => {
     const factoryContract = new etherWeb3.eth.Contract(CONTRACT_ABI.FACTORY, CONTRACT_ADDRESS.FACTORY)
-    const pairAddress = await factoryContract.methods.getPair(tokenAddressA, tokenAddressB).call()
+    const pairAddress = await factoryContract.methods.getPair(checkETH(tokenAddressA), checkETH(tokenAddressB)).call()
     const pairContract = new etherWeb3.eth.Contract(CONTRACT_ABI.PAIR, pairAddress)
 
-    const pairTokenAllowance = await pairContract.methods.allowance(accountLocalStorage.getMyAccountAddress(), CONTRACT_ADDRESS.ROUTER).call()
+    const pairTokenAllowance = await pairContract.methods.allowance(await getMetaMaskMyAccount(), CONTRACT_ADDRESS.ROUTER).call()
 
     if (pairTokenAllowance < myLpToken) {
         await metaMaskSendTx({
-            from: accountLocalStorage.getMyAccountAddress(),
+            from: await getMetaMaskMyAccount(),
             to: pairAddress,
             data: pairContract.methods.approve(
                 CONTRACT_ADDRESS.ROUTER,
@@ -246,23 +378,43 @@ export const requestRemoveLiquidityApprove = async (tokenAddressA, tokenAddressB
 }
 
 export const requestRemoveLiquidity = async (myPosition, removePersent) => {
-    try {
-        const routerContract = new etherWeb3.eth.Contract(CONTRACT_ABI.ROUTER, CONTRACT_ADDRESS.ROUTER)
+    const routerContract = new etherWeb3.eth.Contract(CONTRACT_ABI.ROUTER, CONTRACT_ADDRESS.ROUTER)
 
-        await metaMaskSendTx({
-            from: accountLocalStorage.getMyAccountAddress(),
-            to: CONTRACT_ADDRESS.ROUTER,
-            data: routerContract.methods.removeLiquidity(
-                myPosition.tokenAddressA,
-                myPosition.tokenAddressB,
-                Math.floor(myPosition.lpToken * removePersent),
-                Math.floor(Number(myPosition.token0Value) * removePersent * 0.995),
-                Math.floor(Number(myPosition.token1Value) * removePersent * 0.995),
-                accountLocalStorage.getMyAccountAddress(),
-                Math.floor((+new Date()) / 1000) + 3600
-            ).encodeABI(),
-            value: 0x0
-        })
+    try {
+        if ([myPosition.tokenAddressA, myPosition.tokenAddressB].includes(ETH_ADDRESS)) {
+            const token = myPosition.tokenAddressA === ETH_ADDRESS ? 'B' : 'A'
+            const tokenNumber = myPosition.tokenAddressA === ETH_ADDRESS ? '1' : '0'
+            const ethTokenNumber = myPosition.tokenAddressA === ETH_ADDRESS ? '0' : '1'
+
+            await metaMaskSendTx({
+                from: await getMetaMaskMyAccount(),
+                to: CONTRACT_ADDRESS.ROUTER,
+                data: routerContract.methods.removeLiquidityETH(
+                    myPosition[`tokenAddress${token}`],
+                    Math.floor(myPosition.lpToken * removePersent),
+                    Math.floor(Number(myPosition[`token${tokenNumber}Value`]) * removePersent * 0.995),
+                    Math.floor(Number(myPosition[`token${ethTokenNumber}Value`]) * removePersent * 0.995),
+                    await getMetaMaskMyAccount(),
+                    Math.floor((+new Date()) / 1000) + 3600
+                ).encodeABI(),
+                value: 0x0
+            })
+        } else {
+            await metaMaskSendTx({
+                from: await getMetaMaskMyAccount(),
+                to: CONTRACT_ADDRESS.ROUTER,
+                data: routerContract.methods.removeLiquidity(
+                    myPosition.tokenAddressA,
+                    myPosition.tokenAddressB,
+                    Math.floor(myPosition.lpToken * removePersent),
+                    Math.floor(Number(myPosition.token0Value) * removePersent * 0.995),
+                    Math.floor(Number(myPosition.token1Value) * removePersent * 0.995),
+                    await getMetaMaskMyAccount(),
+                    Math.floor((+new Date()) / 1000) + 3600
+                ).encodeABI(),
+                value: 0x0
+            })
+        }
     } catch (error) {
         console.log(error)
     }
@@ -305,7 +457,7 @@ export const swapGatherPairData = async (tokenAddressA, tokenAddressB) => {
 }
 
 export const swapQuotePrice = async (tokenA, tokenB) => {
-    const pairData = await swapGatherPairData(tokenA.tokenAddress, tokenB.tokenAddress)
+    const pairData = await swapGatherPairData(checkETH(tokenA.tokenAddress), checkETH(tokenB.tokenAddress))
 
     if (!pairData) {
         return false
@@ -361,20 +513,63 @@ export const swapRequestTx = async (tokenA, tokenB) => {
     const routerContract = new etherWeb3.eth.Contract(CONTRACT_ABI.ROUTER, CONTRACT_ADDRESS.ROUTER)
     const quotePrice = await swapQuotePrice(tokenA, tokenB)
 
-    await metaMaskSendTx({
-        from: await getMetaMaskMyAccount(),
-        to: CONTRACT_ADDRESS.ROUTER,
-        data: routerContract.methods.swapExactTokensForTokens(
-            tokenA.amount * Math.pow(10, tokenA.decimals),
-            quotePrice.token1MinOut * Math.pow(10, tokenB.decimals),
-            [
-                tokenA.tokenAddress,
-                tokenB.tokenAddress
-            ],
-            accountLocalStorage.getMyAccountAddress(),
-            Math.floor((+new Date()) / 1000) + 3600
-        ).encodeABI(),
-        value: 0x0
-    })
+    const ethIdx = filterdETH(tokenA.tokenAddress, tokenB.tokenAddress)
+
+    if (ethIdx >= 0) {
+        const token = [tokenA, tokenB][1 - ethIdx]
+        const ethToken = [tokenA, tokenB][ethIdx]
+
+        if (ethIdx === 0) {
+            // ETH -> Token
+            await metaMaskSendTx({
+                from: await getMetaMaskMyAccount(),
+                to: CONTRACT_ADDRESS.ROUTER,
+                data: routerContract.methods.swapExactETHForTokens(
+                    Math.floor(quotePrice.token1MinOut * Math.pow(10, token.decimals)),
+                    [
+                        checkETH(ethToken.tokenAddress),
+                        token.tokenAddress
+                    ],
+                    await getMetaMaskMyAccount(),
+                    Math.floor((+new Date()) / 1000) + 3600
+                ).encodeABI(),
+                value: Math.floor(ethToken.amount * Math.pow(10, ethToken.decimals))
+            })
+        } else if (ethIdx === 1) {
+            // Token -> ETH
+            await metaMaskSendTx({
+                from: await getMetaMaskMyAccount(),
+                to: CONTRACT_ADDRESS.ROUTER,
+                data: routerContract.methods.swapExactTokensForETH(
+                    Math.floor(token.amount * Math.pow(10, token.decimals)),
+                    Math.floor(quotePrice.token1MinOut * Math.pow(10, ethToken.decimals)),
+                    [
+                        token.tokenAddress,
+                        checkETH(ethToken.tokenAddress)
+                    ],
+                    await getMetaMaskMyAccount(),
+                    Math.floor((+new Date()) / 1000) + 3600
+                ).encodeABI(),
+                value: 0x0
+            })
+        }
+    } else {
+        // Token -> Token
+        await metaMaskSendTx({
+            from: await getMetaMaskMyAccount(),
+            to: CONTRACT_ADDRESS.ROUTER,
+            data: routerContract.methods.swapExactTokensForTokens(
+                Math.floor(tokenA.amount * Math.pow(10, tokenA.decimals)),
+                Math.floor(quotePrice.token1MinOut * Math.pow(10, tokenB.decimals)),
+                [
+                    tokenA.tokenAddress,
+                    tokenB.tokenAddress
+                ],
+                await getMetaMaskMyAccount(),
+                Math.floor((+new Date()) / 1000) + 3600
+            ).encodeABI(),
+            value: 0x0
+        })
+    }
 }
 // #endregion

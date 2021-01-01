@@ -2,8 +2,9 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import useInput from 'utils/hook/useInput'
 import { PRESET_TOKEN } from 'config'
-import { accountLocalStorage, convertDecimal } from 'utils/utils'
+import { convertDecimal } from 'utils/utils'
 import { getTokenBalance } from 'utils/web3Utils'
+import { getMetaMaskMyAccount } from 'utils/metaMask'
 
 const TokenItem = styled.article`
     cursor: pointer;
@@ -19,8 +20,8 @@ const LiquidityTokenModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
         async () => {
             setTokenList(
                 await Promise.all(Object.keys(PRESET_TOKEN)
-                    .map(key => {
-                        return getTokenBalance(PRESET_TOKEN[key], accountLocalStorage.getMyAccountAddress())
+                    .map(async key => {
+                        return getTokenBalance(PRESET_TOKEN[key], await getMetaMaskMyAccount())
                     })
                 )
             )
@@ -36,7 +37,7 @@ const LiquidityTokenModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
 
         if (tokenAddress) {
             try {
-                const tokenInfo = await getTokenBalance(tokenAddress, accountLocalStorage.getMyAccountAddress())
+                const tokenInfo = await getTokenBalance(tokenAddress, await getMetaMaskMyAccount())
                 setTempTokenList([tokenInfo])
             } catch (err) {
                 setTempTokenList([])

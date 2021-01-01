@@ -1,5 +1,4 @@
 import Web3 from "web3"
-import { accountLocalStorage } from "./utils"
 
 const etherWeb3 = new Web3(window.ethereum)
 
@@ -8,16 +7,6 @@ export const metaMaskIsInstalled = () => Boolean(window.ethereum && window.ether
 export const getMetaMaskMyAccount = async () => {
     const response = await window.ethereum.request({ method: 'eth_requestAccounts' })
     return response[0]
-}
-
-export const metaMaskGetAccount = async () => {
-    return accountLocalStorage.getMyAccountAddress()
-}
-
-export const metaMaskGetBalance = async (account) => {
-    const response = await window.ethereum.request({ method: 'eth_getBalance', params: [account, 'latest'] })
-    document.querySelector("#balancePanel>.value").innerHTML = `${(Number(response) / 1e18).toFixed(4)} ETH`
-    return Number(response) / 1e18
 }
 
 export const metaMaskGetBlock = async () => {

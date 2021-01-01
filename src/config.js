@@ -4,19 +4,28 @@ export const AUTUMN_NAMELESS_STAR = 'https://autumn-nameless-star.quiknode.pro/6
 export const COF_ADDRESS = '0xF7970499814654CD13Cb7B6E7634A12a7A8A9ABc'
 export const TMTG_LBXC_POOL = '0x2A70605e53a2a596E04df8A775E0e8C9fEd62F9a'
 
+export const ETH_ADDRESS = 'ETHER'
+export const WETH_ADDRESS = '0x0a180A76e4466bF68A7F86fB029BEd3cCcFaAac5'
+
+export const MINING_POOLS = {
+    'NOAH-DAV': '0x805CF5F31A84769969150F3373aAA01567a2b134',
+    'HANK-DAV': '0x44C65Cb2e8ab91824ac45355fD31B63046CFf929',
+    'DAV-HUNT': '0x258C20912caBCd116fC429f184E1ec957eeF2f0E',
+}
+
 export const PRESET_TOKEN = {
+    "ETH": ETH_ADDRESS,
     "STV": "0xA3686f63b2E16aD3948f9a1DA329de1Ae161D865",
     "DAV": "0xF0cA52FeFCce1153A033d13E5387CD5b98E900C1",
     "NOAH": "0x153D8c4c4105d120B35085e24068888116bC2732",
     "HUNT": "0xFE54F701299c06131B287Fa44770634A692d0CEd",
     "HANK": "0xD3683bDbFD2C1e81d53c899A2dC47D2c788c7B2d",
-    "TOM2": "0xbf7920D000A06C06c3b63902f0BbA33126C2e844"
+    "TOM2": "0x8bF93BdBBB7D2d2F55a38297DEA0aD4F3fa692FD"
 }
 
 export const CONTRACT_ADDRESS = {
     FACTORY: "0x50e1C0a3Ac35B8616092231be755AfC61B0DF0c3",
     ROUTER: "0x905383A8Ba9460A7b00f0F987361450B2367Fe79",
-    WETH: "0x0a180A76e4466bF68A7F86fB029BEd3cCcFaAac5"
 }
 
 export const CONTRACT_ABI = {
@@ -1704,113 +1713,21 @@ export const CONTRACT_ABI = {
         "type": "function"
     }],
     POOL: [{
-        "inputs": [{
-            "internalType": "address",
-            "name": "_rewardsDistribution",
-            "type": "address"
-        }, {
-            "internalType": "address",
-            "name": "_rewardsToken",
-            "type": "address"
-        }, {
-            "internalType": "address",
-            "name": "_stakingToken",
-            "type": "address"
-        }],
+        "constant": false,
+        "inputs": [],
+        "name": "claimAllReward",
+        "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
-        "type": "constructor"
+        "type": "function"
     }, {
-        "anonymous": false,
+        "constant": false,
         "inputs": [{
-            "indexed": false,
-            "internalType": "uint256",
-            "name": "reward",
-            "type": "uint256"
-        }],
-        "name": "RewardAdded",
-        "type": "event"
-    }, {
-        "anonymous": false,
-        "inputs": [{
-            "indexed": true,
-            "internalType": "address",
-            "name": "user",
-            "type": "address"
-        }, {
-            "indexed": false,
-            "internalType": "uint256",
-            "name": "reward",
-            "type": "uint256"
-        }],
-        "name": "RewardPaid",
-        "type": "event"
-    }, {
-        "anonymous": false,
-        "inputs": [{
-            "indexed": true,
-            "internalType": "address",
-            "name": "user",
-            "type": "address"
-        }, {
-            "indexed": false,
             "internalType": "uint256",
             "name": "amount",
             "type": "uint256"
         }],
-        "name": "Staked",
-        "type": "event"
-    }, {
-        "anonymous": false,
-        "inputs": [{
-            "indexed": true,
-            "internalType": "address",
-            "name": "user",
-            "type": "address"
-        }, {
-            "indexed": false,
-            "internalType": "uint256",
-            "name": "amount",
-            "type": "uint256"
-        }],
-        "name": "Withdrawn",
-        "type": "event"
-    }, {
-        "constant": true,
-        "inputs": [{
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-        }],
-        "name": "balanceOf",
-        "outputs": [{
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [{
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-        }],
-        "name": "earned",
-        "outputs": [{
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": false,
-        "inputs": [],
-        "name": "exit",
+        "name": "claimAndUnstake",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
@@ -1818,158 +1735,10 @@ export const CONTRACT_ABI = {
     }, {
         "constant": false,
         "inputs": [],
-        "name": "getReward",
+        "name": "emergencyExit",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [],
-        "name": "getRewardForDuration",
-        "outputs": [{
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [],
-        "name": "lastTimeRewardApplicable",
-        "outputs": [{
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [],
-        "name": "lastUpdateTime",
-        "outputs": [{
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": false,
-        "inputs": [{
-            "internalType": "uint256",
-            "name": "reward",
-            "type": "uint256"
-        }],
-        "name": "notifyRewardAmount",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [],
-        "name": "periodFinish",
-        "outputs": [{
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [],
-        "name": "rewardPerToken",
-        "outputs": [{
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [],
-        "name": "rewardPerTokenStored",
-        "outputs": [{
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [],
-        "name": "rewardRate",
-        "outputs": [{
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [{
-            "internalType": "address",
-            "name": "",
-            "type": "address"
-        }],
-        "name": "rewards",
-        "outputs": [{
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [],
-        "name": "rewardsDistribution",
-        "outputs": [{
-            "internalType": "address",
-            "name": "",
-            "type": "address"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [],
-        "name": "rewardsDuration",
-        "outputs": [{
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [],
-        "name": "rewardsToken",
-        "outputs": [{
-            "internalType": "contract IERC20",
-            "name": "",
-            "type": "address"
-        }],
-        "payable": false,
-        "stateMutability": "view",
         "type": "function"
     }, {
         "constant": false,
@@ -1984,49 +1753,54 @@ export const CONTRACT_ABI = {
         "stateMutability": "nonpayable",
         "type": "function"
     }, {
-        "constant": false,
         "inputs": [{
+            "internalType": "string",
+            "name": "_name",
+            "type": "string"
+        }, {
             "internalType": "uint256",
-            "name": "amount",
+            "name": "_poolStart",
             "type": "uint256"
         }, {
             "internalType": "uint256",
-            "name": "deadline",
+            "name": "_poolEnd",
             "type": "uint256"
         }, {
-            "internalType": "uint8",
-            "name": "v",
-            "type": "uint8"
+            "internalType": "uint256",
+            "name": "_rewardPerBlock",
+            "type": "uint256"
         }, {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
+            "internalType": "address",
+            "name": "_rewardToken",
+            "type": "address"
         }, {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
+            "internalType": "address",
+            "name": "_stakeToken",
+            "type": "address"
+        }, {
+            "internalType": "address",
+            "name": "_teamPool",
+            "type": "address"
         }],
-        "name": "stakeWithPermit",
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    }, {
+        "constant": false,
+        "inputs": [],
+        "name": "unstakeAll",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     }, {
         "constant": true,
-        "inputs": [],
-        "name": "stakingToken",
-        "outputs": [{
-            "internalType": "contract IERC20",
-            "name": "",
+        "inputs": [{
+            "internalType": "address",
+            "name": "host",
             "type": "address"
         }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    }, {
-        "constant": true,
-        "inputs": [],
-        "name": "totalSupply",
+        "name": "inquiryDeposit",
         "outputs": [{
             "internalType": "uint256",
             "name": "",
@@ -2039,10 +1813,10 @@ export const CONTRACT_ABI = {
         "constant": true,
         "inputs": [{
             "internalType": "address",
-            "name": "",
+            "name": "host",
             "type": "address"
         }],
-        "name": "userRewardPerTokenPaid",
+        "name": "inquiryExpectedReward",
         "outputs": [{
             "internalType": "uint256",
             "name": "",
@@ -2052,16 +1826,104 @@ export const CONTRACT_ABI = {
         "stateMutability": "view",
         "type": "function"
     }, {
-        "constant": false,
+        "constant": true,
         "inputs": [{
+            "internalType": "address",
+            "name": "host",
+            "type": "address"
+        }],
+        "name": "inquiryRemainReward",
+        "outputs": [{
             "internalType": "uint256",
-            "name": "amount",
+            "name": "",
             "type": "uint256"
         }],
-        "name": "withdraw",
-        "outputs": [],
         "payable": false,
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "name",
+        "outputs": [{
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "poolEnd",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "poolStart",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "rewardPerBlock",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "rewardToken",
+        "outputs": [{
+            "internalType": "contract IERC20",
+            "name": "",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "stakeToken",
+        "outputs": [{
+            "internalType": "contract IERC20",
+            "name": "",
+            "type": "address"
+        }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }, {
+        "constant": true,
+        "inputs": [],
+        "name": "TOTAL_STAKED",
+        "outputs": [{
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+        }],
+        "payable": false,
+        "stateMutability": "view",
         "type": "function"
     }]
 }

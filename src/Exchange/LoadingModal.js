@@ -2,7 +2,7 @@ import React from 'react'
 
 const LoadingModal = ({ init, initialFunc, showModal, setShowModal }) => {
 
-    return showModal.success ? (
+    return showModal?.success ? (
         <div id="loading_pop" className="popup_wrap submit_pop" style={{ display: 'block' }}>
             <div className="popup">
                 <div className="pop_con">

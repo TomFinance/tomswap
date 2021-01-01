@@ -1,7 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { calculateAPY } from 'utils/web3Utils'
 
 const Tom2 = () => {
+    useEffect(() => {
+        calculateAPY()
+            .then(res => {
+                console.log(res)
+            })
+    }, [])
+
     return (
         <div>
             <div className="main_top">

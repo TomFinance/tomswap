@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
+
 import { positionLocalStorage } from 'utils/utils'
 import { myPositionCheck } from 'utils/web3Utils'
 
@@ -94,15 +95,15 @@ const Pool = () => {
                                                         {position.show && (
                                                             <dl>
                                                                 <dt>{`Pooled ${position.token0Symbol}`}</dt>
-                                                                {/* <dd className="eth01">{convertDecimal(position.token0Value, position.token0Decimals)}</dd> */}
+                                                                {/* <dd className="eth01">{convertDecimal(position.token0ViewValue.toPrecision(12)}</dd> */}
                                                                 <dd>{position.token0ViewValue.toPrecision(12)}</dd>
                                                                 <dt>{`Pooled ${position.token1Symbol}`}</dt>
-                                                                {/* <dd className="eth02">{convertDecimal(position.token1Value, position.token1Decimals)}</dd> */}
+                                                                {/* <dd className="eth02">{position.token1ViewValue.toPrecision(12)}</dd> */}
                                                                 <dd>{position.token1ViewValue.toPrecision(12)}</dd>
                                                                 <dt>Your pool tokens:</dt>
                                                                 <dd>{position.lpTokenView.toPrecision(12)}</dd>
                                                                 <dt>Your pool share:</dt>
-                                                                <dd>{position.persent.toPrecision(12)}%</dd>
+                                                                <dd>{(position.persent * 100).toPrecision(12)}%</dd>
                                                             </dl>
                                                         )}
                                                     </div>
@@ -124,6 +125,7 @@ const Pool = () => {
                     </div>
                     <p className="join_txt">Don’t see a pool you joined? <Link to={'/exchange/import-pool'}><em>Import it.</em></Link></p>
                 </div>
+
             </Wrapper>
         </div>
     )

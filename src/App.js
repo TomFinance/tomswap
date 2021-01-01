@@ -5,17 +5,12 @@ import Header from './Header'
 import SettingModal from 'Header/Setting'
 import Body from 'Body'
 import Footer from 'Footer/Footer'
-import { accountLocalStorage } from 'utils/utils'
+import { getBalance } from 'utils/web3Utils'
 
 
 function App({ history }) {
   const [currentAccount, setCurrentAccount] = useState(null)
   const [currentBalance, setCurrentBalance] = useState(0)
-
-  const getBalance = async account => {
-    const response = await window.ethereum.request({ method: 'eth_getBalance', params: [account, 'latest'] })
-    setCurrentBalance(Number(response) / 1e18)
-  }
 
   const handleConnectMetaMask = async () => {
     try {
@@ -25,14 +20,13 @@ function App({ history }) {
           if (res.length) {
             const tempCurrentAccount = res[0]
             setCurrentAccount(tempCurrentAccount)
-            accountLocalStorage.setMyAccountAddress(tempCurrentAccount)
 
             return tempCurrentAccount
           }
         })
-        .then(tempAccount => {
+        .then(async tempAccount => {
           if (tempAccount) {
-            getBalance(tempAccount)
+            setCurrentBalance(await getBalance(tempAccount))
           }
         })
         .catch((err) => {
@@ -55,7 +49,6 @@ function App({ history }) {
     } else {
       setCurrentAccount(null)
       setCurrentBalance(0)
-      accountLocalStorage.removeMyAccountAddress()
       console.log('Please connect to MetaMask.')
     }
   }

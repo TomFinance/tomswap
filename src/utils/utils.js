@@ -1,16 +1,4 @@
-export const accountLocalStorage = {
-    getMyAccountAddress: () => {
-        return localStorage.getItem('accountAddress')
-    },
-
-    setMyAccountAddress: value => {
-        return localStorage.setItem('accountAddress', value)
-    },
-
-    removeMyAccountAddress: () => {
-        return localStorage.removeItem('accountAddress')
-    }
-}
+import { ETH_ADDRESS, WETH_ADDRESS } from "config"
 
 export const positionLocalStorage = {
     getMyPositionList: () => {
@@ -36,4 +24,12 @@ export const convertDecimal = (value, decimals, persent) => {
     return persent
         ? Number(value * Math.pow(0.1, decimals) * persent).toPrecision(12)
         : Number(value * Math.pow(0.1, decimals)).toPrecision(12)
+}
+
+export const checkETH = address => {
+    return address === ETH_ADDRESS ? WETH_ADDRESS : address
+}
+
+export const filterdETH = (tokenAddressA, tokenAddressB) => {
+    return [tokenAddressA, tokenAddressB].indexOf(ETH_ADDRESS)
 }

@@ -23,8 +23,21 @@ const WarningText = styled.p`
 const RemoveLiquidity = ({ history, location }) => {
     const [removeValue, setRemoveValue] = useState('')
     const [myPosition, setMyPosition] = useState(null)
-    const [showModal, setShowModal] = useState(false)
+    const [showModal, setShowModal] = useState({
+        loading: false,
+        success: false
+    })
     const [abledApprove, setAbledApprove] = useState(false)
+
+    const initialFunc = () => {
+        setRemoveValue('')
+        setMyPosition(null)
+        setShowModal({
+            loading: false,
+            success: false
+        })
+        setAbledApprove(false)
+    }
 
     const onChangeRemoveValue = e => {
         const targetNumber = Number(e.target.value)
@@ -55,12 +68,21 @@ const RemoveLiquidity = ({ history, location }) => {
     }
 
     const onClickRemoveLiquidity = async () => {
-        setShowModal(true)
+        setShowModal({
+            ...showModal,
+            loading: true,
+        })
         try {
             await requestRemoveLiquidity(myPosition, (removeValue / 100))
-            setShowModal(false)
+            setShowModal({
+                loading: true,
+                success: true
+            })
         } catch (error) {
-            setShowModal(false)
+            setShowModal({
+                loading: false,
+                success: false
+            })
         }
     }
 
@@ -147,8 +169,8 @@ const RemoveLiquidity = ({ history, location }) => {
                     </div>
                 </>
             )}
-            {showModal && (
-                <LoadingModal init={false} setShowModal={setShowModal} />
+            {showModal.loading && (
+                <LoadingModal init={{ loading: false, success: false }} initialFunc={initialFunc} showModal={showModal} setShowModal={setShowModal} />
             )}
         </>
     )
