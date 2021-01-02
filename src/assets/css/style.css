@@ -32,6 +32,7 @@ header nav > div > button {position:absolute; top:0; right:0; width:194px; heigh
 .main_btm .figure > div .pend span {float:right; color:#666; font-size:14px;}
 
 .main_btn {display:block; width:430px; height:54px; margin:50px auto 258px; line-height:54px; border-radius:27px; color:#fff; font-size:18px; text-align:center; font-weight:700; background:#eab640;}
+.main_btn:hover { color: #eab640; background-color: #f7ece4; transition: 0.35s; }
 
 footer {padding:50px 0 65px; text-align:center;}
 footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
@@ -683,5 +684,6 @@ dd.ico04:before {background-image:url(./images/ico/ico_eth02.png);}
 }
 
 .disabled {
-	cursor: none;
+	pointer-events: none;
+	background-color: rgba(234, 182, 64, 0.3);
 }

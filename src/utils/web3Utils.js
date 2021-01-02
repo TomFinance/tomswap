@@ -1,8 +1,8 @@
 import Web3 from "web3"
-import axios from "axios"
 import { checkETH, filterdETH } from "./utils"
 import { getMetaMaskMyAccount, metaMaskSendTx } from "./metaMask"
-import { ETH_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI, AUTUMN_NAMELESS_STAR, TMTG_LBXC_ABI, TMTG_LBXC_POOL } from "config"
+import { MINING_POOLS, LP_TOKEN_PAIRS, THEGRAGH_API_URL, ETH_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
+import axios from "axios"
 
 const etherWeb3 = new Web3(window.ethereum)
 
@@ -47,11 +47,11 @@ export const getTokenBalance = async (tokenAddress, account) => {
 // #endregion
 
 // #region - Tom2
-const callUniswap = query => {
+function callUniswap(query) {
     return new Promise((resolve) => {
         axios({
-            url: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2',
-            method: 'post',
+            url: THEGRAGH_API_URL,
+            method: 'POST',
             data: {
                 query,
             },
@@ -61,25 +61,8 @@ const callUniswap = query => {
     })
 }
 
-const readContract = (poolSymbol, field) => {
-    if (poolSymbol === 'TMTG_LBXC') {
-        const TMTG_LBXC_web3 = new Web3(AUTUMN_NAMELESS_STAR)
-        const TMTG_LBXC = new TMTG_LBXC_web3.eth.Contract(TMTG_LBXC_ABI, TMTG_LBXC_POOL)
-
-        console.log(TMTG_LBXC.methods.totalStaked().call())
-
-        switch (field) {
-            case 'totalStaked':
-                return TMTG_LBXC.methods.totalStaked().call() // lp total stkae amount
-            case 'rewardPerBlock':
-                return TMTG_LBXC.methods.rewardPerBlock().call()
-            default:
-                return false
-        }
-    }
-}
-
-export const calculateAPY = async poolSymbol => {
+export async function calculateAPY(poolAddress) {
+    const poolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.POOL, poolAddress)
     const COFPairData = (
         await callUniswap(`{
                 pair (id:"0x6b16a8e3697e9690cf17a9f5203e0ce1350b4ca6"){
@@ -110,27 +93,86 @@ export const calculateAPY = async poolSymbol => {
     ).pair //tmtg/lbxc
 
     const tom_price = COFPairData.reserve0 / COFPairData.reserve1
+    const totalStaked = await poolContract.methods.TOTAL_STAKED().call()
 
-    //console.log("ETH Amount" + COFPairData.reserve0);
-    //console.log("TOM Amount" + COFPairData.reserve1);
-    //console.log("TOM Price " + COFPairData.reserve0 / COFPairData.reserve1);
-    //console.log("tmtg TOtal Supply " + LPPairData.totalSupply);
-    //console.log("tmtg reserve eth " + LPPairData.reserveETH);
-    //console.log("tmtg/lbxc TOtal Supply " + LP1PairData.totalSupply); //tmtg/lbxc lp total
-    //console.log("tmtg/lbxc reserve0 " + LP1PairData.reserve0); // tmtg/lbxc tmtg amount
-    //console.log("token1price " + LPPairData.token1Price); // tmtg price
-
-    if ((await readContract(poolSymbol, 'totalStaked')) === 0) {
+    if (Number(totalStaked) === 0) {
         return 'Infinity'
     }
 
-    const PPB =
-        (tom_price * (await readContract(poolSymbol, 'rewardPerBlock'))) /
-        (await readContract(poolSymbol, 'totalStaked')) /
-        (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
-    return (((PPB * 86400 * 365) / 13) * 100)
+    const rewardPerBlock = await poolContract.methods.rewardPerBlock().call()
+    const PPB = (tom_price * rewardPerBlock) / totalStaked / (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
+
+    return `${(((PPB * 86400 * 365) / 13) * 100).toPrecision(12)}%`
 }
 
+export const getMyLpTokenBalance = async lpTokenSymbol => {
+    const poolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.POOL, MINING_POOLS[lpTokenSymbol])
+
+    console.log(await poolContract.methods.inquiryDeposit(await getMetaMaskMyAccount()).call())
+    console.log(await poolContract.methods.inquiryExpectedReward(await getMetaMaskMyAccount()).call())
+    console.log(await poolContract.methods.inquiryExpectedReward(await getMetaMaskMyAccount()).call())
+    return {
+        stakedToken: await poolContract.methods.inquiryDeposit(await getMetaMaskMyAccount()).call(),
+        tom2Amount: await poolContract.methods.inquiryExpectedReward(await getMetaMaskMyAccount()).call(),
+    }
+}
+
+export const checkTom2PoolApprove = async lpTokenSymbol => {
+    const lpTokenContract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, LP_TOKEN_PAIRS[lpTokenSymbol])
+
+    const lpTokenBalance = await lpTokenContract.methods.balanceOf(await getMetaMaskMyAccount()).call()
+    const lpTokenDecimals = await lpTokenContract.methods.decimals().call()
+    const lpTokenAllowance = await lpTokenContract.methods.allowance(await getMetaMaskMyAccount(), MINING_POOLS[lpTokenSymbol]).call()
+
+    return {
+        lpTokenBalance,
+        lpTokenDecimals,
+        lpTokenAllowance: Number(lpTokenBalance) < Number(lpTokenAllowance)
+    }
+}
+
+export const confirmLpTokenApprove = async lpTokenSymbol => {
+    const poolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.POOL, MINING_POOLS[lpTokenSymbol])
+
+    await metaMaskSendTx({
+        from: await getMetaMaskMyAccount(),
+        to: LP_TOKEN_PAIRS[lpTokenSymbol],
+        data: poolContract.methods.approve(
+            MINING_POOLS[lpTokenSymbol],
+            (2n ** 256n - 1n).toString()
+        ).encodeABI()
+    })
+}
+
+export const lpTokenRequestTx = async (lpTokenSymbol, action, stakeAmount, lpTokenDecimals) => {
+    const poolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.POOL, MINING_POOLS[lpTokenSymbol])
+
+    const txObject = {
+        from: await getMetaMaskMyAccount(),
+        to: MINING_POOLS[lpTokenSymbol],
+        value: 0x0
+    }
+
+    switch (action) {
+        case 'stake':
+            txObject.data = poolContract.methods.stake(
+                Math.floor(stakeAmount * Math.pow(10, lpTokenDecimals))
+            ).encodeABI()
+            break
+        case 'unStake':
+            txObject.data = poolContract.methods.emergencyExit(
+            ).encodeABI()
+            break
+        case 'claim':
+            txObject.data = poolContract.methods.claimAllReward(
+            ).encodeABI()
+            break
+        default:
+            return false
+    }
+
+    await metaMaskSendTx(txObject)
+}
 // #endregion
 
 // #region - Pool
@@ -171,7 +213,7 @@ export const createCheckApprove = async (tokenAddress, amount, decimals) => {
 
     const tokenAllowance = await token0Contract.methods.allowance(await getMetaMaskMyAccount(), CONTRACT_ADDRESS.ROUTER).call()
 
-    return tokenAddress === ETH_ADDRESS ? true : tokenAllowance >= Number(amount) * Math.pow(10, decimals)
+    return tokenAddress === ETH_ADDRESS ? true : tokenAllowance > Number(amount) * Math.pow(10, decimals)
 }
 
 export const createConfirmApprove = async (tokenAddress, amount, decimals) => {

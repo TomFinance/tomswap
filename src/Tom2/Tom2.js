@@ -1,14 +1,24 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { MINING_POOLS } from 'config'
+
 import { calculateAPY } from 'utils/web3Utils'
 
 const Tom2 = () => {
-    useEffect(() => {
-        calculateAPY()
-            .then(res => {
-                console.log(res)
-            })
+    const [apyList, setApyList] = useState([])
+    const getApyList = useCallback(async () => {
+        setApyList(
+            await Promise.all(Object.keys(MINING_POOLS)
+                .map(async key => {
+                    return calculateAPY(MINING_POOLS[key])
+                })
+            )
+        )
     }, [])
+
+    useEffect(() => {
+        getApyList()
+    }, [getApyList])
 
     return (
         <div>
@@ -23,16 +33,22 @@ const Tom2 = () => {
             </div>
             <div id="jsTom2GridLayout" className="main_btm">
                 <div className="figure">
-                    <div className="tmtg">
-                        <p>TMTG/LBXC Pool</p>
-                        <span>Desposit TMTG-LBXC UNI-V2 LP Earn TOM2</span>
-                        <Link className={'main_btn'} to={'/tom2/detail/tmtg-lbxc'}>Select</Link>
-                        <div className="pend">
-                            <p>APY</p>
-                            <span>0%</span>
-                        </div>
-                    </div>
-                    <div className="lbxc coming red_mark">
+                    {MINING_POOLS && Object.keys(MINING_POOLS).map((poolName, idx) => {
+                        const splitName = poolName.split('-')
+                        const alias = `${splitName[0].toLowerCase()}-${splitName[1].toLowerCase()}`
+                        return (
+                            <div className={`tmtg ${alias}`} key={poolName}>
+                                <p>{`${splitName[0]}/${splitName[1]} Pool`}</p>
+                                <span>{`Desposit ${splitName[0]}/${splitName[1]} UNI-V2 LP Earn TOM2`}</span>
+                                <Link className={'main_btn'} to={`/tom2/detail/${alias}`}>Select</Link>
+                                <div className="pend">
+                                    <p>APY</p>
+                                    <span>{`${apyList[idx]}`}</span>
+                                </div>
+                            </div>
+                        )
+                    })}
+                    {/* <div className="lbxc coming red_mark">
                         <p>TOM/TMTG Pool</p>
                         <span>Desposit TMTG-LBXC UNI-V2 LP Earn TOM2</span>
                         <a href="#;" className="main_btn">COMING SOON</a>
@@ -49,7 +65,7 @@ const Tom2 = () => {
                             <p>APY</p>
                             <span>0%</span>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
