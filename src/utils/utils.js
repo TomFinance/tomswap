@@ -15,8 +15,15 @@ export const positionLocalStorage = {
         return localStorage.setItem('myPositionList', JSON.stringify([...tempSetList]))
     },
 
-    removeMyPositionList: () => {
-        return localStorage.removeItem('myPositionList')
+    removeMyPositionList: (tokenAddressA, tokenAddressB) => {
+        const sortingData = [tokenAddressA, tokenAddressB].sort()
+        const savePosition = `${sortingData[0]}_${sortingData[1]}`
+
+        const myPositionList = JSON.parse(localStorage.getItem('myPositionList')) || []
+        const tempSetList = new Set([...myPositionList])
+        tempSetList.delete(savePosition)
+
+        return localStorage.setItem('myPositionList', JSON.stringify([...tempSetList]))
     }
 }
 

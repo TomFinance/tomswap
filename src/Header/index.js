@@ -3,14 +3,15 @@ import { Link } from 'react-router-dom'
 
 const Header = ({ currentAccount, history }) => {
     const [showMyAccount, setShowMyAccount] = useState(false)
+    const [mobileMenu, setMobileMenu] = useState(false)
 
     return (
         <>
             <header>
                 <h1><Link to={'/'}><img src="/images/ico/ico_logo.png" alt="" /></Link></h1>
                 <nav>
-                    <h2>메뉴</h2>
-                    <div className="mb_hidden">
+                    <h2 onClick={() => setMobileMenu(!mobileMenu)}>메뉴</h2>
+                    <div className={`${mobileMenu ? '' : 'mb_hidden'}`}>
                         <ul>
                             <li className={`${history.location.pathname.includes('tom2') && 'on'}`}><Link to={'/tom2'}>TOM2</Link></li>
                             <li className={`${history.location.pathname.includes('exchange') && 'on'}`}><Link to={'/exchange/swap'}>Exchange</Link></li>

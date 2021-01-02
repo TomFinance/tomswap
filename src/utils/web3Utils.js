@@ -1,5 +1,5 @@
 import Web3 from "web3"
-import { checkETH, filterdETH } from "./utils"
+import { checkETH, filterdETH, positionLocalStorage } from "./utils"
 import { getMetaMaskMyAccount, metaMaskSendTx } from "./metaMask"
 import { MINING_POOLS, LP_TOKEN_PAIRS, THEGRAGH_API_URL, ETH_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
 import axios from "axios"
@@ -221,7 +221,7 @@ export const createConfirmApprove = async (tokenAddress, amount, decimals) => {
 
     const tokenAllowance = await token0Contract.methods.allowance(await getMetaMaskMyAccount(), CONTRACT_ADDRESS.ROUTER).call()
 
-    if (Number(tokenAllowance) < Number(amount) * Math.pow(10, decimals)) {
+    if (Number(tokenAllowance) <= Number(amount) * Math.pow(10, decimals)) {
         await metaMaskSendTx({
             from: await getMetaMaskMyAccount(),
             to: tokenAddress,
@@ -457,6 +457,7 @@ export const requestRemoveLiquidity = async (myPosition, removePersent) => {
                 value: 0x0
             })
         }
+        positionLocalStorage.removeMyPositionList(myPosition.tokenAddressA, myPosition.tokenAddressB)
     } catch (error) {
         console.log(error)
     }
