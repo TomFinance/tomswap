@@ -10,7 +10,7 @@ const Home = () => {
 
     useEffect(() => {
         getTotalSupply()
-            .then(res => {
+            .then(async res => {
                 setBalanceObj({
                     ...balanceObj,
                     totalSupply: res
@@ -34,19 +34,19 @@ const Home = () => {
                 <div className="figure">
                     <div className="balance">
                         <p>My TOM Balance</p>
-                        <strong>0.00000000</strong>
-                        <div className="pend">
+                        <strong>{Number(balanceObj.myTomBalance).toPrecision(12)}</strong>
+                        {/* <div className="pend">
                             <p>Pending harvest</p>
                             <span>0.00000000</span>
-                        </div>
+                        </div> */}
                     </div>
                     <div className="supply">
                         <p>Current Total supply</p>
                         <strong>{typeof balanceObj.totalSupply === 'number' ? Number(balanceObj.totalSupply) > 0 ? Number(balanceObj.totalSupply).toPrecision(12) : (0).toPrecision(12) : '-'}</strong>
-                        <div className="pend">
+                        {/* <div className="pend">
                             <p>APY</p>
                             <span>10.00000000 TOM2</span>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <Link to="/tom2" className="main_btn">See the Touch of Midas Farm</Link>

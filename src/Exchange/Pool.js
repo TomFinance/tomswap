@@ -40,16 +40,17 @@ const Pool = () => {
         const tempPositionList = await Promise.all(
             localStorageSavePositionList.map(async position => {
                 const tokenAddressArr = position.split('_')
-                return {
+                const positionData = await myPositionCheck(tokenAddressArr[0], tokenAddressArr[1])
+                return positionData ? {
                     show: false,
                     tokenAddressA: tokenAddressArr[0],
                     tokenAddressB: tokenAddressArr[1],
-                    ...await myPositionCheck(tokenAddressArr[0], tokenAddressArr[1])
-                }
+                    ...positionData
+                } : false
             })
         )
 
-        setPositionList(tempPositionList)
+        setPositionList(tempPositionList?.filter(positionData => positionData))
     }, [])
 
     useEffect(() => {

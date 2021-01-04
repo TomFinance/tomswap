@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Route, Router } from 'react-router-dom'
+import { Route, BrowserRouter as Router } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
 
 import './assets/css/font.css'
@@ -9,7 +9,6 @@ import './assets/css/style.css'
 import './assets/css/slick.css'
 
 import App from './App'
-
 const ScrollToTop = () => {
   window.scrollTo(0, 0)
   return null

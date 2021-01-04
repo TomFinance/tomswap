@@ -52,10 +52,10 @@ const ButtonWrap = styled.div`
 `
 
 const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, handleLpTokenRequestTx }) => {
-    const [amount, setAmount] = useState(0)
+    const [amount, setAmount] = useState('')
 
     const onChange = e => {
-        const { taget: { value } } = e
+        const { target: { value } } = e
 
         setAmount(value)
     }
@@ -92,14 +92,18 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                         <strong>Unstake</strong>
                     </Title>
                     <DescriptionWrap>
-                        <p>{`Available : ${convertDecimal(stakeData.lpTokenBalance, stakeData.lpTokenDecimals)}`}</p>
+                        <p>{`Available : ${convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals)}`}</p>
                         <p>{`${splitPoolNameObj.lpTokenSymbol} UNI-V2 LP`}</p>
+                        <InputBox>
+                            <input type="number" placeholder="Input amount" value={amount} onChange={onChange} />
+                            <button onClick={() => setAmount(stakeData.stakedToken * Math.pow(0.1, stakeData.lpTokenDecimals))}>Max</button>
+                        </InputBox>
                     </DescriptionWrap>
                 </div>
                 <ButtonWrap>
                     <button className="pop_call pop_close" onClick={() => setShowModal({ ...showModal, unStake: false })}>Cancel</button>
                     <button className="pop_call pop_close" onClick={() => {
-                        handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'unStake'))
+                        handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'unStake', amount, stakeData.lpTokenDecimals))
                     }}>Confirm</button>
                 </ButtonWrap>
             </div>

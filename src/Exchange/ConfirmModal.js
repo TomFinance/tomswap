@@ -1,6 +1,19 @@
 import React from 'react'
+import styled from '@emotion/styled'
 
-const ConfirmModal = ({ aToken, bToken, calcData, confirmFunc }) => {
+const CloseBtn = styled.button`
+    position:absolute;
+    top:18px;
+    right:18px;
+    width:18px;
+    height:18px;
+    text-indent:-9999px;
+    border-radius:0;
+    background: url('/images/ico/ico_pop_close.png') no-repeat center;
+    background-size:100%;
+`
+
+const ConfirmModal = ({ aToken, bToken, calcData, closeFunc, confirmFunc }) => {
     const UpperTokenSymbolA = aToken.symbol.toUpperCase()
     const UpperTokenSymbolB = bToken.symbol.toUpperCase()
 
@@ -10,9 +23,9 @@ const ConfirmModal = ({ aToken, bToken, calcData, confirmFunc }) => {
                 <div className="pop_con">
                     <h3>You will receive</h3>
                     <div className="will">
-                        <strong>0.00000123456</strong>
+                        <strong>{Number(calcData.receiveToken).toPrecision(12)}</strong>
                         <p>{`${UpperTokenSymbolA}/${UpperTokenSymbolB} Pool Token`}</p>
-                        <span>Output is…</span>
+                        {/* <span>Output is…</span> */}
                     </div>
                     <dl className="output">
                         <dt>Prices and pool share</dt>
@@ -30,6 +43,7 @@ const ConfirmModal = ({ aToken, bToken, calcData, confirmFunc }) => {
                     </dl>
                 </div>
                 <button className="pop_call pop_close" onClick={confirmFunc}>Confirm Supply</button>
+                <CloseBtn onClick={closeFunc} />
             </div>
         </div>
     )

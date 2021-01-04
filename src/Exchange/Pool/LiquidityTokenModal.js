@@ -66,7 +66,7 @@ const LiquidityTokenModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
 						</div>
                         </a>
                     </h3>
-                    <input type="text" placeholder="Text" value={searchTokenInput.value} onChange={searchTokenInputOnchange} />
+                    <input type="text" placeholder="Paste Address" value={searchTokenInput.value} onChange={searchTokenInputOnchange} />
                     <div className="token_name">
                         <p>Token Name</p>
                         <dl>

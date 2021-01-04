@@ -156,7 +156,7 @@ const Swap = () => {
                             <p>{`Balance : ${convertDecimal(tokenB.balance, tokenB.decimals)} `}</p>
                         </div>
                         <div className="fr">
-                            <input id="Create_1_Preview" type="text" placeholder={'0.0'} value={tokenB.amount} onChange={e => onChangeAmount(e, tokenB, setTokenB)} disabled={true} />
+                            <input id="Create_1_Preview" type="text" placeholder={'0.0'} defaultValue={tokenB.amount} readOnly />
                             <div className="token">
                                 <a href="#token_pop" className="pop_call" onClick={() => setTokenB({ ...tokenB, show: true })} >{tokenB.symbol}</a>
                             </div>
@@ -175,7 +175,7 @@ const Swap = () => {
                         </>
                     )}
                 </div>
-                <button className={`enter enter02 ${tokenA.amount && tokenB.amount ? 'on' : ''}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>Enter an amount</button>
+                <button className={`enter enter02 ${(tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance * Math.pow(0.1, tokenA.decimals) && tokenB.amount <= tokenB.balance * Math.pow(0.1, tokenB.decimals)) && calcSwapData ? 'on' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
             </div>
             {tokenA.amount && tokenB.amount && calcSwapData !== null ? (
                 <div className="analy">
@@ -219,9 +219,9 @@ const Swap = () => {
                     </div> */}
                 </div>
             ) : null}
-            {/* {showModal.confirm && (
-                <ConfirmModal aToken={addLiquidityInputA} bToken={addLiquidityInputB} calcData={calcPricesText} confirmFunc={() => loadingConfirm(async () => await createImportCreate(addLiquidityInputA, addLiquidityInputB))} />
-            )} */}
+            {showModal.confirm && (
+                <SwapConfirm tokenA={tokenA} tokenB={tokenB} calcSwapData={calcSwapData} showModal={showModal} setShowModal={setShowModal} onClickSwap={onClickSwap} />
+            )}
             {showModal.loading && (
                 <LoadingModal init={{ reversePrice: false, confirm: false, loading: false, success: false }} initialFunc={initialFunc} showModal={showModal} setShowModal={setShowModal} />
             )}
@@ -230,9 +230,6 @@ const Swap = () => {
             )}
             {tokenB.show && (
                 <LiquidityTokenModal addLiquidityInput={tokenB} setAddLiquidityInput={setTokenB} />
-            )}
-            {showModal.confirm && (
-                <SwapConfirm tokenA={tokenA} tokenB={tokenB} calcSwapData={calcSwapData} showModal={showModal} setShowModal={setShowModal} onClickSwap={onClickSwap} />
             )}
         </div>
     )

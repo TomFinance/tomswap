@@ -63,6 +63,7 @@ const Tom2Stake = ({ match: { params: { route } }, history }) => {
         try {
             await processFunc()
             setShowModal({ stake: false, unStake: false, loading: true, success: true })
+            await getPoolInfo()
         } catch (error) {
             setShowModal({ stake: false, unStake: false, loading: false, success: false })
         }

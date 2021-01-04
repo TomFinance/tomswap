@@ -1,9 +1,21 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { getMetaMaskMyAccount } from 'utils/metaMask'
+import { convertDecimal } from 'utils/utils'
+import { getBalance } from 'utils/web3Utils'
 
 const Header = ({ currentAccount, history }) => {
     const [showMyAccount, setShowMyAccount] = useState(false)
     const [mobileMenu, setMobileMenu] = useState(false)
+    const [currentBalance, setCurrentBalance] = useState(0)
+
+    const getMyBalance = useCallback(async () => {
+        setCurrentBalance(await getBalance(await getMetaMaskMyAccount()))
+    }, [])
+
+    useEffect(() => {
+        getMyBalance()
+    }, [getMyBalance])
 
     return (
         <>
@@ -34,7 +46,7 @@ const Header = ({ currentAccount, history }) => {
                             <h3>My Account</h3>
                             <div className="my_icon">
                                 <i><img src="../assets/images/ico/ico_my_account.png" alt="" /></i>
-                                <strong>0.000</strong>
+                                <strong>{convertDecimal(currentBalance, 18)}</strong>
                                 <p>TOM2 Balance</p>
                             </div>
                             <a href="#;">View on Etherscan</a>

@@ -45,8 +45,8 @@ const AppoveBtnWrap = styled.div`
 
 const AppoveBtn = styled.button`
     background-color: ${props => props.disabledBtn
-        ? '#ddd !important'
-        : 'rgba(234,182,64,0.3) !important'};
+        ? '#ddd'
+        : 'rgba(234,182,64,0.3)'};
 `
 
 
@@ -81,7 +81,8 @@ const AddLiquidity = ({ location }) => {
     const [calcPricesText, setCalcPricesText] = useState({
         left: '',
         center: '',
-        right: ''
+        right: '',
+        receiveToken: ''
     })
     const [checkApprove, setCheckApprove] = useState({
         a: null,
@@ -118,7 +119,8 @@ const AddLiquidity = ({ location }) => {
         setCalcPricesText({
             left: '',
             center: '',
-            right: ''
+            right: '',
+            receiveToken: ''
         })
         setCheckApprove({
             a: null,
@@ -152,6 +154,11 @@ const AddLiquidity = ({ location }) => {
                 a: await createCheckApprove(addLiquidityInputA.tokenAddress, addLiquidityInputA.amount, addLiquidityInputA.decimals),
                 b: await createCheckApprove(addLiquidityInputB.tokenAddress, addLiquidityInputB.amount, addLiquidityInputB.decimals),
             })
+        } else {
+            setCheckApprove({
+                a: null,
+                b: null,
+            })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [addLiquidityInputA.amount, addLiquidityInputB.amount])
@@ -169,11 +176,12 @@ const AddLiquidity = ({ location }) => {
                     setCalcPricesText({
                         left: calcText['0'],
                         center: calcText['1'],
-                        right: calcText['2']
+                        right: calcText['2'],
+                        receiveToken: calcText['4']
                     })
                     setAddLiquidityInputB({
                         ...addLiquidityInputB,
-                        amount: calcText['3']
+                        amount: calcText['3'],
                     })
                 } else if (addLiquidityInputB.amount && pageType === 'create pair') {
                     const calcText = await createPreviewPrice(addLiquidityInputA, addLiquidityInputB)
@@ -181,7 +189,8 @@ const AddLiquidity = ({ location }) => {
                     setCalcPricesText({
                         left: calcText['0'],
                         center: calcText['1'],
-                        right: 100
+                        right: 100,
+                        receiveToken: calcText['4']
                     })
                 }
             } else {
@@ -297,34 +306,19 @@ const AddLiquidity = ({ location }) => {
                         {addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress && (
                             <AppoveBtnWrap>
                                 {addLiquidityInputA.tokenAddress !== ETH_ADDRESS && (
-                                    <AppoveBtn className={`enter enter02`} disabledBtn={checkApprove.a || checkApprove.a === null} disabled={checkApprove.a || checkApprove.a === null} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputA.tokenAddress, addLiquidityInputA.amount, addLiquidityInputA.decimals); await checkPairContract() })}>{`Approve ${addLiquidityInputA.symbol.toUpperCase()} `}</AppoveBtn>
+                                    <AppoveBtn className={`enter enter02 ${(checkApprove.a || checkApprove.a === null) ? 'disabled' : 'on'}`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputA.tokenAddress, addLiquidityInputA.amount, addLiquidityInputA.decimals); await checkPairContract() })}>{`Approve ${addLiquidityInputA.symbol.toUpperCase()} `}</AppoveBtn>
                                 )}
                                 {addLiquidityInputB.symbol !== ETH_ADDRESS && (
-                                    <AppoveBtn className={`enter enter02`} disabledBtn={checkApprove.b || checkApprove.b === null} disabled={checkApprove.b || checkApprove.b === null} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputB.tokenAddress, addLiquidityInputB.amount, addLiquidityInputB.decimals); await checkPairContract() })}>{`Approve ${addLiquidityInputB.symbol.toUpperCase()} `}</AppoveBtn>
+                                    <AppoveBtn className={`enter enter02 ${(checkApprove.b || checkApprove.b === null) ? 'disabled' : 'on'}`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputB.tokenAddress, addLiquidityInputB.amount, addLiquidityInputB.decimals); await checkPairContract() })}>{`Approve ${addLiquidityInputB.symbol.toUpperCase()} `}</AppoveBtn>
                                 )}
                             </AppoveBtnWrap>
                         )}
-                        <button className={`enter pop_call ${checkApprove.a && checkApprove.b ? 'on' : ''}`} disabled={!checkApprove.a || !checkApprove.b} onClick={() => setShowModal({ confirm: true, loading: false })} >{pageType === 'add liquidity' ? 'Supply' : 'Create'}</button>
+                        <button className={`enter pop_call ${(checkApprove.a && checkApprove.b) && (addLiquidityInputA.amount <= addLiquidityInputA.balance * Math.pow(0.1, addLiquidityInputA.decimals) && addLiquidityInputB.amount <= addLiquidityInputB.balance * Math.pow(0.1, addLiquidityInputB.decimals)) ? 'on' : 'disabled'}`} disabled={(!checkApprove.a || !checkApprove.b) && (addLiquidityInputA.amount <= addLiquidityInputA.balance * Math.pow(0.1, addLiquidityInputA.decimals) || addLiquidityInputB.amount <= addLiquidityInputB.balance * Math.pow(0.1, addLiquidityInputA.decimals))} onClick={() => setShowModal({ confirm: true, loading: false })} >{pageType === 'add liquidity' ? 'Supply' : 'Create'}</button>
                     </div>
-                    {/* <div className="position">
-                        <p>Your position</p>
-                        <dl>
-                            <dt className="bold etu">
-                                <span className="icon01"><img src="/images/ico/ico_eth01.png" alt="" /></span>
-                                <span className="icon02"><img src="/images/ico/ico_eth02.png" alt="" /></span>
-                                ETH/USDT
-                            </dt>
-                            <dd className="bold">0</dd>
-                            <dt>ETH</dt>
-                            <dd>0</dd>
-                            <dt>USDT</dt>
-                            <dd>0</dd>
-                        </dl>
-                    </div> */}
                 </div>
             </Wrapper>
             {showModal.confirm && (
-                <ConfirmModal aToken={addLiquidityInputA} bToken={addLiquidityInputB} calcData={calcPricesText} confirmFunc={() => loadingConfirm(async () => await createImportCreate(addLiquidityInputA, addLiquidityInputB))} />
+                <ConfirmModal aToken={addLiquidityInputA} bToken={addLiquidityInputB} calcData={calcPricesText} closeFunc={() => setShowModal({ ...showModal, confirm: false })} confirmFunc={() => loadingConfirm(async () => await createImportCreate(addLiquidityInputA, addLiquidityInputB))} />
             )}
             {showModal.loading && (
                 <LoadingModal init={{ confirm: false, loading: false, success: false }} showModal={showModal} setShowModal={setShowModal} initialFunc={initialFunc} />
