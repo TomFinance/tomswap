@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import { getTotalSupply } from 'utils/web3Utils'
 
@@ -21,6 +22,9 @@ const Home = () => {
 
     return (
         <div>
+            <Helmet>
+                <title>TOM2 FANANCE - HOME</title>
+            </Helmet>
             <div className="main_top">
                 <div className="wrapper">
                     <div className="tit">
@@ -49,7 +53,7 @@ const Home = () => {
                         </div> */}
                     </div>
                 </div>
-                <Link to="/tom2" className="main_btn">See the Touch of Midas Farm</Link>
+                <Link to="/farm" className="main_btn">See the Touch of Midas Farm</Link>
             </div>
         </div>
     )

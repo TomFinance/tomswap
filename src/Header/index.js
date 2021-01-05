@@ -25,7 +25,7 @@ const Header = ({ currentAccount, history }) => {
                     <h2 onClick={() => setMobileMenu(!mobileMenu)}>메뉴</h2>
                     <div className={`${mobileMenu ? '' : 'mb_hidden'}`}>
                         <ul>
-                            <li className={`${history.location.pathname.includes('tom2') && 'on'}`}><Link to={'/tom2'}>TOM2</Link></li>
+                            <li className={`${history.location.pathname.includes('farm') && 'on'}`}><Link to={'/farm'}>FARM</Link></li>
                             <li className={`${history.location.pathname.includes('exchange') && 'on'}`}><Link to={'/exchange/swap'}>Exchange</Link></li>
                             {/* <li><a href="#;">Staking</a></li>
                             <li><a href="#;">Investmeat</a></li>

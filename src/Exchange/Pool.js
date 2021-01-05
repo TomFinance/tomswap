@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 
 import { positionLocalStorage } from 'utils/utils'
 import { myPositionCheck } from 'utils/web3Utils'
+import { Helmet } from 'react-helmet'
 
 const Wrapper = styled.div`
     padding: 115px 0 538px;
@@ -59,6 +60,9 @@ const Pool = () => {
 
     return (
         <div>
+            <Helmet>
+                <title>TOM2 FANANCE - POOL</title>
+            </Helmet>
             <Wrapper className="wrapper">
                 <div className="sub_wrap sub_wrap04">
                     <ul>

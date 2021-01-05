@@ -11,6 +11,7 @@ import { createPreviewPrice, createCheckApprove, createConfirmApprove, createImp
 import ConfirmModal from 'Exchange/ConfirmModal'
 import LoadingModal from '../LoadingModal'
 import { getMetaMaskMyAccount } from 'utils/metaMask'
+import { Helmet } from 'react-helmet'
 
 const Wrapper = styled.div`
     padding: 115px 0 0;
@@ -234,6 +235,9 @@ const AddLiquidity = ({ location }) => {
 
     return (
         <>
+            <Helmet>
+                <title>{`TOM2 FANANCE - ${pageType.toUpperCase()}`}</title>
+            </Helmet>
             <Wrapper className="wrapper">
                 <div id="jsAddLiquidityPage" className="wrapper">
                     <div className="sub_wrap liqu_wrap">

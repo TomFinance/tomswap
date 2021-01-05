@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { MINING_POOLS } from 'config'
 
 import { calculateAPY } from 'utils/web3Utils'
+import { Helmet } from 'react-helmet'
 
 const Tom2 = () => {
     const [apyList, setApyList] = useState([])
@@ -22,6 +23,9 @@ const Tom2 = () => {
 
     return (
         <div>
+            <Helmet>
+                <title>TOM2 FANANCE - FARM</title>
+            </Helmet>
             <div className="main_top">
                 <div className="wrapper">
                     <div className="tit">
@@ -40,7 +44,7 @@ const Tom2 = () => {
                             <div className={`tmtg ${alias}`} key={poolName}>
                                 <p>{`${splitName[0]}/${splitName[1]} Pool`}</p>
                                 <span>{`Desposit ${splitName[0]}/${splitName[1]} UNI-V2 LP Earn TOM2`}</span>
-                                <Link className={'main_btn'} to={`/tom2/detail/${alias}`}>Select</Link>
+                                <Link className={'main_btn'} to={`/farm/detail/${alias}`}>Select</Link>
                                 <div className="pend">
                                     <p>APY</p>
                                     <span>{`${apyList[idx]}`}</span>

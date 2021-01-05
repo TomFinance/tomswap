@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { myPositionCheck } from 'utils/web3Utils'
 import LiquidityTokenModal from './LiquidityTokenModal'
 import { positionLocalStorage } from 'utils/utils'
+import { Helmet } from 'react-helmet'
 
 const NotFoundBox = styled.div`
     display: flex;
@@ -62,6 +63,9 @@ const ImportPool = ({ history }) => {
 
     return (
         <>
+            <Helmet>
+                <title>TOM2 FANANCE - IMPORT POOL</title>
+            </Helmet>
             <div className="wrapper">
                 <div className="sub_wrap liqu_wrap sub_wrap05">
                     <div className="tit">

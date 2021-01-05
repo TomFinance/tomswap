@@ -13,12 +13,12 @@ function Body() {
     return (
         <Switch>
             <Route exact path="/" component={Home} />
+            <Route exact path="/farm" component={Tom2} />
+            <Route exact path="/farm/detail/:route" component={Tom2Stake} />
             <Route exact path="/exchange/import-pool" component={ImportPool} />
             <Route exact path="/exchange/pool/add-liquidity" component={AddLiquidity} />
             <Route exact path="/exchange/pool/remove-liquidity" component={RemoveLiquidity} />
             <Route exact path="/exchange/:route" component={Exchange} />
-            <Route exact path="/tom2" component={Tom2} />
-            <Route exact path="/tom2/detail/:route" component={Tom2Stake} />
 
             <Redirect from="*" to={'/'} />
         </Switch>

@@ -8,6 +8,7 @@ import LiquidityTokenModal from '../Pool/LiquidityTokenModal'
 import SwapConfirm from './SwapConfirm'
 import { swapPreviewPrice, swapRequestTx } from 'utils/web3Utils'
 import { convertDecimal } from 'utils/utils'
+import { Helmet } from 'react-helmet'
 
 const MaxBtn = styled.strong`
     display: inline-block;
@@ -129,6 +130,9 @@ const Swap = () => {
 
     return (
         <div className="wrapper">
+            <Helmet>
+                <title>TOM2 FANANCE - SWAP</title>
+            </Helmet>
             <div className="sub_wrap sub_wrap03">
                 <ul>
                     <li className="on"><Link to={'/exchange/swap'}>Swap</Link></li>
