@@ -3,6 +3,7 @@ import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 import { checkRemoveLiquidityApprove, requestRemoveLiquidityApprove, requestRemoveLiquidity } from 'utils/web3Utils'
 import LoadingModal from 'Exchange/LoadingModal'
+import HelpBox from 'Global/HelpBox'
 
 const PositionTitle = styled.div`
     display: flex;
@@ -105,9 +106,7 @@ const RemoveLiquidity = ({ history, location }) => {
                                 <img src="/images/ico/ico_arrow_back.png" alt="뒤로가기" />
                             </Link>
                             <span>Remove Liquidity</span>
-                            <a href="#;" className="q_ico">
-                                <div className="help_box">Find a token…</div>
-                            </a>
+                            <HelpBox helpText={'Removing pool tokens converts your position back into underlying tokens at the current rate, proportional to your share of the pool. Accrued fees are included in the amounts you receive.'} />
                         </div>
                         <div className="exchange">
                             {/* <p><span className="amount">Amount</span><span className="detail">Detailed</span></p> */}
