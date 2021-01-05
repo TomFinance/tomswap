@@ -5,6 +5,7 @@ import { myPositionCheck } from 'utils/web3Utils'
 import LiquidityTokenModal from './LiquidityTokenModal'
 import { positionLocalStorage } from 'utils/utils'
 import { Helmet } from 'react-helmet'
+import HelpBox from 'Global/HelpBox'
 
 const NotFoundBox = styled.div`
     display: flex;
@@ -71,9 +72,7 @@ const ImportPool = ({ history }) => {
                     <div className="tit">
                         <Link to={'/exchange/pool'} className="prev"><img src="/images/ico/ico_arrow_back.png" alt="뒤로가기" /></Link>
                         <span>Import Pool</span>
-                        <a href="#;" className="q_ico">
-                            <div className="help_box">Find a token…</div>
-                        </a>
+                        <HelpBox helpText={''} />
                     </div>
                     <div className="import_wrap">
                         <div className="select" onClick={() => setAddLiquidityInputA({ ...addLiquidityInputA, show: true })}>

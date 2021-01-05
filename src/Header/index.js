@@ -17,6 +17,11 @@ const Header = ({ currentAccount, history }) => {
         getMyBalance()
     }, [getMyBalance])
 
+    useEffect(() => {
+        setMobileMenu(false)
+        setShowMyAccount(false)
+    }, [history.location.pathname])
+
     return (
         <>
             <header>

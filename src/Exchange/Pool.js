@@ -8,7 +8,7 @@ import { Helmet } from 'react-helmet'
 import HelpBox from 'Global/HelpBox'
 
 const Wrapper = styled.div`
-    padding: 115px 0 538px;
+    padding: 115px 20px 0;
     .sub_wrap {
         margin: 0 auto;
     }

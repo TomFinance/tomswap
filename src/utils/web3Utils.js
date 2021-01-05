@@ -4,6 +4,7 @@ import { getMetaMaskMyAccount, metaMaskSendTx } from "./metaMask"
 import { MINING_POOLS, LP_TOKEN_PAIRS, THEGRAGH_API_URL, ETH_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
 import axios from "axios"
 
+const INFINITY = '115792089237316195423570985008687907853269984665640564039457584007913129639935' //(2n ** 256n - 1n).toString()
 const etherWeb3 = new Web3(window.ethereum)
 
 // #region - ETH
@@ -136,7 +137,7 @@ export const confirmLpTokenApprove = async lpTokenSymbol => {
         to: LP_TOKEN_PAIRS[lpTokenSymbol],
         data: poolContract.methods.approve(
             MINING_POOLS[lpTokenSymbol],
-            (2n ** 256n - 1n).toString()
+            INFINITY
         ).encodeABI()
     })
 }
@@ -154,12 +155,12 @@ export const lpTokenRequestTx = async (lpTokenSymbol, action, amount, lpTokenDec
         switch (action) {
             case 'stake':
                 txObject.data = poolContract.methods.stake(
-                    Math.floor(amount * Math.pow(10, lpTokenDecimals))
+                    String(Math.floor(amount * Math.pow(10, lpTokenDecimals)))
                 ).encodeABI()
                 break
             case 'unStake':
                 txObject.data = poolContract.methods.claimAndUnstake(
-                    Math.floor(amount * Math.pow(10, lpTokenDecimals))
+                    String(Math.floor(amount * Math.pow(10, lpTokenDecimals)))
                 ).encodeABI()
                 break
             case 'claim':
@@ -221,20 +222,19 @@ export const createCheckApprove = async (tokenAddress, amount, decimals) => {
     return tokenAddress === ETH_ADDRESS ? true : tokenAllowance > Number(amount) * Math.pow(10, decimals)
 }
 
-export const createConfirmApprove = async (tokenAddress, amount, decimals) => {
+export const createConfirmApprove = async tokenAddress => {
     const token0Contract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, tokenAddress)
-
-    const tokenAllowance = await token0Contract.methods.allowance(await getMetaMaskMyAccount(), CONTRACT_ADDRESS.ROUTER).call()
-
-    if (Number(tokenAllowance) <= Number(amount) * Math.pow(10, decimals)) {
+    try {
         await metaMaskSendTx({
             from: await getMetaMaskMyAccount(),
             to: tokenAddress,
             data: token0Contract.methods.approve(
                 CONTRACT_ADDRESS.ROUTER,
-                (2n ** 256n - 1n).toString()
+                INFINITY
             ).encodeABI()
         })
+    } catch (error) {
+        console.log(error)
     }
 }
 
@@ -257,9 +257,9 @@ export const createImportCreate = async (aToken, bToken) => {
             to: CONTRACT_ADDRESS.ROUTER,
             data: routerContract.methods.addLiquidityETH(
                 token.tokenAddress,
-                Math.floor(Number(token.amount) * Math.pow(10, token.decimals)),
-                Math.floor(Number(token.amount) * 0.995 * Math.pow(10, aToken.decimals)),
-                Math.floor(Number(ethToken.amount) * 0.995 * Math.pow(10, bToken.decimals)),
+                String(Math.floor(Number(token.amount) * Math.pow(10, token.decimals))),
+                String(Math.floor(Number(token.amount) * Math.pow(10, aToken.decimals) * 0.995)),
+                String(Math.floor(Number(ethToken.amount) * Math.pow(10, bToken.decimals) * 0.995)),
                 await getMetaMaskMyAccount(),
                 Math.floor((+new Date()) / 1000) + 3600
             ).encodeABI(),
@@ -272,10 +272,10 @@ export const createImportCreate = async (aToken, bToken) => {
             data: routerContract.methods.addLiquidity(
                 aToken.tokenAddress,
                 bToken.tokenAddress,
-                Math.floor(Number(aToken.amount) * Math.pow(10, aToken.decimals)),
-                Math.floor(Number(bToken.amount) * Math.pow(10, bToken.decimals)),
-                Math.floor(Number(aToken.amount) * 0.995 * Math.pow(10, aToken.decimals)),
-                Math.floor(Number(bToken.amount) * 0.995 * Math.pow(10, bToken.decimals)),
+                String(Math.floor(Number(aToken.amount) * Math.pow(10, aToken.decimals))),
+                String(Math.floor(Number(bToken.amount) * Math.pow(10, bToken.decimals))),
+                String(Math.floor(Number(aToken.amount) * Math.pow(10, aToken.decimals) * 0.995)),
+                String(Math.floor(Number(bToken.amount) * Math.pow(10, bToken.decimals) * 0.995)),
                 await getMetaMaskMyAccount(),
                 Math.floor((+new Date()) / 1000) + 3600
             ).encodeABI(),
@@ -370,8 +370,8 @@ export const myPositionCheck = async (tokenAddressA, tokenAddressB) => {
     const lpToken = pairData.pairContractBalance
     const lpTokenView = pairData.pairContractBalance * Math.pow(0.1, pairData.pairDecimals)
     const persent = pairData.pairContractBalance / pairData.pairSupply
-    const token0Value = pairData.token0Reserve
-    const token1Value = pairData.token1Reserve
+    const token0Value = pairData.token0Reserve * persent
+    const token1Value = pairData.token1Reserve * persent
     const token0ViewValue = token0Value * Math.pow(0.1, pairData.token0Decimals) * persent
     const token1ViewValue = token1Value * Math.pow(0.1, pairData.token1Decimals) * persent
 
@@ -396,7 +396,7 @@ export const checkRemoveLiquidityApprove = async (tokenAddressA, tokenAddressB, 
 
     const pairTokenAllowance = await pairContract.methods.allowance(await getMetaMaskMyAccount(), CONTRACT_ADDRESS.ROUTER).call()
 
-    return pairTokenAllowance >= myLpToken
+    return pairTokenAllowance > myLpToken
 }
 
 export const requestRemoveLiquidityApprove = async (tokenAddressA, tokenAddressB, myLpToken) => {
@@ -406,13 +406,13 @@ export const requestRemoveLiquidityApprove = async (tokenAddressA, tokenAddressB
 
     const pairTokenAllowance = await pairContract.methods.allowance(await getMetaMaskMyAccount(), CONTRACT_ADDRESS.ROUTER).call()
 
-    if (pairTokenAllowance < myLpToken) {
+    if (pairTokenAllowance <= myLpToken) {
         await metaMaskSendTx({
             from: await getMetaMaskMyAccount(),
             to: pairAddress,
             data: pairContract.methods.approve(
                 CONTRACT_ADDRESS.ROUTER,
-                (2n ** 256n - 1n).toString()
+                INFINITY
             ).encodeABI()
         })
     }
@@ -421,41 +421,45 @@ export const requestRemoveLiquidityApprove = async (tokenAddressA, tokenAddressB
 export const requestRemoveLiquidity = async (myPosition, removePersent) => {
     const routerContract = new etherWeb3.eth.Contract(CONTRACT_ABI.ROUTER, CONTRACT_ADDRESS.ROUTER)
 
-    if ([myPosition.tokenAddressA, myPosition.tokenAddressB].includes(ETH_ADDRESS)) {
-        const token = myPosition.tokenAddressA === ETH_ADDRESS ? 'B' : 'A'
-        const tokenNumber = myPosition.tokenAddressA === ETH_ADDRESS ? '1' : '0'
-        const ethTokenNumber = myPosition.tokenAddressA === ETH_ADDRESS ? '0' : '1'
+    try {
+        if (myPosition.tokenAddressA === ETH_ADDRESS || myPosition.tokenAddressB === ETH_ADDRESS) {
+            const token = myPosition.tokenAddressA === ETH_ADDRESS ? 'B' : 'A'
+            const tokenNumber = myPosition.tokenAddressA === ETH_ADDRESS ? '1' : '0'
+            const ethTokenNumber = myPosition.tokenAddressA === ETH_ADDRESS ? '0' : '1'
 
-        await metaMaskSendTx({
-            from: await getMetaMaskMyAccount(),
-            to: CONTRACT_ADDRESS.ROUTER,
-            data: routerContract.methods.removeLiquidityETH(
-                myPosition[`tokenAddress${token}`],
-                Math.floor(myPosition.lpToken * removePersent),
-                Math.floor(Number(myPosition[`token${tokenNumber}Value`]) * removePersent * 0.995),
-                Math.floor(Number(myPosition[`token${ethTokenNumber}Value`]) * removePersent * 0.995),
-                await getMetaMaskMyAccount(),
-                Math.floor((+new Date()) / 1000) + 3600
-            ).encodeABI(),
-            value: 0x0
-        })
-    } else {
-        await metaMaskSendTx({
-            from: await getMetaMaskMyAccount(),
-            to: CONTRACT_ADDRESS.ROUTER,
-            data: routerContract.methods.removeLiquidity(
-                myPosition.tokenAddressA,
-                myPosition.tokenAddressB,
-                Math.floor(myPosition.lpToken * removePersent),
-                Math.floor(Number(myPosition.token0Value) * removePersent * 0.995),
-                Math.floor(Number(myPosition.token1Value) * removePersent * 0.995),
-                await getMetaMaskMyAccount(),
-                Math.floor((+new Date()) / 1000) + 3600
-            ).encodeABI(),
-            value: 0x0
-        })
+            await metaMaskSendTx({
+                from: await getMetaMaskMyAccount(),
+                to: CONTRACT_ADDRESS.ROUTER,
+                data: routerContract.methods.removeLiquidityETH(
+                    myPosition[`tokenAddress${token}`],
+                    String(Math.floor(Number(myPosition.lpToken) * Number(removePersent))),
+                    String(Math.floor(Number(myPosition[`token${tokenNumber}Value`]) * Number(removePersent) * 0.995)),
+                    String(Math.floor(Number(myPosition[`token${ethTokenNumber}Value`]) * Number(removePersent) * 0.995)),
+                    await getMetaMaskMyAccount(),
+                    Math.floor((+new Date()) / 1000) + 3600
+                ).encodeABI(),
+                value: 0x0
+            })
+        } else {
+            await metaMaskSendTx({
+                from: await getMetaMaskMyAccount(),
+                to: CONTRACT_ADDRESS.ROUTER,
+                data: routerContract.methods.removeLiquidity(
+                    myPosition.tokenAddressA,
+                    myPosition.tokenAddressB,
+                    String(Math.floor(Number(myPosition.lpToken) * Number(removePersent))),
+                    String(Math.floor(Number(myPosition.token0Value) * Number(removePersent) * 0.995)),
+                    String(Math.floor(Number(myPosition.token1Value) * Number(removePersent) * 0.995)),
+                    await getMetaMaskMyAccount(),
+                    Math.floor((+new Date()) / 1000) + 3600
+                ).encodeABI(),
+                value: 0x0
+            })
+        }
+        positionLocalStorage.removeMyPositionList(myPosition.tokenAddressA, myPosition.tokenAddressB)
+    } catch (error) {
+        console.log(error)
     }
-    positionLocalStorage.removeMyPositionList(myPosition.tokenAddressA, myPosition.tokenAddressB)
 }
 // #endregion
 
@@ -568,7 +572,7 @@ export const swapRequestTx = async (tokenA, tokenB) => {
                 from: await getMetaMaskMyAccount(),
                 to: CONTRACT_ADDRESS.ROUTER,
                 data: routerContract.methods.swapExactETHForTokens(
-                    Math.floor(quotePrice.token1MinOut * Math.pow(10, token.decimals)),
+                    String(Math.floor(quotePrice.token1MinOut * Math.pow(10, token.decimals))),
                     [
                         checkETH(ethToken.tokenAddress),
                         token.tokenAddress
@@ -584,8 +588,8 @@ export const swapRequestTx = async (tokenA, tokenB) => {
                 from: await getMetaMaskMyAccount(),
                 to: CONTRACT_ADDRESS.ROUTER,
                 data: routerContract.methods.swapExactTokensForETH(
-                    Math.floor(token.amount * Math.pow(10, token.decimals)),
-                    Math.floor(quotePrice.token1MinOut * Math.pow(10, ethToken.decimals)),
+                    String(Math.floor(token.amount * Math.pow(10, token.decimals))),
+                    String(Math.floor(quotePrice.token1MinOut * Math.pow(10, ethToken.decimals))),
                     [
                         token.tokenAddress,
                         checkETH(ethToken.tokenAddress)
@@ -602,8 +606,8 @@ export const swapRequestTx = async (tokenA, tokenB) => {
             from: await getMetaMaskMyAccount(),
             to: CONTRACT_ADDRESS.ROUTER,
             data: routerContract.methods.swapExactTokensForTokens(
-                Math.floor(tokenA.amount * Math.pow(10, tokenA.decimals)),
-                Math.floor(quotePrice.token1MinOut * Math.pow(10, tokenB.decimals)),
+                String(Math.floor(tokenA.amount * Math.pow(10, tokenA.decimals))),
+                String(Math.floor(quotePrice.token1MinOut * Math.pow(10, tokenB.decimals))),
                 [
                     tokenA.tokenAddress,
                     tokenB.tokenAddress

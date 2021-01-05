@@ -22,22 +22,16 @@ const WarningText = styled.p`
 `
 
 const RemoveLiquidity = ({ history, location }) => {
-    const [removeValue, setRemoveValue] = useState('')
+    const [removeValue, setRemoveValue] = useState('1')
     const [myPosition, setMyPosition] = useState(null)
     const [showModal, setShowModal] = useState({
         loading: false,
         success: false
     })
-    const [abledApprove, setAbledApprove] = useState(false)
+    const [abledApprove, setAbledApprove] = useState(null)
 
     const initialFunc = () => {
-        setRemoveValue('')
-        setMyPosition(null)
-        setShowModal({
-            loading: false,
-            success: false
-        })
-        setAbledApprove(false)
+        history.replace('/exchange/pool')
     }
 
     const onChangeRemoveValue = e => {
@@ -68,17 +62,24 @@ const RemoveLiquidity = ({ history, location }) => {
         checkPairApprove()
     }
 
-    const onClickRemoveLiquidity = async () => {
+    const onClickRemoveLiquidity = async (processFunc, action) => {
         setShowModal({
             ...showModal,
             loading: true,
         })
         try {
-            await requestRemoveLiquidity(myPosition, (removeValue / 100))
-            setShowModal({
-                loading: true,
-                success: true
-            })
+            await processFunc()
+            if (action === 'approve') {
+                setShowModal({
+                    loading: false,
+                    success: false
+                })
+            } else {
+                setShowModal({
+                    loading: true,
+                    success: true
+                })
+            }
         } catch (error) {
             setShowModal({
                 loading: false,
@@ -140,8 +141,8 @@ const RemoveLiquidity = ({ history, location }) => {
                         </dl>
                         <WarningText>Output is estimated. If the price changes by more than 0.5% your transaction will revert.</WarningText>
                         <div className="two_btn">
-                            <button className={`approve ${abledApprove ? '' : 'on'}`} disabled={abledApprove} onClick={onClickApprove}>Approve</button>
-                            <button className={`amount ${abledApprove && removeValue && myPosition ? 'on' : ''}`} disabled={!abledApprove || !removeValue || !myPosition} onClick={onClickRemoveLiquidity}>Enter an amount</button>
+                            <button className={`approve ${(abledApprove !== null && abledApprove) ? '' : 'on'}`} onClick={() => onClickRemoveLiquidity(() => onClickApprove(), 'approve')}>Approve</button>
+                            <button className={`amount ${abledApprove && removeValue && myPosition ? 'on' : ''}`} onClick={() => onClickRemoveLiquidity(() => requestRemoveLiquidity(myPosition, (removeValue / 100)))}>Enter an amount</button>
                         </div>
                     </div>
                     <div className="position">

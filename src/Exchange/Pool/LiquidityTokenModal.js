@@ -5,6 +5,7 @@ import { PRESET_TOKEN } from 'config'
 import { convertDecimal } from 'utils/utils'
 import { getTokenBalance } from 'utils/web3Utils'
 import { getMetaMaskMyAccount } from 'utils/metaMask'
+import HelpBox from 'Global/HelpBox'
 
 const TokenItem = styled.article`
     cursor: pointer;
@@ -60,11 +61,7 @@ const LiquidityTokenModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
             <div className="popup">
                 <div className="pop_con">
                     <h3>Select a token
-					<a href="#;" className="q_ico">
-                            <div className="help_box">
-                                Find a token…
-						</div>
-                        </a>
+                        <HelpBox helpText={''} />
                     </h3>
                     <input type="text" placeholder="Paste Address" value={searchTokenInput.value} onChange={searchTokenInputOnchange} />
                     <div className="token_name">

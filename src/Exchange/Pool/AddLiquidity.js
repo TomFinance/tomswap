@@ -130,7 +130,7 @@ const AddLiquidity = ({ location }) => {
         })
     }
 
-    const onChangeAmount = (e, state, setState) => {
+    const onChangeAddLiquidityInput = (e, state, setState) => {
         const { target: { value: amount } } = e
 
         setState({
@@ -163,7 +163,7 @@ const AddLiquidity = ({ location }) => {
             })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [addLiquidityInputA.amount, addLiquidityInputB.amount])
+    }, [addLiquidityInputA.amount, addLiquidityInputA.tokenAddress, addLiquidityInputB.amount, addLiquidityInputB.tokenAddress])
 
     useEffect(() => {
         checkoutApproved()
@@ -209,30 +209,35 @@ const AddLiquidity = ({ location }) => {
         checkClacPrice()
     }, [checkClacPrice])
 
-    const loadingConfirm = async processFunc => {
+    const loadingConfirm = async (processFunc, action) => {
         setShowModal({ confirm: false, loading: true })
         try {
             await processFunc()
             positionLocalStorage.setMyPositionList(addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress)
-            setShowModal({ confirm: false, loading: true, success: true })
+            if (action === 'approve') {
+                setShowModal({ confirm: false, loading: false, success: false })
+            } else {
+                setShowModal({ confirm: false, loading: true, success: true })
+            }
         } catch (error) {
             setShowModal({ confirm: false, loading: false, success: false })
         }
     }
 
-    const addLiquidityFromPoolPage = async position => {
-        const myAccount = await getMetaMaskMyAccount()
+    const addLiquidityFromPoolPage = useCallback(
+        async position => {
+            const myAccount = await getMetaMaskMyAccount()
 
-        setAddLiquidityInputA(await getTokenBalance(position.tokenAddressA, myAccount))
-        setAddLiquidityInputB(await getTokenBalance(position.tokenAddressB, myAccount))
-    }
+            setAddLiquidityInputA(await getTokenBalance(position.tokenAddressA, myAccount))
+            setAddLiquidityInputB(await getTokenBalance(position.tokenAddressB, myAccount))
+        }, [])
 
     useEffect(() => {
         const data = location.data
         if (data) {
             addLiquidityFromPoolPage(data)
         }
-    }, [location.data])
+    }, [addLiquidityFromPoolPage, location.data])
 
     return (
         <>
@@ -255,7 +260,7 @@ const AddLiquidity = ({ location }) => {
                                     <p>{`Balance : ${convertDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals)} `}</p>
                                 </div>
                                 <div className="fr max">
-                                    <input id="Create_0_Preview" type="text" placeholder={'0.0'} value={addLiquidityInputA.amount} onChange={e => onChangeAmount(e, addLiquidityInputA, setAddLiquidityInputA)} disabled={addLiquidityInputA.symbol === 'Select'} />
+                                    <input id="Create_0_Preview" type="text" placeholder={'0.0'} value={addLiquidityInputA.amount ? addLiquidityInputA.amount : ''} onChange={e => onChangeAddLiquidityInput(e, addLiquidityInputA, setAddLiquidityInputA)} />
                                     <div>
                                         {addLiquidityInputA.amount !== convertDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals) && Number(addLiquidityInputA.balance) ? (
                                             <MaxBtn onClick={() => setAddLiquidityInputA({ ...addLiquidityInputA, amount: convertDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals) })} >Max</MaxBtn>
@@ -270,9 +275,9 @@ const AddLiquidity = ({ location }) => {
                                     <p>{`Balance: ${convertDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals)} `}</p>
                                 </div>
                                 <div className="fr">
-                                    <input id="Create_1_Preview" type="text" placeholder={'0.0'} value={addLiquidityInputB.amount} onChange={e => onChangeAmount(e, addLiquidityInputB, setAddLiquidityInputB)} disabled={addLiquidityInputB.symbol === 'Select'} />
+                                    <input id="Create_1_Preview" type="text" placeholder={'0.0'} value={addLiquidityInputB.amount ? addLiquidityInputB.amount : ''} onChange={e => onChangeAddLiquidityInput(e, addLiquidityInputB, setAddLiquidityInputB)} />
                                     <div className="token">
-                                        {addLiquidityInputB.amount !== convertDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals) && Number(addLiquidityInputB.balance) ? (
+                                        {pageType === 'create pair' && addLiquidityInputB.amount !== convertDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals) && Number(addLiquidityInputB.balance) ? (
                                             <strong onClick={() => setAddLiquidityInputB({ ...addLiquidityInputB, amount: convertDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals) })} >Max</strong>
                                         ) : null}
                                         <a href="#token_pop" className="pop_call" onClick={() => setAddLiquidityInputB({ ...addLiquidityInputB, show: true })} >{addLiquidityInputB.symbol}</a>
@@ -308,12 +313,12 @@ const AddLiquidity = ({ location }) => {
                         ) : null}
                         {addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress && (
                             <AppoveBtnWrap>
-                                {addLiquidityInputA.tokenAddress !== ETH_ADDRESS && (
-                                    <AppoveBtn className={`enter enter02 ${(checkApprove.a || checkApprove.a === null) ? 'disabled' : 'on'}`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputA.tokenAddress, addLiquidityInputA.amount, addLiquidityInputA.decimals); await checkPairContract() })}>{`Approve ${addLiquidityInputA.symbol.toUpperCase()} `}</AppoveBtn>
-                                )}
-                                {addLiquidityInputB.symbol !== ETH_ADDRESS && (
-                                    <AppoveBtn className={`enter enter02 ${(checkApprove.b || checkApprove.b === null) ? 'disabled' : 'on'}`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputB.tokenAddress, addLiquidityInputB.amount, addLiquidityInputB.decimals); await checkPairContract() })}>{`Approve ${addLiquidityInputB.symbol.toUpperCase()} `}</AppoveBtn>
-                                )}
+                                {addLiquidityInputA.tokenAddress !== ETH_ADDRESS && (!checkApprove.a && checkApprove.a !== null) ? (
+                                    <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputA.tokenAddress); await checkoutApproved(); await checkPairContract() }, 'approve')}>{`Approve ${addLiquidityInputA.symbol.toUpperCase()} `}</AppoveBtn>
+                                ) : null}
+                                {addLiquidityInputB.symbol !== ETH_ADDRESS && (!checkApprove.b && checkApprove.b !== null) ? (
+                                    <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputB.tokenAddress); await checkoutApproved(); await checkPairContract() }, 'approve')}>{`Approve ${addLiquidityInputB.symbol.toUpperCase()} `}</AppoveBtn>
+                                ) : null}
                             </AppoveBtnWrap>
                         )}
                         <button className={`enter pop_call ${(checkApprove.a && checkApprove.b) && (addLiquidityInputA.amount <= addLiquidityInputA.balance * Math.pow(0.1, addLiquidityInputA.decimals) && addLiquidityInputB.amount <= addLiquidityInputB.balance * Math.pow(0.1, addLiquidityInputB.decimals)) ? 'on' : 'disabled'}`} disabled={(!checkApprove.a || !checkApprove.b) && (addLiquidityInputA.amount <= addLiquidityInputA.balance * Math.pow(0.1, addLiquidityInputA.decimals) || addLiquidityInputB.amount <= addLiquidityInputB.balance * Math.pow(0.1, addLiquidityInputA.decimals))} onClick={() => setShowModal({ confirm: true, loading: false })} >{pageType === 'add liquidity' ? 'Supply' : 'Create'}</button>

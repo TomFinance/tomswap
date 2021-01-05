@@ -15,15 +15,4 @@ export const metaMaskGetBlock = async () => {
 
 export const metaMaskSendTx = obj => {
     return etherWeb3.eth.sendTransaction(obj)
-
-    // etherWeb3.eth.subscribe('pendingTransactions', (err, result) => {
-    //     if (err) console.log("🚀 ~ file: AddLiquidity.js ~ line 144 ~ subscription ~ result", result)
-    // }).on("data", transaction => {
-    //     console.log("🚀 ~ file: AddLiquidity.js ~ line 147 ~ subscription ~ transaction", transaction)
-    // })
-}
-
-export const metaMaskCall = async (address, method, args) => {
-
-    // const response = await window.ethereum.request({method : 'eth_call', params : [{to : address, data : ''}]});
 }
