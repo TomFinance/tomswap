@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { positionLocalStorage } from 'utils/utils'
 import { myPositionCheck } from 'utils/web3Utils'
 import { Helmet } from 'react-helmet'
+import HelpBox from 'Global/HelpBox'
 
 const Wrapper = styled.div`
     padding: 115px 0 538px;
@@ -23,12 +24,6 @@ const GridBtnWrap = styled.div`
 const Pool = () => {
     const [loading, setLoading] = useState(true)
     const [positionList, setPositionList] = useState(null)
-
-    useEffect(() => {
-        setTimeout(() => {
-            setLoading(false)
-        }, 1000)
-    }, [])
 
     const onClickPosition = (targetPosition, idx) => {
         const tempPositionList = [...positionList]
@@ -52,6 +47,7 @@ const Pool = () => {
         )
 
         setPositionList(tempPositionList?.filter(positionData => positionData))
+        setLoading(false)
     }, [])
 
     useEffect(() => {
@@ -74,9 +70,7 @@ const Pool = () => {
                     </GridBtnWrap>
                     <div className="liquidity">
                         <div className="li_tit">Your Liquidity
-							<a href="#;" className="q_ico">
-                                <div className="help_box">Find a token…</div>
-                            </a>
+                        <HelpBox helpText={''} />
                         </div>
                         {(loading || positionList === null) ? (
                             <div className="box">

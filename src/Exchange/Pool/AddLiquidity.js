@@ -12,6 +12,7 @@ import ConfirmModal from 'Exchange/ConfirmModal'
 import LoadingModal from '../LoadingModal'
 import { getMetaMaskMyAccount } from 'utils/metaMask'
 import { Helmet } from 'react-helmet'
+import HelpBox from 'Global/HelpBox'
 
 const Wrapper = styled.div`
     padding: 115px 0 0;
@@ -245,9 +246,7 @@ const AddLiquidity = ({ location }) => {
                             <Link to="/exchange/pool" className="prev"><img src="/images/ico/ico_arrow_back.png"
                                 alt="뒤로가기" /></Link>
                             <span>{pageType === 'add liquidity' ? 'Add Liquidity' : 'Create Pair'}</span>
-                            <a href="#;" className="q_ico">
-                                <div className="help_box">Find a token…</div>
-                            </a>
+                            <HelpBox helpText={'When you add liquidity, you are given pool tokens representing your position. These tokens automatically earn fees proportional to your share of the pool, and can be redeemed at any time.'} />
                         </div>
                         <div className="exchange">
                             <div className="top">

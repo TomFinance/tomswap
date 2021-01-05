@@ -19,16 +19,11 @@ function App({ history }) {
           if (res.length) {
             const tempCurrentAccount = res[0]
             setCurrentAccount(tempCurrentAccount)
-
-            return tempCurrentAccount
+            if (tempCurrentAccount) {
+              setCurrentBalance(await getBalance(tempCurrentAccount))
+            }
           }
-        })
-        .then(async tempAccount => {
-          if (tempAccount) {
-            setCurrentBalance(await getBalance(tempAccount))
-          }
-        })
-        .catch((err) => {
+        }).catch((err) => {
           if (err.code === 4001) {
             console.log('Please connect to MetaMask.')
           } else {
@@ -56,7 +51,14 @@ function App({ history }) {
     handleConnectMetaMask()
 
     if (window.ethereum) {
+      window.ethereum.autoRefreshOnNetworkChange = false
       window.ethereum.on('accountsChanged', handleIsUnlocked)
+
+    }
+    return () => {
+      if (window.ethereum) {
+        window.ethereum.removeListener('accountsChanged', handleIsUnlocked)
+      }
     }
   }, [handleIsUnlocked])
 

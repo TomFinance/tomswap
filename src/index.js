@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Route, BrowserRouter as Router } from 'react-router-dom'
+import { Route, Router } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
 
 import './assets/css/font.css'

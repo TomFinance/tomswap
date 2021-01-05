@@ -129,7 +129,7 @@ export const checkTom2PoolApprove = async lpTokenSymbol => {
 }
 
 export const confirmLpTokenApprove = async lpTokenSymbol => {
-    const poolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.POOL, MINING_POOLS[lpTokenSymbol])
+    const poolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, LP_TOKEN_PAIRS[lpTokenSymbol])
 
     await metaMaskSendTx({
         from: await getMetaMaskMyAccount(),
@@ -142,7 +142,7 @@ export const confirmLpTokenApprove = async lpTokenSymbol => {
 }
 
 export const lpTokenRequestTx = async (lpTokenSymbol, action, amount, lpTokenDecimals) => {
-    const poolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.POOL, MINING_POOLS[lpTokenSymbol])
+    const poolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, LP_TOKEN_PAIRS[lpTokenSymbol])
 
     const txObject = {
         from: await getMetaMaskMyAccount(),

@@ -142,7 +142,7 @@ footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
 
 /*Exchange_02*/
 .re_ico {display:inline-block; width:10px; height:10px; margin-left:5px; text-indent:-9999px; vertical-align:-3px; background:url(./images/ico/ico_refresh.png) no-repeat center; background-size:100%;}
-.q_ico {position:relative; display:inline-block; width:12px; height:12px; margin-left:5px; vertical-align:-3px; background:url(./images/ico/ico_help.png) no-repeat center; background-size:100%;}
+.q_ico {position:relative; display:inline-block; width:12px; height:12px; margin-left:5px; background:url(./images/ico/ico_help.png) no-repeat center; background-size:100%;}
 
 .sub_wrap {position:relative;}
 .sub_wrap .enter02 {margin:0; color:#eab645;}
@@ -267,7 +267,7 @@ footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
 .token_con {height:900px;}
 #token_pop .q_ico {position:relative; vertical-align:-1px;}
 .q_ico.on {background:url(./images/ico/ico_help_y.png) no-repeat center; background-size:100%;}
-.help_box {display:none; position:absolute; z-index:999; top:21px; left:-91.5px; width:195px; height:120px; padding:18px 16px 13px; color:#666; font-size:12px; font-weight:400; border-radius:10px; box-shadow:0 3px 6px 0 rgba(0,0,0,0.16); border:solid 1px #eab640; background:#fff;}
+.help_box {position:absolute; z-index:999; top:21px; left:-91.5px; width:195px; height:120px; padding:18px 16px 13px; color:#666; font-size:12px; font-weight:400; border-radius:10px; box-shadow:0 3px 6px 0 rgba(0,0,0,0.16); border:solid 1px #eab640; background:#fff;}
 .help_box:before {content:''; position:absolute; z-index:1; top:-5px; left:50%; width:8px; height:8px; margin-left:-5px; border:1px solid #eab640; background:#fff; transform:rotate(45deg);  border-bottom:1px solid transparent; border-right:1px solid transparent;}
 #token_pop .popup {width:395px; padding:18px 24px 0px 24px;}
 #token_pop .popup h3 {color:#141414; font-size:16px; font-weight:bold;}

@@ -13,7 +13,7 @@ const StakeButtonWrap = styled.div`
     gap: 8px;
 `
 
-const Tom2Stake = ({ match: { params: { route } }, history }) => {
+const FarmStake = ({ match: { params: { route } }, history }) => {
     const [showModal, setShowModal] = useState({
         stake: false,
         unStake: false,
@@ -72,7 +72,7 @@ const Tom2Stake = ({ match: { params: { route } }, history }) => {
     useEffect(() => {
         const splitPoolNameList = route.split('-')
         if (splitPoolNameList.length < 2 && !Object.keys(MINING_POOLS).includes(`${splitPoolNameList[0].toUpperCase()}-${splitPoolNameList[1].toUpperCase()}`)) {
-            history.replace('/tom2')
+            history.replace('/farm')
         } else if (splitPoolNameList.length === 2) {
             setSplitPoolNameObj({
                 lpTokenSymbol: `${splitPoolNameList[0].toUpperCase()}-${splitPoolNameList[1].toUpperCase()}`,
@@ -111,7 +111,7 @@ const Tom2Stake = ({ match: { params: { route } }, history }) => {
                                     <button className={`main_btn pop_call ${Number(stakeData.stakedToken) > 0 ? '' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, unStake: true })}>Unstake</button>
                                 </StakeButtonWrap>
                             ) : (
-                                    <button className={`main_btn pop_call ${stakeData.lpTokenAllowance === null && 'disabled'}`} onClick={async () => await confirmLpTokenApprove(splitPoolNameObj.lpTokenSymbol)}>Approve</button>
+                                    <button className={`main_btn pop_call ${stakeData.lpTokenAllowance === null && 'disabled'}`} onClick={() => handleLpTokenRequestTx(() => confirmLpTokenApprove(splitPoolNameObj.lpTokenSymbol))}>Approve</button>
                                 )}
                         </div>
                     </div>
@@ -127,4 +127,4 @@ const Tom2Stake = ({ match: { params: { route } }, history }) => {
     )
 }
 
-export default Tom2Stake
+export default FarmStake

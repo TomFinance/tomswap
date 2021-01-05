@@ -5,7 +5,7 @@ import { MINING_POOLS } from 'config'
 import { calculateAPY } from 'utils/web3Utils'
 import { Helmet } from 'react-helmet'
 
-const Tom2 = () => {
+const Farm = () => {
     const [apyList, setApyList] = useState([])
     const getApyList = useCallback(async () => {
         setApyList(
@@ -76,4 +76,4 @@ const Tom2 = () => {
     )
 }
 
-export default Tom2
+export default Farm
