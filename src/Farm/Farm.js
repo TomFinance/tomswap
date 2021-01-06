@@ -8,13 +8,13 @@ import { Helmet } from 'react-helmet'
 const Farm = () => {
     const [apyList, setApyList] = useState([])
     const getApyList = useCallback(async () => {
-        setApyList(
-            await Promise.all(Object.keys(MINING_POOLS)
-                .map(async key => {
-                    return calculateAPY(MINING_POOLS[key])
-                })
-            )
+        const apyList = await Promise.all(Object.keys(MINING_POOLS)
+            .map(async key => {
+                return calculateAPY(MINING_POOLS[key])
+            })
         )
+
+        setApyList(apyList)
     }, [])
 
     useEffect(() => {

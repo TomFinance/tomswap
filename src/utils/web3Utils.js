@@ -101,9 +101,11 @@ export async function calculateAPY(poolAddress) {
     }
 
     const rewardPerBlock = await poolContract.methods.rewardPerBlock().call()
-    const PPB = (tom_price * rewardPerBlock) / totalStaked / (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
+    const PPB = (tom_price * rewardPerBlock)
+        / totalStaked
+        / (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
 
-    return `${convertDecimal(((PPB * 86400 * 365) / 13) * 100)}%`
+    return `${(((PPB * 86400 * 365) / 13) * 100).toFixed(2)}%`
 }
 
 export const getMyLpTokenBalance = async lpTokenSymbol => {
