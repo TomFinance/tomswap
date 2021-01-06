@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-const HelpBox = ({ helpText }) => {
+const HelpBox = ({ id = 0, helpText }) => {
     const helpRef = useRef(null)
     const [showHelpBox, setShowHelpBox] = useState(false)
 
     const clickEvent = useCallback(e => {
-        if (e.target.className === 'q_ico') {
+        console.log(e.target.className)
+        if (e.target.className === `q_ico ${id}`) {
             setShowHelpBox(!showHelpBox)
-        } else if (e.target.className !== 'help_box' && !e.path.includes(helpRef.current)) {
+        } else if (e.target.className !== `help_box ${id}` && !e.path.includes(helpRef.current)) {
             setShowHelpBox(false)
         }
-    }, [showHelpBox])
+    }, [id, showHelpBox])
 
     useEffect(() => {
         document.addEventListener('click', clickEvent)
@@ -20,9 +21,9 @@ const HelpBox = ({ helpText }) => {
     }, [clickEvent])
 
     return (
-        <button className="q_ico" ref={helpRef}>
+        <button className={`q_ico ${id}`} ref={helpRef}>
             {showHelpBox && (
-                <div className="help_box" style={{ height: 'auto', lineHeight: '1.44', textAlign: 'center' }}>
+                <div className={`help_box ${id}`} style={{ height: 'auto', lineHeight: '1.44', textAlign: 'center' }}>
                     {helpText}
                 </div>
             )

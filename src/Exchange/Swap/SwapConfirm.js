@@ -1,3 +1,4 @@
+import HelpBox from 'Global/HelpBox'
 import React, { useState } from 'react'
 
 const SwapConfirm = ({ tokenA, tokenB, calcSwapData, showModal, setShowModal, onClickSwap }) => {
@@ -29,28 +30,16 @@ const SwapConfirm = ({ tokenA, tokenB, calcSwapData, showModal, setShowModal, on
                             <dd>{`${calcSwapData.tokenPriceB.toPrecision(12)} ${tokenB.symbol} / ${tokenA.symbol}`}<button className="re_ico" onClick={() => setClacShow(true)}> </button></dd>
                         )}
                     <dt>Minimum received
-                <a href="#;" className="q_ico">
-                            <div className="help_box help_right">
-                                Find a token…
-                    </div>
-                        </a>
+                    <HelpBox id={4} helpText={'Your transaction will revert if there is a large, unfavorable price movement before it is confirmed.'} />
                     </dt>
                     <dd>{`${calcSwapData.minimumReceived.toPrecision(12)} ${tokenB.symbol}`}</dd>
                     <dt>Price Impact
-                <a href="#;" className="q_ico">
-                            <div className="help_box help_right">
-                                Find a token…
-                    </div>
-                        </a>
+                    <HelpBox id={5} helpText={'The difference between the market price and estimated price due to trade size.'} />
                     </dt>
                     <dd className="green">
                         {`${(calcSwapData.impactRate * 100).toPrecision(12)}%`}</dd>
                     <dt>Liquidity Provider Fee
-                <a href="#;" className="q_ico">
-                            <div className="help_box help_right">
-                                Find a token…
-                    </div>
-                        </a>
+                    <HelpBox id={6} helpText={'A portion of each trade (0.30%) goes to liquidity providers as a protocol incentive.'} />
                     </dt>
                     <dd>{`${tokenA.amount * 0.003} ${tokenA.symbol}`}</dd>
                 </dl>

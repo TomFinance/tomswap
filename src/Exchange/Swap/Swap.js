@@ -9,6 +9,7 @@ import SwapConfirm from './SwapConfirm'
 import { swapPreviewPrice, swapRequestTx } from 'utils/web3Utils'
 import { convertDecimal } from 'utils/utils'
 import { Helmet } from 'react-helmet'
+import HelpBox from 'Global/HelpBox'
 
 const MaxBtn = styled.strong`
     display: inline-block;
@@ -179,7 +180,7 @@ const Swap = () => {
                         </>
                     )}
                 </div>
-                <button className={`enter enter02 ${(tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance * Math.pow(0.1, tokenA.decimals) && tokenB.amount <= tokenB.balance * Math.pow(0.1, tokenB.decimals)) && calcSwapData ? 'on' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
+                <button className={`enter enter02 ${(tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance * Math.pow(0.1, tokenA.decimals)) && calcSwapData ? 'on' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
             </div>
             {tokenA.amount && tokenB.amount && calcSwapData !== null ? (
                 <div className="analy">
@@ -187,28 +188,16 @@ const Swap = () => {
                         {/* <dt className="mark">Price</dt>
                         <dd>605.00 USDT / ETH <a href="#;" className="re_ico"> </a></dd> */}
                         <dt>Minimum received
-                    <a href="#;" className="q_ico">
-                                <div className="help_box help_right">
-                                    Find a token…
-                        </div>
-                            </a>
+                            <HelpBox id={1} helpText={'Your transaction will revert if there is a large, unfavorable price movement before it is confirmed.'} />
                         </dt>
                         <dd>{`${calcSwapData.minimumReceived} ${tokenB.symbol}`}</dd>
                         <dt>Price Impact
-                    <a href="#;" className="q_ico">
-                                <div className="help_box help_right">
-                                    Find a token…
-                        </div>
-                            </a>
+                        <HelpBox id={2} helpText={'The difference between the market price and estimated price due to trade size.'} />
                         </dt>
                         <dd className="green">
                             {`${(calcSwapData.impactRate * 100).toPrecision(12)}%`}</dd>
                         <dt>Liquidity Provider Fee
-                    <a href="#;" className="q_ico">
-                                <div className="help_box help_right">
-                                    Find a token…
-                        </div>
-                            </a>
+                        <HelpBox id={3} helpText={'A portion of each trade (0.30%) goes to liquidity providers as a protocol incentive.'} />
                         </dt>
                         <dd>{`${tokenA.amount * 0.003} ${tokenA.symbol}`}</dd>
                     </dl>

@@ -17,11 +17,7 @@ const SettingModal = ({ currentAccount, currentBalance }) => {
                         <div className="set_box">
                             <strong>Transaction Settings</strong>
                             <div className="set_tit">Slippage Toference
-                                <a href="#;" className="q_ico">
-                                    <div className="help_box">
-                                        Find a token...
-                                    </div>
-                                </a>
+                            <HelpBox id={1} helpText={''}/>
                             </div>
                             <ul>
                                 <li className="on"><a href="#;">0.1%</a></li>
@@ -33,11 +29,7 @@ const SettingModal = ({ currentAccount, currentBalance }) => {
                                 </li>
                             </ul>
                             <div className="set_tit">Transaction deadline
-                                <a href="#;" className="q_ico">
-                                    <div className="help_box">
-                                        Find a token...
-                                    </div>
-                                </a>
+                            <HelpBox id={2} helpText={''}/>
                             </div>
                             <div className="min">
                                 <input type="text" placeholder="0.50" />
@@ -48,11 +40,7 @@ const SettingModal = ({ currentAccount, currentBalance }) => {
                                 <ul>
                                     <li>
                                         <div className="set_tit">Toggle Expert Mode
-                                            <a href="#;" className="q_ico">
-                                                <div className="help_box">
-                                                    Find a token...
-                                                </div>
-                                            </a>
+                                        <HelpBox id={3} helpText={''}/>
                                         </div>
                                         <div className="mode">
                                             <label>
