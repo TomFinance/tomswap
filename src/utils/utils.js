@@ -28,9 +28,15 @@ export const positionLocalStorage = {
 }
 
 export const convertDecimal = (value, decimals, persent) => {
-    return persent
-        ? Number(value * Math.pow(0.1, decimals) * persent).toPrecision(12)
-        : Number(value * Math.pow(0.1, decimals)).toPrecision(12)
+    let calcValue = Number(value * Math.pow(0.1, decimals))
+
+    if (persent) {
+        calcValue *= persent
+    }
+
+    return calcValue < 0.1
+        ? calcValue.toFixed(100).slice(0, 14)
+        : calcValue.toPrecision(12)
 }
 
 export const checkETH = address => {

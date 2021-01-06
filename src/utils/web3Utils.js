@@ -143,7 +143,7 @@ export const confirmLpTokenApprove = async lpTokenSymbol => {
 }
 
 export const lpTokenRequestTx = async (lpTokenSymbol, action, amount, lpTokenDecimals) => {
-    const poolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, LP_TOKEN_PAIRS[lpTokenSymbol])
+    const poolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.POOL, LP_TOKEN_PAIRS[lpTokenSymbol])
 
     const txObject = {
         from: await getMetaMaskMyAccount(),

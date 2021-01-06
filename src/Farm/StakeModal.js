@@ -72,7 +72,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                         <p>{`${splitPoolNameObj.lpTokenSymbol} UNI-V2 LP`}</p>
                         <InputBox>
                             <input type="text" value={amount} onChange={onChange} />
-                            <button onClick={() => setAmount(stakeData.lpTokenBalance * Math.pow(0.1, stakeData.lpTokenDecimals))}>Max</button>
+                            <button onClick={() => setAmount(convertDecimal(stakeData.lpTokenBalance, stakeData.lpTokenDecimals))}>Max</button>
                         </InputBox>
                     </DescriptionWrap>
                 </div>
@@ -96,7 +96,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                         <p>{`${splitPoolNameObj.lpTokenSymbol} UNI-V2 LP`}</p>
                         <InputBox>
                             <input type="number" placeholder="Input amount" value={amount} onChange={onChange} />
-                            <button onClick={() => setAmount(stakeData.stakedToken * Math.pow(0.1, stakeData.lpTokenDecimals))}>Max</button>
+                            <button onClick={() => setAmount(convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals))}>Max</button>
                         </InputBox>
                     </DescriptionWrap>
                 </div>
