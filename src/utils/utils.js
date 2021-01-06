@@ -28,7 +28,11 @@ export const positionLocalStorage = {
 }
 
 export const convertDecimal = (value, decimals, persent) => {
-    let calcValue = Number(value * Math.pow(0.1, decimals))
+    let calcValue = Number(value)
+
+    if (decimals) {
+        calcValue = calcValue * Math.pow(0.1, decimals)
+    }
 
     if (persent) {
         calcValue *= persent

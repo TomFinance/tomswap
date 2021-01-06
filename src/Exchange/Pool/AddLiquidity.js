@@ -303,15 +303,15 @@ const AddLiquidity = ({ location }) => {
                                     <p>Prices and pool share</p>
                                     <ul>
                                         <li>
-                                            <span>{Number(calcPricesText.left).toPrecision(12)}</span>
+                                            <span>{convertDecimal(Number(calcPricesText.left))}</span>
                                             <p>{`${addLiquidityInputA.symbol.toUpperCase()} per ${addLiquidityInputB.symbol.toUpperCase()} `}</p>
                                         </li>
                                         <li>
-                                            <span>{Number(calcPricesText.center).toPrecision(12)}</span>
+                                            <span>{convertDecimal(Number(calcPricesText.center))}</span>
                                             <p>{`${addLiquidityInputB.symbol.toUpperCase()} per ${addLiquidityInputA.symbol.toUpperCase()} `}</p>
                                         </li>
                                         <li>
-                                            <span>{Number(calcPricesText.right).toPrecision(12)}%</span>
+                                            <span>{convertDecimal(Number(calcPricesText.right))}%</span>
                                             <p>Share of Pool</p>
                                         </li>
                                     </ul>

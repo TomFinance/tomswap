@@ -5,6 +5,7 @@ import { checkRemoveLiquidityApprove, requestRemoveLiquidityApprove, requestRemo
 import LoadingModal from 'Exchange/LoadingModal'
 import HelpBox from 'Global/HelpBox'
 import { myAccountDispatch, myAccountReducer } from 'contextAPI'
+import { convertDecimal } from 'utils/utils'
 
 const PositionTitle = styled.div`
     display: flex;
@@ -131,10 +132,10 @@ const RemoveLiquidity = ({ history, location }) => {
                         </div>
                         <div className="weth">
                             <dl>
-                                <dt>{removeValue ? (myPosition.token0ViewValue * (removeValue / 100)).toPrecision(12) : '-'}</dt>
+                                <dt>{removeValue ? convertDecimal(myPosition.token0ViewValue * (removeValue / 100)) : '-'}</dt>
                                 {/* <dd className="ico ico03">ETH</dd> */}
                                 <dd className="ico">{myPosition.token0Symbol}</dd>
-                                <dt>{removeValue ? (myPosition.token1ViewValue * (removeValue / 100)).toPrecision(12) : '-'}</dt>
+                                <dt>{removeValue ? convertDecimal(myPosition.token1ViewValue * (removeValue / 100)) : '-'}</dt>
                                 {/* <dd className="ico ico04">USDT</dd> */}
                                 <dd className="ico">{myPosition.token1Symbol}</dd>
                             </dl>
@@ -142,9 +143,9 @@ const RemoveLiquidity = ({ history, location }) => {
                         </div>
                         <dl className="weth price">
                             <dt>Price:</dt>
-                            <dd>{`1 ${myPosition.token0Symbol} = ${(myPosition.token1ViewValue / myPosition.token0ViewValue).toPrecision(12)} ${myPosition.token1Symbol}`}</dd>
+                            <dd>{`1 ${myPosition.token0Symbol} = ${convertDecimal(myPosition.token1ViewValue / myPosition.token0ViewValue)} ${myPosition.token1Symbol}`}</dd>
                             <dt></dt>
-                            <dd className="shadow">{`1 ${myPosition.token1Symbol} = ${(myPosition.token0ViewValue / myPosition.token1ViewValue).toPrecision(12)} ${myPosition.token0Symbol}`}</dd>
+                            <dd className="shadow">{`1 ${myPosition.token1Symbol} = ${convertDecimal(myPosition.token0ViewValue / myPosition.token1ViewValue)} ${myPosition.token0Symbol}`}</dd>
                         </dl>
                         <WarningText>Output is estimated. If the price changes by more than 0.5% your transaction will revert.</WarningText>
                         <div className="two_btn">
@@ -165,13 +166,13 @@ const RemoveLiquidity = ({ history, location }) => {
                                 </span> */}
                                     {`${myPosition.token0Symbol}/${myPosition.token1Symbol}`}
                                 </dt>
-                                <dd className="bold">{myPosition.lpTokenView.toPrecision(12)}</dd>
+                                <dd className="bold">{convertDecimal(myPosition.lpTokenView)}</dd>
                             </PositionTitle>
                             <dd className="bold">{ }</dd>
                             <dt>{myPosition.token0Symbol}</dt>
-                            <dd>{myPosition.token0ViewValue.toPrecision(12)}</dd>
+                            <dd>{convertDecimal(myPosition.token0ViewValue)}</dd>
                             <dt>{myPosition.token1Symbol}</dt>
-                            <dd>{myPosition.token1ViewValue.toPrecision(12)}</dd>
+                            <dd>{convertDecimal(myPosition.token1ViewValue)}</dd>
                         </dl>
                     </div>
                 </>

@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
+import { convertDecimal } from 'utils/utils'
 
 const CloseBtn = styled.button`
     position:absolute;
@@ -23,23 +24,21 @@ const ConfirmModal = ({ aToken, bToken, calcData, closeFunc, confirmFunc }) => {
                 <div className="pop_con">
                     <h3>You will receive</h3>
                     <div className="will">
-                        <strong>{Number(calcData.receiveToken).toPrecision(12)}</strong>
+                        <strong>{convertDecimal(Number(calcData.receiveToken))}</strong>
                         <p>{`${UpperTokenSymbolA}/${UpperTokenSymbolB} Pool Token`}</p>
                         {/* <span>Output is…</span> */}
                     </div>
                     <dl className="output">
                         <dt>Prices and pool share</dt>
-                        {/* <dd className="ico ico01">{Number(bToken.amount).toPrecision(12)}</dd> */}
-                        {/* <dd className="ico ico02">{Number(aToken.amount).toPrecision(12)}</dd> */}
-                        <dd className="ico">{Number(bToken.amount).toPrecision(12)}</dd>
-                        <dd className="ico">{Number(aToken.amount).toPrecision(12)}</dd>
+                        <dd className="ico">{convertDecimal(Number(bToken.amount))}</dd>
+                        <dd className="ico">{convertDecimal(Number(aToken.amount))}</dd>
                         <dt>{`${UpperTokenSymbolA} per ${UpperTokenSymbolB} `}</dt>
-                        <dd>{`1 ${UpperTokenSymbolB} = ${Number(calcData.left).toPrecision(12)} ${UpperTokenSymbolA}`}</dd>
+                        <dd>{`1 ${UpperTokenSymbolB} = ${convertDecimal(Number(calcData.left))} ${UpperTokenSymbolA}`}</dd>
                         <dt></dt>
                         <dt>{`${UpperTokenSymbolB} per ${UpperTokenSymbolA} `}</dt>
-                        <dd>{`1 ${UpperTokenSymbolA} = ${Number(calcData.center).toPrecision(12)} ${UpperTokenSymbolB}`}</dd>
+                        <dd>{`1 ${UpperTokenSymbolA} = ${convertDecimal(Number(calcData.center))} ${UpperTokenSymbolB}`}</dd>
                         <dt>Share of Pool</dt>
-                        <dd>{Number(calcData.right).toPrecision()}%</dd>
+                        <dd>{convertDecimal(Number(calcData.right))}%</dd>
                     </dl>
                 </div>
                 <button className="pop_call pop_close" onClick={confirmFunc}>Confirm Supply</button>

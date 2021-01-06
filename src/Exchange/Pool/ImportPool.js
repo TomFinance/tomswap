@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 import { myPositionCheck } from 'utils/web3Utils'
 import LiquidityTokenModal from './LiquidityTokenModal'
-import { positionLocalStorage } from 'utils/utils'
+import { convertDecimal, positionLocalStorage } from 'utils/utils'
 import { Helmet } from 'react-helmet'
 import HelpBox from 'Global/HelpBox'
 
@@ -107,11 +107,11 @@ const ImportPool = ({ history }) => {
                                                 {/* <span className="icon02"><img src="/images/ico/ico_eth02.png" alt="" /></span> */}
                                                 {` ${addLiquidityInputA.symbol}/${addLiquidityInputB.symbol}`}
                                             </dt>
-                                            <dd className="bold">{pairData.lpTokenView.toPrecision(12)}</dd>
+                                            <dd className="bold">{convertDecimal(pairData.lpTokenView)}</dd>
                                             <dt>{addLiquidityInputA.symbol}</dt>
-                                            <dd>{pairData.token0ViewValue.toPrecision(12)}</dd>
+                                            <dd>{convertDecimal(pairData.token0ViewValue)}</dd>
                                             <dt>{addLiquidityInputB.symbol}</dt>
-                                            <dd>{pairData.token1ViewValue.toPrecision(12)}</dd>
+                                            <dd>{convertDecimal(pairData.token1ViewValue)}</dd>
                                         </dl>
                                     </div>
                                     <NotFoundBox className='found'>

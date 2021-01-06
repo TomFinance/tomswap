@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 
-import { positionLocalStorage } from 'utils/utils'
+import { convertDecimal, positionLocalStorage } from 'utils/utils'
 import { myPositionCheck } from 'utils/web3Utils'
 import { Helmet } from 'react-helmet'
 import HelpBox from 'Global/HelpBox'
@@ -94,15 +94,13 @@ const Pool = () => {
                                                         {position.show && (
                                                             <dl>
                                                                 <dt>{`Pooled ${position.token0Symbol}`}</dt>
-                                                                {/* <dd className="eth01">{convertDecimal(position.token0ViewValue.toPrecision(12)}</dd> */}
-                                                                <dd>{position.token0ViewValue.toPrecision(12)}</dd>
+                                                                <dd>{convertDecimal(position.token0ViewValue)}</dd>
                                                                 <dt>{`Pooled ${position.token1Symbol}`}</dt>
-                                                                {/* <dd className="eth02">{position.token1ViewValue.toPrecision(12)}</dd> */}
-                                                                <dd>{position.token1ViewValue.toPrecision(12)}</dd>
+                                                                <dd>{convertDecimal(position.token1ViewValue)}</dd>
                                                                 <dt>Your pool tokens:</dt>
-                                                                <dd>{position.lpTokenView.toPrecision(12)}</dd>
+                                                                <dd>{convertDecimal(position.lpTokenView)}</dd>
                                                                 <dt>Your pool share:</dt>
-                                                                <dd>{(position.persent * 100).toPrecision(12)}%</dd>
+                                                                <dd>{convertDecimal(position.persent * 100)}%</dd>
                                                             </dl>
                                                         )}
                                                     </div>

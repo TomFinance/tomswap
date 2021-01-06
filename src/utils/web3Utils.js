@@ -1,5 +1,5 @@
 import Web3 from "web3"
-import { checkETH, filterdETH, positionLocalStorage } from "./utils"
+import { checkETH, convertDecimal, filterdETH, positionLocalStorage } from "./utils"
 import { getMetaMaskMyAccount, metaMaskSendTx } from "./metaMask"
 import { MINING_POOLS, LP_TOKEN_PAIRS, THEGRAGH_API_URL, ETH_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
 import axios from "axios"
@@ -103,7 +103,7 @@ export async function calculateAPY(poolAddress) {
     const rewardPerBlock = await poolContract.methods.rewardPerBlock().call()
     const PPB = (tom_price * rewardPerBlock) / totalStaked / (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
 
-    return `${(((PPB * 86400 * 365) / 13) * 100).toPrecision(12)}%`
+    return `${convertDecimal(((PPB * 86400 * 365) / 13) * 100)}%`
 }
 
 export const getMyLpTokenBalance = async lpTokenSymbol => {

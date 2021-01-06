@@ -1,5 +1,6 @@
 import HelpBox from 'Global/HelpBox'
 import React, { useState } from 'react'
+import { convertDecimal } from 'utils/utils'
 
 const SwapConfirm = ({ tokenA, tokenB, calcSwapData, showModal, setShowModal, onClickSwap }) => {
     const [clacShow, setClacShow] = useState(true)
@@ -12,9 +13,9 @@ const SwapConfirm = ({ tokenA, tokenB, calcSwapData, showModal, setShowModal, on
                     <h3>Confirm Swap</h3>
                     <div className="wet">
                         <dl>
-                            <dt className="arrow">{Number(tokenA.amount).toPrecision(12)}</dt>
+                            <dt className="arrow">{convertDecimal(Number(tokenA.amount))}</dt>
                             <dd>{tokenA.symbol}</dd>
-                            <dt>{Number(tokenB.amount).toPrecision(12)}</dt>
+                            <dt>{convertDecimal(Number(tokenB.amount))}</dt>
                             <dd>{tokenB.symbol}</dd>
                         </dl>
                         {/* <p className="up">Price Updated<a href="#;" className="accept">Accept</a></p> */}
@@ -25,19 +26,19 @@ const SwapConfirm = ({ tokenA, tokenB, calcSwapData, showModal, setShowModal, on
                 <dl>
                     <dt className="mark">Price</dt>
                     {clacShow ? (
-                        <dd>{`${calcSwapData.tokenPriceA.toPrecision(12)} ${tokenA.symbol} / ${tokenB.symbol}`}<button className="re_ico" onClick={() => setClacShow(false)}> </button></dd>
+                        <dd>{`${convertDecimal(calcSwapData.tokenPriceA)} ${tokenA.symbol} / ${tokenB.symbol}`}<button className="re_ico" onClick={() => setClacShow(false)}> </button></dd>
                     ) : (
-                            <dd>{`${calcSwapData.tokenPriceB.toPrecision(12)} ${tokenB.symbol} / ${tokenA.symbol}`}<button className="re_ico" onClick={() => setClacShow(true)}> </button></dd>
+                            <dd>{`${convertDecimal(calcSwapData.tokenPriceB)} ${tokenB.symbol} / ${tokenA.symbol}`}<button className="re_ico" onClick={() => setClacShow(true)}> </button></dd>
                         )}
                     <dt>Minimum received
                     <HelpBox id={4} helpText={'Your transaction will revert if there is a large, unfavorable price movement before it is confirmed.'} />
                     </dt>
-                    <dd>{`${calcSwapData.minimumReceived.toPrecision(12)} ${tokenB.symbol}`}</dd>
+                    <dd>{`${convertDecimal(calcSwapData.minimumReceived)} ${tokenB.symbol}`}</dd>
                     <dt>Price Impact
                     <HelpBox id={5} helpText={'The difference between the market price and estimated price due to trade size.'} />
                     </dt>
                     <dd className="green">
-                        {`${(calcSwapData.impactRate * 100).toPrecision(12)}%`}</dd>
+                        {`${convertDecimal(calcSwapData.impactRate * 100)}%`}</dd>
                     <dt>Liquidity Provider Fee
                     <HelpBox id={6} helpText={'A portion of each trade (0.30%) goes to liquidity providers as a protocol incentive.'} />
                     </dt>

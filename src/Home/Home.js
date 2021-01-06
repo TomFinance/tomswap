@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
+import { convertDecimal } from 'utils/utils'
 import { getTotalSupply } from 'utils/web3Utils'
 
 const Home = () => {
@@ -38,7 +39,7 @@ const Home = () => {
                 <div className="figure">
                     <div className="balance">
                         <p>My TOM Balance</p>
-                        <strong>{Number(balanceObj.myTomBalance).toPrecision(12)}</strong>
+                        <strong>{convertDecimal(Number(balanceObj.myTomBalance))}</strong>
                         {/* <div className="pend">
                             <p>Pending harvest</p>
                             <span>0.00000000</span>
@@ -46,7 +47,7 @@ const Home = () => {
                     </div>
                     <div className="supply">
                         <p>Current Total supply</p>
-                        <strong>{typeof balanceObj.totalSupply === 'number' ? Number(balanceObj.totalSupply) > 0 ? Number(balanceObj.totalSupply).toPrecision(12) : (0).toPrecision(12) : '-'}</strong>
+                        <strong>{typeof balanceObj.totalSupply === 'number' ? Number(balanceObj.totalSupply) > 0 ? convertDecimal(Number(balanceObj.totalSupply)) : convertDecimal(0) : '-'}</strong>
                         {/* <div className="pend">
                             <p>APY</p>
                             <span>10.00000000 TOM2</span>

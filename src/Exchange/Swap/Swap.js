@@ -202,7 +202,7 @@ const Swap = () => {
                         <HelpBox id={2} helpText={'The difference between the market price and estimated price due to trade size.'} />
                         </dt>
                         <dd className="green">
-                            {`${(calcSwapData.impactRate * 100).toPrecision(12)}%`}</dd>
+                            {`${convertDecimal(calcSwapData.impactRate * 100)}%`}</dd>
                         <dt>Liquidity Provider Fee
                         <HelpBox id={3} helpText={'A portion of each trade (0.30%) goes to liquidity providers as a protocol incentive.'} />
                         </dt>
