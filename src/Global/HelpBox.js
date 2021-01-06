@@ -5,7 +5,6 @@ const HelpBox = ({ id = 0, helpText }) => {
     const [showHelpBox, setShowHelpBox] = useState(false)
 
     const clickEvent = useCallback(e => {
-        console.log(e.target.className)
         if (e.target.className === `q_ico ${id}`) {
             setShowHelpBox(!showHelpBox)
         } else if (e.target.className !== `help_box ${id}` && !e.path.includes(helpRef.current)) {

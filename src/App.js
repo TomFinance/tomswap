@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useReducer } from 'react'
 import { withRouter } from 'react-router-dom'
 
 import Header from './Header'
@@ -6,10 +6,10 @@ import SettingModal from 'Header/Setting'
 import Body from 'Body'
 import Footer from 'Footer/Footer'
 import { getBalance } from 'utils/web3Utils'
+import { myAccountReducer, myAccountDispatch } from 'contextAPI'
 
 function App({ history }) {
-  const [currentAccount, setCurrentAccount] = useState(null)
-  const [currentBalance, setCurrentBalance] = useState(0)
+  const [myAccount, setMyAccount] = useReducer(myAccountReducer, myAccountDispatch)
 
   const handleConnectMetaMask = async () => {
     try {
@@ -18,18 +18,17 @@ function App({ history }) {
         .then(async res => {
           if (res.length) {
             const tempCurrentAccount = res[0]
-            setCurrentAccount(tempCurrentAccount)
+
             if (tempCurrentAccount) {
-              setCurrentBalance(await getBalance(tempCurrentAccount))
+              setMyAccount({
+                address: tempCurrentAccount,
+                balance: await getBalance(tempCurrentAccount)
+              })
             }
           }
         }).catch((err) => {
           if (err.code === 4001) {
             console.log('Please connect to MetaMask.')
-          } else {
-            if (err.message === 'Already processing eth_requestAccounts. Please wait.') {
-              window.location.reload()
-            }
           }
         })
     } catch (error) {
@@ -41,8 +40,10 @@ function App({ history }) {
     if (window.ethereum._state.isUnlocked) {
       handleConnectMetaMask()
     } else {
-      setCurrentAccount(null)
-      setCurrentBalance(0)
+      setMyAccount({
+        address: '',
+        balance: 0
+      })
       console.log('Please connect to MetaMask.')
     }
   }, [])
@@ -53,7 +54,6 @@ function App({ history }) {
     if (window.ethereum) {
       window.ethereum.autoRefreshOnNetworkChange = false
       window.ethereum.on('accountsChanged', handleIsUnlocked)
-
     }
     return () => {
       if (window.ethereum) {
@@ -64,9 +64,9 @@ function App({ history }) {
 
   return (
     <div id="wrap" className={`${history.location.pathname === '/' ? '' : 'sub'}`}>
-      <Header currentAccount={currentAccount} history={history} />
+      <Header myAccount={myAccount} setMyAccount={setMyAccount} history={history} />
       <div id="container">
-        <SettingModal currentAccount={currentAccount} currentBalance={currentBalance} />
+        <SettingModal myAccount={myAccount} />
         <Body />
       </div>
       <Footer />

@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import { convertDecimal } from 'utils/utils'
 
-const SettingModal = ({ currentAccount, currentBalance }) => {
+const SettingModal = ({ myAccount }) => {
     // const [showSetting, setShowSetting] = useState(false)
     const [showMore, setShowMore] = useState(false)
     const [showUpdate, setShowUpdate] = useState(false)
 
-    return currentAccount ? (
+    return myAccount.address ? (
         <div className="global">
             <div className="menu_bar">
-                <p className="eth">{`${convertDecimal(currentBalance, 18)} ETH`}</p >
-                <p className="eth_num">{`${currentAccount.slice(0, 8)}...${currentAccount.slice(-4)}`}</p>
+                <p className="eth">{`${convertDecimal(myAccount.balance, 18)} ETH`}</p >
+                <p className="eth_num">{`${myAccount.address.slice(0, 8)}...${myAccount.address.slice(-4)}`}</p>
                 {/* <div className="setting">
                     <a href="#;" className="set_icon" onClick={() => setShowSetting(!showSetting)}> </a>
                     {showSetting && (

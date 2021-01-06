@@ -4,14 +4,16 @@ import { getMetaMaskMyAccount } from 'utils/metaMask'
 import { convertDecimal } from 'utils/utils'
 import { getBalance } from 'utils/web3Utils'
 
-const Header = ({ currentAccount, history }) => {
+const Header = ({ myAccount, setMyAccount, history }) => {
     const [showMyAccount, setShowMyAccount] = useState(false)
     const [mobileMenu, setMobileMenu] = useState(false)
-    const [currentBalance, setCurrentBalance] = useState(0)
 
     const getMyBalance = useCallback(async () => {
-        setCurrentBalance(await getBalance(await getMetaMaskMyAccount()))
-    }, [])
+        setMyAccount({
+            ...myAccount,
+            balance: await getBalance(await getMetaMaskMyAccount())
+        })
+    }, [myAccount, setMyAccount])
 
     useEffect(() => {
         getMyBalance()
@@ -36,10 +38,10 @@ const Header = ({ currentAccount, history }) => {
                             <li><a href="#;">Investmeat</a></li>
                             <li><a href="#;">Info</a></li> */}
                         </ul>
-                        {currentAccount ? (
+                        {myAccount.address ? (
                             <button onClick={() => setShowMyAccount(true)}>My Wallet</button>
                         ) : (
-                                <button >Unlock wallet</button>
+                                <button onClick={() => window.location.reload()}>Unlock wallet</button>
                             )}
                     </div>
                 </nav>
@@ -51,7 +53,7 @@ const Header = ({ currentAccount, history }) => {
                             <h3>My Account</h3>
                             <div className="my_icon">
                                 <i><img src="../assets/images/ico/ico_my_account.png" alt="" /></i>
-                                <strong>{convertDecimal(currentBalance, 18)}</strong>
+                                <strong>{convertDecimal(myAccount.balance, 18)}</strong>
                                 <p>TOM2 Balance</p>
                             </div>
                             <a href="#;">View on Etherscan</a>

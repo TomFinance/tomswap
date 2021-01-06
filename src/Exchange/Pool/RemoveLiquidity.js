@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useReducer, useState } from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
-import { checkRemoveLiquidityApprove, requestRemoveLiquidityApprove, requestRemoveLiquidity } from 'utils/web3Utils'
+import { checkRemoveLiquidityApprove, requestRemoveLiquidityApprove, requestRemoveLiquidity, getBalance } from 'utils/web3Utils'
 import LoadingModal from 'Exchange/LoadingModal'
 import HelpBox from 'Global/HelpBox'
+import { myAccountDispatch, myAccountReducer } from 'contextAPI'
 
 const PositionTitle = styled.div`
     display: flex;
@@ -22,6 +23,8 @@ const WarningText = styled.p`
 `
 
 const RemoveLiquidity = ({ history, location }) => {
+    const [myAccount, setMyAccount] = useReducer(myAccountReducer, myAccountDispatch)
+
     const [removeValue, setRemoveValue] = useState('1')
     const [myPosition, setMyPosition] = useState(null)
     const [showModal, setShowModal] = useState({
@@ -69,6 +72,10 @@ const RemoveLiquidity = ({ history, location }) => {
         })
         try {
             await processFunc()
+            setMyAccount({
+                ...myAccount,
+                balance: await getBalance(myAccount.address)
+            })
             if (action === 'approve') {
                 setShowModal({
                     loading: false,

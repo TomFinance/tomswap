@@ -1,15 +1,16 @@
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useReducer, useState } from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 
 import LoadingModal from '../LoadingModal'
 import LiquidityTokenModal from '../Pool/LiquidityTokenModal'
 import SwapConfirm from './SwapConfirm'
-import { swapPreviewPrice, swapRequestTx } from 'utils/web3Utils'
+import { getBalance, swapPreviewPrice, swapRequestTx } from 'utils/web3Utils'
 import { convertDecimal } from 'utils/utils'
 import { Helmet } from 'react-helmet'
 import HelpBox from 'Global/HelpBox'
+import { myAccountDispatch, myAccountReducer } from 'contextAPI'
 
 const MaxBtn = styled.strong`
     display: inline-block;
@@ -27,6 +28,8 @@ const MaxBtn = styled.strong`
 
 
 const Swap = () => {
+    const [myAccount, setMyAccount] = useReducer(myAccountReducer, myAccountDispatch)
+
     const [showModal, setShowModal] = useState({
         reversePrice: false,
         confirm: false,
@@ -123,6 +126,10 @@ const Swap = () => {
         setShowModal({ showModal, loading: true })
         try {
             await swapRequestTx(tokenA, tokenB)
+            setMyAccount({
+                ...myAccount,
+                balance: await getBalance(myAccount.address)
+            })
             setShowModal({ showModal, loading: true, success: true })
         } catch (error) {
             setShowModal({ showModal, loading: false })

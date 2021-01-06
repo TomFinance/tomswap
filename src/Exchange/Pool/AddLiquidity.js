@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useReducer, useState } from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 
@@ -7,12 +7,13 @@ import { mq } from 'assets/Responsive'
 import { ETH_ADDRESS } from 'config'
 import LiquidityTokenModal from './LiquidityTokenModal'
 import { positionLocalStorage, convertDecimal } from 'utils/utils'
-import { createPreviewPrice, createCheckApprove, createConfirmApprove, createImportCreate, getCheckPairContract, addLiquidityPreview, getTokenBalance } from 'utils/web3Utils'
+import { createPreviewPrice, createCheckApprove, createConfirmApprove, createImportCreate, getCheckPairContract, addLiquidityPreview, getTokenBalance, getBalance } from 'utils/web3Utils'
 import ConfirmModal from 'Exchange/ConfirmModal'
 import LoadingModal from '../LoadingModal'
 import { getMetaMaskMyAccount } from 'utils/metaMask'
 import { Helmet } from 'react-helmet'
 import HelpBox from 'Global/HelpBox'
+import { myAccountDispatch, myAccountReducer } from 'contextAPI'
 
 const Wrapper = styled.div`
     padding: 115px 0 0;
@@ -53,6 +54,8 @@ const AppoveBtn = styled.button`
 
 
 const AddLiquidity = ({ location }) => {
+    const [myAccount, setMyAccount] = useReducer(myAccountReducer, myAccountDispatch)
+
     const [pageType, setPageType] = useState('add liquidity')
     const [showModal, setShowModal] = useState({
         confirm: false,
@@ -214,6 +217,10 @@ const AddLiquidity = ({ location }) => {
         try {
             await processFunc()
             positionLocalStorage.setMyPositionList(addLiquidityInputA.tokenAddress, addLiquidityInputB.tokenAddress)
+            setMyAccount({
+                ...myAccount,
+                balance: await getBalance(myAccount.address)
+            })
             if (action === 'approve') {
                 setShowModal({ confirm: false, loading: false, success: false })
             } else {
