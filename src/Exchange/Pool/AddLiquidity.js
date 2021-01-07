@@ -278,7 +278,7 @@ const AddLiquidity = ({ location }) => {
                                         {addLiquidityInputA.amount !== convertDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals) && Number(addLiquidityInputA.balance) ? (
                                             <MaxBtn onClick={() => setAddLiquidityInputA({ ...addLiquidityInputA, amount: convertDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals) })} >Max</MaxBtn>
                                         ) : null}
-                                        <a href="#token_pop" className="eth pop_call" onClick={() => setAddLiquidityInputA({ ...addLiquidityInputA, show: true })}>{addLiquidityInputA.symbol}</a>
+                                        <a href="#token_pop" className={`pop_call ${addLiquidityInputA.symbol.toLowerCase()}`} onClick={() => setAddLiquidityInputA({ ...addLiquidityInputA, show: true })}>{addLiquidityInputA.symbol}</a>
                                     </div>
                                 </div>
                             </div>
@@ -293,7 +293,7 @@ const AddLiquidity = ({ location }) => {
                                         {pageType === 'create pair' && addLiquidityInputB.amount !== convertDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals) && Number(addLiquidityInputB.balance) ? (
                                             <strong onClick={() => setAddLiquidityInputB({ ...addLiquidityInputB, amount: convertDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals) })} >Max</strong>
                                         ) : null}
-                                        <a href="#token_pop" className="pop_call" onClick={() => setAddLiquidityInputB({ ...addLiquidityInputB, show: true })} >{addLiquidityInputB.symbol}</a>
+                                        <a href="#token_pop" className={`pop_call ${addLiquidityInputA.symbol.toLowerCase()}`} onClick={() => setAddLiquidityInputB({ ...addLiquidityInputB, show: true })} >{addLiquidityInputB.symbol}</a>
                                         <ul className="token">
                                             <li><a href="#;">TMTG</a></li>
                                             <li><a href="#;">TMTG</a></li>

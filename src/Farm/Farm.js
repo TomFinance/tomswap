@@ -9,7 +9,7 @@ const Farm = () => {
     const [apyList, setApyList] = useState([])
     const getApyList = useCallback(async () => {
         const apyList = await Promise.all(Object.keys(MINING_POOLS)
-            .map(async key => {
+            .map(key => {
                 return calculateAPY(MINING_POOLS[key])
             })
         )

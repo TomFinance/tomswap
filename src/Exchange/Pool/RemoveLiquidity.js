@@ -169,9 +169,9 @@ const RemoveLiquidity = ({ history, location }) => {
                                 <dd className="bold">{convertDecimal(myPosition.lpTokenView)}</dd>
                             </PositionTitle>
                             <dd className="bold">{ }</dd>
-                            <dt>{myPosition.token0Symbol}</dt>
+                            <dt className={`${myPosition.token0Symbol.toLowerCase()}`}>{myPosition.token0Symbol}</dt>
                             <dd>{convertDecimal(myPosition.token0ViewValue)}</dd>
-                            <dt>{myPosition.token1Symbol}</dt>
+                            <dt className={`${myPosition.token1Symbol.toLowerCase()}`}>{myPosition.token1Symbol}</dt>
                             <dd>{convertDecimal(myPosition.token1ViewValue)}</dd>
                         </dl>
                     </div>

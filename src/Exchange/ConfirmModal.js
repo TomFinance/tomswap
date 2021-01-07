@@ -30,13 +30,13 @@ const ConfirmModal = ({ aToken, bToken, calcData, closeFunc, confirmFunc }) => {
                     </div>
                     <dl className="output">
                         <dt>Prices and pool share</dt>
-                        <dd className="ico">{convertDecimal(Number(bToken.amount))}</dd>
-                        <dd className="ico">{convertDecimal(Number(aToken.amount))}</dd>
+                        <dd className={`ico ${aToken.symbol.toLowerCase()}`}>{convertDecimal(Number(aToken.amount))}</dd>
+                        <dd className={`ico ${bToken.symbol.toLowerCase()}`}>{convertDecimal(Number(bToken.amount))}</dd>
                         <dt>{`${UpperTokenSymbolA} per ${UpperTokenSymbolB} `}</dt>
-                        <dd>{`1 ${UpperTokenSymbolB} = ${convertDecimal(Number(calcData.left))} ${UpperTokenSymbolA}`}</dd>
+                        <dd>{`1 ${UpperTokenSymbolA} = ${convertDecimal(Number(calcData.center))} ${UpperTokenSymbolB}`}</dd>
                         <dt></dt>
                         <dt>{`${UpperTokenSymbolB} per ${UpperTokenSymbolA} `}</dt>
-                        <dd>{`1 ${UpperTokenSymbolA} = ${convertDecimal(Number(calcData.center))} ${UpperTokenSymbolB}`}</dd>
+                        <dd>{`1 ${UpperTokenSymbolB} = ${convertDecimal(Number(calcData.left))} ${UpperTokenSymbolA}`}</dd>
                         <dt>Share of Pool</dt>
                         <dd>{convertDecimal(Number(calcData.right))}%</dd>
                     </dl>

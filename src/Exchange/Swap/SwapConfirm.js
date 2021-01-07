@@ -13,7 +13,7 @@ const SwapConfirm = ({ tokenA, tokenB, calcSwapData, showModal, setShowModal, on
                     <h3>Confirm Swap</h3>
                     <div className="wet">
                         <dl>
-                            <dt className="arrow">{convertDecimal(Number(tokenA.amount))}</dt>
+                            <dt className={`arrow ${tokenA.symbol.toLowerCase()}`}>{convertDecimal(Number(tokenA.amount))}</dt>
                             <dd>{tokenA.symbol}</dd>
                             <dt>{convertDecimal(Number(tokenB.amount))}</dt>
                             <dd>{tokenB.symbol}</dd>

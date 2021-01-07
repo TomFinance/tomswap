@@ -160,7 +160,7 @@ const Swap = () => {
                                 {tokenA.amount !== convertDecimal(tokenA.balance, tokenA.decimals) && Number(tokenA.balance) ? (
                                     <MaxBtn onClick={() => setTokenA({ ...tokenA, amount: convertDecimal(tokenA.balance, tokenA.decimals) })} >Max</MaxBtn>
                                 ) : null}
-                                <a href="#token_pop" className="eth pop_call" onClick={() => setTokenA({ ...tokenA, show: true })}>{tokenA.symbol}</a>
+                                <a href="#token_pop" className={`pop_call ${tokenA.symbol.toLocaleLowerCase()}`} onClick={() => setTokenA({ ...tokenA, show: true })}>{tokenA.symbol}</a>
                             </div>
                         </div>
                     </div>

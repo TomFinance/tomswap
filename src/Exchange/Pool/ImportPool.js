@@ -72,11 +72,11 @@ const ImportPool = ({ history }) => {
                     <div className="tit">
                         <Link to={'/exchange/pool'} className="prev"><img src="/images/ico/ico_arrow_back.png" alt="뒤로가기" /></Link>
                         <span>Import Pool</span>
-                        <HelpBox helpText={''} />
+                        <HelpBox helpText={"Use this tool to find pairs that don't automatically appear in the interface."} />
                     </div>
                     <div className="import_wrap">
                         <div className="select" onClick={() => setAddLiquidityInputA({ ...addLiquidityInputA, show: true })}>
-                            <p className="txt"><a href="#token_pop" className="pop_call">
+                            <p className="txt"><a href="#token_pop" className={`pop_call ${addLiquidityInputA.symbol.toLowerCase()}`}>
                                 {/* <img src="/images/ico/ico_eth01.png" alt="" /> */}
                                 {addLiquidityInputA.symbol}</a>
                             </p>
@@ -87,7 +87,7 @@ const ImportPool = ({ history }) => {
                             </ul>
                         </div>
                         <div className="select select02" onClick={() => setAddLiquidityInputB({ ...addLiquidityInputB, show: true })}>
-                            <p className="txt"><a href="#token_pop" className="pop_call">{addLiquidityInputB.symbol || 'Select a Token'}</a></p>
+                            <p className="txt"><a href="#token_pop" className={`pop_call ${addLiquidityInputA.symbol.toLowerCase()}`} >{addLiquidityInputB.symbol || 'Select a Token'}</a></p>
                             <ul>
                                 <li><a href="#;"><img src="/images/ico/ico_eth02.png" alt="" />USDT1</a></li>
                                 <li><a href="#;"><img src="/images/ico/ico_eth02.png" alt="" />USDT2</a></li>
@@ -108,9 +108,9 @@ const ImportPool = ({ history }) => {
                                                 {` ${addLiquidityInputA.symbol}/${addLiquidityInputB.symbol}`}
                                             </dt>
                                             <dd className="bold">{convertDecimal(pairData.lpTokenView)}</dd>
-                                            <dt>{addLiquidityInputA.symbol}</dt>
+                                            <dt className={`${addLiquidityInputA.symbol.toLowerCase()}`}>{addLiquidityInputA.symbol}</dt>
                                             <dd>{convertDecimal(pairData.token0ViewValue)}</dd>
-                                            <dt>{addLiquidityInputB.symbol}</dt>
+                                            <dt className={`${addLiquidityInputB.symbol.toLowerCase()}`}>{addLiquidityInputB.symbol}</dt>
                                             <dd>{convertDecimal(pairData.token1ViewValue)}</dd>
                                         </dl>
                                     </div>

@@ -72,7 +72,7 @@ const TokenListModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
                                         {tokenList.map((token, idx) => {
                                             return (
                                                 <TokenItem key={idx} onClick={() => onClickToken(token)}>
-                                                    <dt className={`not-found ${token.symbol.toLowerCase()}`}>{token.symbol}</dt>
+                                                    <dt className={`${token.symbol.toLowerCase()}`}>{token.symbol}</dt>
                                                     {token.balance ? (
                                                         <dd className="stv_value">{convertDecimal(token.balance, token.decimals)}</dd>
                                                     ) : (
