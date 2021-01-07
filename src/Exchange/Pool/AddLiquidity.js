@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 import { mq } from 'assets/Responsive'
 import { ETH_ADDRESS } from 'config'
-import LiquidityTokenModal from './LiquidityTokenModal'
+import TokenListModal from './TokenListModal'
 import { positionLocalStorage, convertDecimal } from 'utils/utils'
 import { createPreviewPrice, createCheckApprove, createConfirmApprove, createImportCreate, getCheckPairContract, addLiquidityPreview, getTokenBalance, getBalance } from 'utils/web3Utils'
 import ConfirmModal from 'Exchange/ConfirmModal'
@@ -345,10 +345,10 @@ const AddLiquidity = ({ location }) => {
                 <LoadingModal init={{ confirm: false, loading: false, success: false }} showModal={showModal} setShowModal={setShowModal} initialFunc={initialFunc} />
             )}
             {addLiquidityInputA.show && (
-                <LiquidityTokenModal addLiquidityInput={addLiquidityInputA} setAddLiquidityInput={setAddLiquidityInputA} />
+                <TokenListModal addLiquidityInput={addLiquidityInputA} setAddLiquidityInput={setAddLiquidityInputA} />
             )}
             {addLiquidityInputB.show && (
-                <LiquidityTokenModal addLiquidityInput={addLiquidityInputB} setAddLiquidityInput={setAddLiquidityInputB} />
+                <TokenListModal addLiquidityInput={addLiquidityInputB} setAddLiquidityInput={setAddLiquidityInputB} />
             )}
         </>
     )

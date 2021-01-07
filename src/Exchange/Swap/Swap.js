@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 
 import LoadingModal from '../LoadingModal'
-import LiquidityTokenModal from '../Pool/LiquidityTokenModal'
+import TokenListModal from '../Pool/TokenListModal'
 import SwapConfirm from './SwapConfirm'
 import { getBalance, swapPreviewPrice, swapRequestTx } from 'utils/web3Utils'
 import { convertDecimal } from 'utils/utils'
@@ -228,10 +228,10 @@ const Swap = () => {
                 <LoadingModal init={{ reversePrice: false, confirm: false, loading: false, success: false }} initialFunc={initialFunc} showModal={showModal} setShowModal={setShowModal} />
             )}
             {tokenA.show && (
-                <LiquidityTokenModal addLiquidityInput={tokenA} setAddLiquidityInput={setTokenA} />
+                <TokenListModal addLiquidityInput={tokenA} setAddLiquidityInput={setTokenA} />
             )}
             {tokenB.show && (
-                <LiquidityTokenModal addLiquidityInput={tokenB} setAddLiquidityInput={setTokenB} />
+                <TokenListModal addLiquidityInput={tokenB} setAddLiquidityInput={setTokenB} />
             )}
         </div>
     )

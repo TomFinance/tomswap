@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 import { myPositionCheck } from 'utils/web3Utils'
-import LiquidityTokenModal from './LiquidityTokenModal'
+import TokenListModal from './TokenListModal'
 import { convertDecimal, positionLocalStorage } from 'utils/utils'
 import { Helmet } from 'react-helmet'
 import HelpBox from 'Global/HelpBox'
@@ -129,10 +129,10 @@ const ImportPool = ({ history }) => {
                 </div>
             </div>
             {addLiquidityInputA.show && (
-                <LiquidityTokenModal addLiquidityInput={addLiquidityInputA} setAddLiquidityInput={setAddLiquidityInputA} />
+                <TokenListModal addLiquidityInput={addLiquidityInputA} setAddLiquidityInput={setAddLiquidityInputA} />
             )}
             {addLiquidityInputB.show && (
-                <LiquidityTokenModal addLiquidityInput={addLiquidityInputB} setAddLiquidityInput={setAddLiquidityInputB} />
+                <TokenListModal addLiquidityInput={addLiquidityInputB} setAddLiquidityInput={setAddLiquidityInputB} />
             )}
         </>
     )

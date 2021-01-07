@@ -275,7 +275,7 @@ footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
 #token_pop .popup input {width:100%; height:54px; padding:0 30px; margin:20px 0; border-radius:27px; border:1px solid rgba(221,221,221,0.7);}
 #token_pop .popup input::placeholder {color:#a0a0a0; font-size:16px; font-weight:500;}
 #token_pop .popup .token_name > p {padding-bottom:10px; color:#666; font-size:12px; border-bottom:1px solid #ddd;}
-#token_pop .popup dl {height:310px; padding-top:10px;}
+#token_pop .popup dl {overflow: scroll; height:310px; padding-top:10px; margin-bottom: 30px;}
 #token_pop .popup dl dt {float:left; margin-bottom:15px; color:#141414; font-size:16px;}
 #token_pop .popup dl dt:before {content:''; display:inline-block; width:20px; height:20px; margin-right:6px; vertical-align:-5px; background-repeat:no-repeat; background-position:center; background-size:100%;}
 #token_pop .popup dl dt.tmtg:before {background-image:url(./images/ico/ico_token01.png);}

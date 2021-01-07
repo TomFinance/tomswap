@@ -11,7 +11,7 @@ const TokenItem = styled.article`
     cursor: pointer;
 `
 
-const LiquidityTokenModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
+const TokenListModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
     const [tokenList, setTokenList] = useState([])
     const [tempTokenList, setTempTokenList] = useState(null)
     const searchTokenInput = useInput('')
@@ -72,7 +72,7 @@ const LiquidityTokenModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
                                         {tokenList.map((token, idx) => {
                                             return (
                                                 <TokenItem key={idx} onClick={() => onClickToken(token)}>
-                                                    <dt className="not-found">{token.symbol}</dt>
+                                                    <dt className={`not-found ${token.symbol.toLowerCase()}`}>{token.symbol}</dt>
                                                     {token.balance ? (
                                                         <dd className="stv_value">{convertDecimal(token.balance, token.decimals)}</dd>
                                                     ) : (
@@ -104,4 +104,4 @@ const LiquidityTokenModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
     )
 }
 
-export default LiquidityTokenModal
+export default TokenListModal
