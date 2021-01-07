@@ -108,11 +108,13 @@ const Swap = () => {
             if (tokenA.amount > 0) {
                 const calcText = await swapPreviewPrice(tokenA, tokenB)
 
-                setTokenB({
-                    ...tokenB,
-                    amount: calcText.amount
-                })
-                setCalcSwapData(calcText)
+                if (calcText) {
+                    setTokenB({
+                        ...tokenB,
+                        amount: convertDecimal(calcText.amount)
+                    })
+                    setCalcSwapData(convertDecimal(calcText.amount) > 0 ? calcText : false)
+                }
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -197,7 +199,7 @@ const Swap = () => {
                         <dt>Minimum received
                             <HelpBox id={1} helpText={'Your transaction will revert if there is a large, unfavorable price movement before it is confirmed.'} />
                         </dt>
-                        <dd>{`${calcSwapData.minimumReceived} ${tokenB.symbol}`}</dd>
+                        <dd>{`${convertDecimal(calcSwapData.minimumReceived)} ${tokenB.symbol}`}</dd>
                         <dt>Price Impact
                         <HelpBox id={2} helpText={'The difference between the market price and estimated price due to trade size.'} />
                         </dt>
@@ -206,7 +208,7 @@ const Swap = () => {
                         <dt>Liquidity Provider Fee
                         <HelpBox id={3} helpText={'A portion of each trade (0.30%) goes to liquidity providers as a protocol incentive.'} />
                         </dt>
-                        <dd>{`${tokenA.amount * 0.003} ${tokenA.symbol}`}</dd>
+                        <dd>{`${convertDecimal(tokenA.amount * 0.003)} ${tokenA.symbol}`}</dd>
                     </dl>
                     {/* <div className="route">
                         <p>route</p>

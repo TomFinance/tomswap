@@ -174,19 +174,25 @@ const AddLiquidity = ({ location }) => {
 
     const checkClacPrice = useCallback(async () => {
         if (addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress) {
-            if (addLiquidityInputA.amount) {
+            if (addLiquidityInputA.amount > 0) {
                 if (pageType === 'add liquidity') {
                     const calcText = await addLiquidityPreview(addLiquidityInputA, addLiquidityInputB)
-
-                    setCalcPricesText({
-                        left: calcText['0'],
-                        center: calcText['1'],
-                        right: calcText['2'],
-                        receiveToken: calcText['4']
-                    })
+                    console.log(convertDecimal(calcText['3']) > 0)
+                    setCalcPricesText(convertDecimal(calcText['3']) > 0
+                        ? {
+                            left: calcText['0'],
+                            center: calcText['1'],
+                            right: calcText['2'],
+                            receiveToken: calcText['4']
+                        } : {
+                            left: '',
+                            center: '',
+                            right: '',
+                            receiveToken: ''
+                        })
                     setAddLiquidityInputB({
                         ...addLiquidityInputB,
-                        amount: calcText['3'],
+                        amount: convertDecimal(calcText['3']),
                     })
                 } else if (addLiquidityInputB.amount && pageType === 'create pair') {
                     const calcText = await createPreviewPrice(addLiquidityInputA, addLiquidityInputB)
@@ -297,7 +303,7 @@ const AddLiquidity = ({ location }) => {
                                 </div>
                             </div>
                         </div>
-                        {addLiquidityInputA.amount && addLiquidityInputB.amount ? (
+                        {addLiquidityInputA.amount > 0 && addLiquidityInputB.amount > 0 ? (
                             <div className="analy">
                                 <div className="route">
                                     <p>Prices and pool share</p>

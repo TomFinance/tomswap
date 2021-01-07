@@ -1,5 +1,5 @@
 import Web3 from "web3"
-import { checkETH, convertDecimal, filterdETH, positionLocalStorage } from "./utils"
+import { checkETH, filterdETH, positionLocalStorage } from "./utils"
 import { getMetaMaskMyAccount, metaMaskSendTx } from "./metaMask"
 import { MINING_POOLS, LP_TOKEN_PAIRS, THEGRAGH_API_URL, ETH_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
 import axios from "axios"
@@ -531,7 +531,6 @@ export const swapQuotePrice = async (tokenA, tokenB) => {
     const impactRate = (token1SwapPrice - token1OriginPrice) / token1SwapPrice
 
     const token1MinOut = Math.floor(token1Output * 0.995 * Math.pow(10, pairData.token1Decimals)) / Math.pow(10, pairData.token1Decimals)
-
 
     return {
         token0Price: token0SwapPrice,
