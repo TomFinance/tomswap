@@ -127,7 +127,8 @@ footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
 .exchange > div .max .eth:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_eth01.png) no-repeat center; background-size:100%;}
 .exchange > div .max .tmtg:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token01.png) no-repeat center; background-size:100%;}
 .exchange > div .max .lbxc:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token02.png) no-repeat center; background-size:100%;}
-.exchange > div .max .tom2:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token03.png) no-repeat center; background-size:100%;}
+.exchange > div .max .tom:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token03.png) no-repeat center; background-size:100%;}
+.exchange > div .max .tom2:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token04.png) no-repeat center; background-size:100%;}
 .exchange > div .max:after {content:''; display:inline-block; width:9px; height:5px; margin-left:5px; vertical-align:1px; background:url(./images/ico/ico_expand_more.png) no-repeat 0 0; background-size:100%; position: absolute; top: 50px; right: 16px;}
 
 .exchange > div .fr .token {position:absolute; z-index:5; bottom:17px; right:16px;}
@@ -199,7 +200,8 @@ footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
 .swap_pop .wet dl dt.eth:before {content:''; display:inline-block; width:20px; height:20px; margin-right:10px; vertical-align:-4px; background-repeat:no-repeat; background-position:center; background-size:100%; background-image:url(./images/ico/ico_eth01.png);}
 .swap_pop .wet dl dt.tmtg:before {content:''; display:inline-block; width:20px; height:20px; margin-right:10px; vertical-align:-4px; background-repeat:no-repeat; background-position:center; background-size:100%; background-image:url(./images/ico/ico_token01.png);}
 .swap_pop .wet dl dt.lbxc:before {content:''; display:inline-block; width:20px; height:20px; margin-right:10px; vertical-align:-4px; background-repeat:no-repeat; background-position:center; background-size:100%; background-image:url(./images/ico/ico_token02.png);}
-.swap_pop .wet dl dt.tom2:before {content:''; display:inline-block; width:20px; height:20px; margin-right:10px; vertical-align:-4px; background-repeat:no-repeat; background-position:center; background-size:100%; background-image:url(./images/ico/ico_token03.png);}
+.swap_pop .wet dl dt.tom:before {content:''; display:inline-block; width:20px; height:20px; margin-right:10px; vertical-align:-4px; background-repeat:no-repeat; background-position:center; background-size:100%; background-image:url(./images/ico/ico_token03.png);}
+.swap_pop .wet dl dt.tom2:before {content:''; display:inline-block; width:20px; height:20px; margin-right:10px; vertical-align:-4px; background-repeat:no-repeat; background-position:center; background-size:100%; background-image:url(./images/ico/ico_token04.png);}
 .swap_pop .up {position:relative; width:100%; height:34px; line-height:34px; color:#141414; font-size:12px; border-radius:12px; background:#f8f8f8;}
 .swap_pop .up:before {display:inline-block; content:''; width:16px; height:14px; margin:0 5px 0 11px; vertical-align:-2px; background:url(./images/ico/ico_warning.png) no-repeat center; background-size:100%;}
 .swap_pop .up a {position:absolute; top:5px; right:10px; width:58px; height:24px; line-height:24px; border-radius:8px; color:#fff; text-align:center; background:#eab640;}
@@ -290,7 +292,8 @@ footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
 #token_pop .popup dl dt.eth:before {background-image:url(./images/ico/ico_eth01.png);}
 #token_pop .popup dl dt.tmtg:before {background-image:url(./images/ico/ico_token01.png);}
 #token_pop .popup dl dt.lbxc:before {margin-right:7px; background-image:url(./images/ico/ico_token02.png);}
-#token_pop .popup dl dt.tom2:before {background-image:url(./images/ico/ico_token03.png);}
+#token_pop .popup dl dt.tom:before {background-image:url(./images/ico/ico_token03.png);}
+#token_pop .popup dl dt.tom2:before {background-image:url(./images/ico/ico_token04.png);}
 #token_pop .popup dl dd:after {content:''; display:table; clear:both;}
 #token_pop .popup dl dd {text-align:right; color:#141414; font-size:16px;}
 
@@ -346,7 +349,8 @@ footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
 .ico.eth:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_eth01.png) no-repeat center; background-size:100%;}
 .ico.tmtg:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token01.png) no-repeat center; background-size:100%;}
 .ico.lbxc:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token02.png) no-repeat center; background-size:100%;}
-.ico.tom2:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token03.png) no-repeat center; background-size:100%;}
+.ico.tom:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token03.png) no-repeat center; background-size:100%;}
+.ico.tom2:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token04.png) no-repeat center; background-size:100%;}
 /* .output dd.ico01:before {background-image:url(./images/ico/ico_eth02.png);}
 .output dd.ico02:before {background-image:url(./images/ico/ico_eth01.png);} */
 
@@ -442,7 +446,8 @@ dd.ico04:before {background-image:url(./images/ico/ico_eth02.png);}
 .sub_wrap05 .position dt.eth:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_eth01.png) no-repeat center; background-size:100%;}
 .sub_wrap05 .position dt.tmtg:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token01.png) no-repeat center; background-size:100%;}
 .sub_wrap05 .position dt.lbxc:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token02.png) no-repeat center; background-size:100%;}
-.sub_wrap05 .position dt.tom2:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token03.png) no-repeat center; background-size:100%;}
+.sub_wrap05 .position dt.tom:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token03.png) no-repeat center; background-size:100%;}
+.sub_wrap05 .position dt.tom2:before {content:''; display:inline-block; width:20px; height:20px; margin:0 5px; vertical-align:-5px; background:url(./images/ico/ico_token04.png) no-repeat center; background-size:100%;}
 .import_wrap > div + div:before {content:''; display:block; position:relative; left:50%; width:12px; height:12px; margin:20px 0 20px -6px; background:url(./images/ico/ico_add_g.png) no-repeat 0 0; background-size:100%;}
 .import_wrap > div.select02 ul {z-index:1; top:89px;}
 .import_wrap > div.select02 > p a {color:#666;}
