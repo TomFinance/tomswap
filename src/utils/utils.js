@@ -30,21 +30,21 @@ export const positionLocalStorage = {
 export const convertDecimal = (value, decimals, persent) => {
     let calcValue = Number(value)
 
-    if (calcValue < 0) {
+    if (calcValue <= 0) {
         return '0.00000000000'
     }
 
     if (decimals) {
-        calcValue = calcValue * Math.pow(0.1, decimals)
+        calcValue = calcValue / Math.pow(10, decimals)
     }
 
     if (persent) {
         calcValue *= persent
     }
 
-    return calcValue < 0.1
-        ? calcValue.toFixed(100).slice(0, 14)
-        : calcValue.toPrecision(12)
+    const temp = `${calcValue}`.includes('.') ? calcValue.toFixed(100).split('.') : [calcValue, '0']
+    return `${temp[0]}.${temp[1].slice(0, 12 - (temp.length - 1))}`
+
 }
 
 export const checkETH = address => {

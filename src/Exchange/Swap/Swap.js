@@ -189,7 +189,7 @@ const Swap = () => {
                         </>
                     )}
                 </div>
-                <button className={`enter enter02 ${(tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance * Math.pow(0.1, tokenA.decimals)) && calcSwapData ? 'on' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
+                <button className={`enter enter02 ${(tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance / Math.pow(10, tokenA.decimals)) && calcSwapData ? 'on' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
             </div>
             {tokenA.amount && tokenB.amount && calcSwapData !== null ? (
                 <div className="analy">

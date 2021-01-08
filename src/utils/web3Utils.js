@@ -376,12 +376,12 @@ export const myPositionCheck = async (tokenAddressA, tokenAddressB) => {
     }
 
     const lpToken = pairData.pairContractBalance
-    const lpTokenView = pairData.pairContractBalance * Math.pow(0.1, pairData.pairDecimals)
+    const lpTokenView = pairData.pairContractBalance / Math.pow(10, pairData.pairDecimals)
     const persent = pairData.pairContractBalance / pairData.pairSupply
     const token0Value = pairData.token0Reserve * persent
     const token1Value = pairData.token1Reserve * persent
-    const token0ViewValue = token0Value * Math.pow(0.1, pairData.token0Decimals) * persent
-    const token1ViewValue = token1Value * Math.pow(0.1, pairData.token1Decimals) * persent
+    const token0ViewValue = token0Value / Math.pow(10, pairData.token0Decimals) * persent
+    const token1ViewValue = token1Value / Math.pow(10, pairData.token1Decimals) * persent
 
     return {
         lpToken,

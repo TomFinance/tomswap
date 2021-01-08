@@ -333,7 +333,7 @@ const AddLiquidity = ({ location }) => {
                                 ) : null}
                             </AppoveBtnWrap>
                         )}
-                        <button className={`enter pop_call ${(checkApprove.a && checkApprove.b) && (addLiquidityInputA.amount <= addLiquidityInputA.balance * Math.pow(0.1, addLiquidityInputA.decimals) && addLiquidityInputB.amount <= addLiquidityInputB.balance * Math.pow(0.1, addLiquidityInputB.decimals)) ? 'on' : 'disabled'}`} disabled={(!checkApprove.a || !checkApprove.b) && (addLiquidityInputA.amount <= addLiquidityInputA.balance * Math.pow(0.1, addLiquidityInputA.decimals) || addLiquidityInputB.amount <= addLiquidityInputB.balance * Math.pow(0.1, addLiquidityInputA.decimals))} onClick={() => setShowModal({ confirm: true, loading: false })} >{pageType === 'add liquidity' ? 'Supply' : 'Create'}</button>
+                        <button className={`enter pop_call ${(checkApprove.a && checkApprove.b) && (addLiquidityInputA.amount <= addLiquidityInputA.balance / Math.pow(10, addLiquidityInputA.decimals) && addLiquidityInputB.amount <= addLiquidityInputB.balance / Math.pow(10, addLiquidityInputB.decimals)) ? 'on' : 'disabled'}`} disabled={(!checkApprove.a || !checkApprove.b) && (addLiquidityInputA.amount <= addLiquidityInputA.balance / Math.pow(10, addLiquidityInputA.decimals) || addLiquidityInputB.amount <= addLiquidityInputB.balance / Math.pow(10, addLiquidityInputA.decimals))} onClick={() => setShowModal({ confirm: true, loading: false })} >{pageType === 'add liquidity' ? 'Supply' : 'Create'}</button>
                     </div>
                 </div>
             </Wrapper>

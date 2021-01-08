@@ -90,7 +90,7 @@ const FarmStake = ({ match: { params: { route } }, history }) => {
                     <div className="wrapper">
                         <div className="tit">
                             <p className="img"><img src="/images/ico/ico_main.png" alt="" /></p>
-                            <p className="txt txt03"><img src="/images/ico/ico_tit03.png" alt="" /></p>
+                            <p className="txt txt03"><img src={`/images/ico/${splitPoolNameObj.aTokenName}_${splitPoolNameObj.bTokenName}.png`} alt="" /></p>
                             <h3>{`Every time you stake and unstake LP tokens,`}<br />{`the contract will automagically harvest TOM rewards for you!`}</h3>
                         </div>
                     </div>
