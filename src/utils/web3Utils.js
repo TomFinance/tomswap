@@ -93,19 +93,25 @@ export async function calculateAPY(poolAddress) {
             }`)
     ).pair //tmtg/lbxc
 
-    const tom_price = COFPairData.reserve0 / COFPairData.reserve1
-    const totalStaked = await poolContract.methods.TOTAL_STAKED().call()
+    try {
+        const tom_price = COFPairData.reserve0 / COFPairData.reserve1
+        const totalStaked = await poolContract.methods.TOTAL_STAKED().call()
 
-    if (Number(totalStaked) === 0) {
-        return 'Infinity'
+        if (Number(totalStaked) === 0) {
+            return 'Infinity'
+        }
+
+        const rewardPerBlock = await poolContract.methods.rewardPerBlock().call()
+
+        const PPB = (tom_price * rewardPerBlock)
+            / totalStaked
+            / (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
+
+        return `${(((PPB * 86400 * 365) / 13) * 100).toFixed(2)}%`
+    } catch (error) {
+        console.log(error)
     }
 
-    const rewardPerBlock = await poolContract.methods.rewardPerBlock().call()
-    const PPB = (tom_price * rewardPerBlock)
-        / totalStaked
-        / (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
-
-    return `${(((PPB * 86400 * 365) / 13) * 100).toFixed(2)}%`
 }
 
 export const getMyLpTokenBalance = async lpTokenSymbol => {

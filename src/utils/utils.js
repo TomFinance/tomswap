@@ -30,6 +30,10 @@ export const positionLocalStorage = {
 export const convertDecimal = (value, decimals, persent) => {
     let calcValue = Number(value)
 
+    if (calcValue < 0) {
+        return '0.00000000000'
+    }
+
     if (decimals) {
         calcValue = calcValue * Math.pow(0.1, decimals)
     }

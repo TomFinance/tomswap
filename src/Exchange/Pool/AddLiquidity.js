@@ -177,7 +177,6 @@ const AddLiquidity = ({ location }) => {
             if (addLiquidityInputA.amount > 0) {
                 if (pageType === 'add liquidity') {
                     const calcText = await addLiquidityPreview(addLiquidityInputA, addLiquidityInputB)
-                    console.log(convertDecimal(calcText['3']) > 0)
                     setCalcPricesText(convertDecimal(calcText['3']) > 0
                         ? {
                             left: calcText['0'],
