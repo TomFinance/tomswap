@@ -78,7 +78,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                 </div>
                 <ButtonWrap>
                     <button className="pop_call pop_close" onClick={() => setShowModal({ ...showModal, stake: false })}>Cancel</button>
-                    <button className="pop_call pop_close" onClick={() => {
+                    <button className={`pop_call pop_close ${Number(amount) > 0 ? '' : 'disabled'}`} onClick={() => {
                         handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'stake', amount, stakeData.lpTokenDecimals))
                     }}>Confirm</button>
                 </ButtonWrap>
@@ -102,7 +102,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                 </div>
                 <ButtonWrap>
                     <button className="pop_call pop_close" onClick={() => setShowModal({ ...showModal, unStake: false })}>Cancel</button>
-                    <button className="pop_call pop_close" onClick={() => {
+                    <button className={`pop_call pop_close ${Number(amount) > 0 ? '' : 'disabled'}`} onClick={() => {
                         handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'unStake', amount, stakeData.lpTokenDecimals))
                     }}>Confirm</button>
                 </ButtonWrap>

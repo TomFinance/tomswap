@@ -708,6 +708,6 @@ dd.ico04:before {background-image:url(./images/ico/ico_eth02.png);}
 }
 
 .disabled {
-	pointer-events: none;
-	background-color: rgba(234, 182, 64, 0.3);
+	pointer-events: none !important;
+	background-color: rgba(234, 182, 64, 0.3) !important;
 }

@@ -149,8 +149,8 @@ const RemoveLiquidity = ({ history, location }) => {
                         </dl>
                         <WarningText>Output is estimated. If the price changes by more than 0.5% your transaction will revert.</WarningText>
                         <div className="two_btn">
-                            <button className={`approve ${(abledApprove !== null && abledApprove) ? '' : 'on'}`} onClick={() => onClickRemoveLiquidity(() => onClickApprove(), 'approve')}>Approve</button>
-                            <button className={`amount ${abledApprove && removeValue && myPosition ? 'on' : ''}`} onClick={() => onClickRemoveLiquidity(() => requestRemoveLiquidity(myPosition, (removeValue / 100)))}>Enter an amount</button>
+                            <button className={`approve ${(abledApprove !== null && abledApprove) ? 'disabled' : 'on'}`} onClick={() => onClickRemoveLiquidity(() => onClickApprove(), 'approve')}>Approve</button>
+                            <button className={`amount ${abledApprove && removeValue && myPosition ? 'on' : 'disabled'}`} onClick={() => onClickRemoveLiquidity(() => requestRemoveLiquidity(myPosition, (removeValue / 100)))}>Enter an amount</button>
                         </div>
                     </div>
                     <div className="position">
