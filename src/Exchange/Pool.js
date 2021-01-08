@@ -78,45 +78,53 @@ const Pool = () => {
                             </div>
                         ) : (
                                 <>
-                                    {positionList?.map((position, idx) => {
-                                        return (
-                                            <div key={idx} onClick={() => onClickPosition(position, idx)}>
-                                                <div className="box box_in">
-                                                    <div className="loaded_txt">
-                                                        <p className="etu">
-                                                            {/* <span className="icon01">
+                                    {positionList.length > 0 ? (
+                                        <>
+                                            {positionList?.map((position, idx) => {
+                                                return (
+                                                    <div key={idx} onClick={() => onClickPosition(position, idx)}>
+                                                        <div className="box box_in">
+                                                            <div className="loaded_txt">
+                                                                <p className="etu">
+                                                                    {/* <span className="icon01">
                                                                 <img src="/images/ico/ico_eth01.png" alt="" />
                                                             </span>
                                                             <span className="icon02">
                                                                 <img src="/images/ico/ico_eth02.png" alt="" />
                                                             </span> */}
-                                                            {`${position.token0Symbol}/${position.token1Symbol}`}</p>
+                                                                    {`${position.token0Symbol}/${position.token1Symbol}`}</p>
+                                                                {position.show && (
+                                                                    <dl>
+                                                                        <dt>{`Pooled ${position.token0Symbol}`}</dt>
+                                                                        <dd>{convertDecimal(position.token0ViewValue)}</dd>
+                                                                        <dt>{`Pooled ${position.token1Symbol}`}</dt>
+                                                                        <dd>{convertDecimal(position.token1ViewValue)}</dd>
+                                                                        <dt>Your pool tokens:</dt>
+                                                                        <dd>{convertDecimal(position.lpTokenView)}</dd>
+                                                                        <dt>Your pool share:</dt>
+                                                                        <dd>{convertDecimal(position.persent * 100)}%</dd>
+                                                                    </dl>
+                                                                )}
+                                                            </div>
+                                                        </div>
                                                         {position.show && (
-                                                            <dl>
-                                                                <dt>{`Pooled ${position.token0Symbol}`}</dt>
-                                                                <dd>{convertDecimal(position.token0ViewValue)}</dd>
-                                                                <dt>{`Pooled ${position.token1Symbol}`}</dt>
-                                                                <dd>{convertDecimal(position.token1ViewValue)}</dd>
-                                                                <dt>Your pool tokens:</dt>
-                                                                <dd>{convertDecimal(position.lpTokenView)}</dd>
-                                                                <dt>Your pool share:</dt>
-                                                                <dd>{convertDecimal(position.persent * 100)}%</dd>
-                                                            </dl>
+                                                            <div className="btns">
+                                                                <a href="#;">View pair analytics</a>
+                                                                <div className="two_btn">
+                                                                    <Link to={{ pathname: '/exchange/pool/add-liquidity', data: position }} className="add">Add</Link>
+                                                                    <Link to={{ pathname: '/exchange/pool/remove-liquidity', data: position }} className="remove">Remove</Link>
+                                                                </div>
+                                                            </div>
                                                         )}
                                                     </div>
-                                                </div>
-                                                {position.show && (
-                                                    <div className="btns">
-                                                        <a href="#;">View pair analytics</a>
-                                                        <div className="two_btn">
-                                                            <Link to={{ pathname: '/exchange/pool/add-liquidity', data: position }} className="add">Add</Link>
-                                                            <Link to={{ pathname: '/exchange/pool/remove-liquidity', data: position }} className="remove">Remove</Link>
-                                                        </div>
-                                                    </div>
-                                                )}
+                                                )
+                                            })}
+                                        </>
+                                    ) : (
+                                            <div className="box">
+                                                <p className="load_txt">No thing</p>
                                             </div>
-                                        )
-                                    })}
+                                        )}
                                 </>
                             )}
                     </div>
