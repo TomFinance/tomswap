@@ -46,7 +46,7 @@ const Pool = () => {
             })
         )
 
-        setPositionList(tempPositionList?.filter(positionData => positionData))
+        setPositionList(tempPositionList?.filter(positionData => positionData.lpToken && Number(positionData.lpToken) > 0))
         setLoading(false)
     }, [])
 

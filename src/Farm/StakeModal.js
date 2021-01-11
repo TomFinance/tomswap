@@ -53,11 +53,13 @@ const ButtonWrap = styled.div`
 
 const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, handleLpTokenRequestTx }) => {
     const [amount, setAmount] = useState('')
+    const [fakeAmount, setFakeAmount] = useState('')
 
     const onChange = e => {
         const { target: { value } } = e
 
         setAmount(value)
+        setFakeAmount(value)
     }
 
     return showModal.stake ? (
@@ -71,8 +73,11 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                         <p>{`Available : ${convertDecimal(stakeData.lpTokenBalance, stakeData.lpTokenDecimals)}`}</p>
                         <p>{`${splitPoolNameObj.lpTokenSymbol} UNI-V2 LP`}</p>
                         <InputBox>
-                            <input type="text" value={amount} onChange={onChange} />
-                            <button onClick={() => setAmount(convertDecimal(stakeData.lpTokenBalance, stakeData.lpTokenDecimals))}>Max</button>
+                            <input type="text" value={fakeAmount} onChange={onChange} />
+                            <button onClick={() => {
+                                setAmount(stakeData.lpTokenBalance / Math.pow(10, stakeData.lpTokenDecimals))
+                                setFakeAmount(convertDecimal(stakeData.lpTokenBalance, stakeData.lpTokenDecimals))
+                            }}>Max</button>
                         </InputBox>
                     </DescriptionWrap>
                 </div>
@@ -96,7 +101,10 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                         <p>{`${splitPoolNameObj.lpTokenSymbol} UNI-V2 LP`}</p>
                         <InputBox>
                             <input type="number" placeholder="Input amount" value={amount} onChange={onChange} />
-                            <button onClick={() => setAmount(convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals))}>Max</button>
+                            <button onClick={() => {
+                                setAmount(stakeData.stakedToken / Math.pow(10, stakeData.lpTokenDecimals))
+                                setFakeAmount(convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals))
+                            }}>Max</button>
                         </InputBox>
                     </DescriptionWrap>
                 </div>

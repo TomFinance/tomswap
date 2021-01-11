@@ -129,6 +129,7 @@ export const checkTom2PoolApprove = async lpTokenSymbol => {
     const lpTokenBalance = await lpTokenContract.methods.balanceOf(await getMetaMaskMyAccount()).call()
     const lpTokenDecimals = await lpTokenContract.methods.decimals().call()
     const lpTokenAllowance = await lpTokenContract.methods.allowance(await getMetaMaskMyAccount(), MINING_POOLS[lpTokenSymbol]).call()
+    console.log("🚀 ~ file: web3Utils.js ~ line 130 ~ lpTokenBalance", lpTokenBalance)
 
     return {
         lpTokenBalance,

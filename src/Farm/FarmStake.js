@@ -99,7 +99,7 @@ const FarmStake = ({ match: { params: { route } }, history }) => {
                     <div className="figure">
                         <div className="tmtg">
                             <p>{convertDecimal(stakeData.tom2Amount, 18)}</p>
-                            <span>TOM Earned</span>
+                            <span>TOM2</span>
                             <button className={`main_btn pop_call ${Number(stakeData.tom2Amount) > 0 ? '' : 'disabled'}`} onClick={() => handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'claim'))}>Harvest</button>
                         </div>
                         <div className="lbxc">
