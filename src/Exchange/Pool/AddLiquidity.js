@@ -232,7 +232,12 @@ const AddLiquidity = ({ location }) => {
                 setShowModal({ confirm: false, loading: true, success: true })
             }
         } catch (error) {
-            setShowModal({ confirm: false, loading: false, success: false })
+            // eslint-disable-next-line no-cond-assign
+            if (error.code = '-32602') {
+                setShowModal({ confirm: false, loading: true, success: true })
+            } else {
+                setShowModal({ confirm: false, loading: false, success: false })
+            }
         }
     }
 
@@ -272,7 +277,7 @@ const AddLiquidity = ({ location }) => {
                                     <p>{`Balance : ${convertDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals)} `}</p>
                                 </div>
                                 <div className="fr max">
-                                    <input id="Create_0_Preview" type="text" placeholder={'0.0'} value={addLiquidityInputA.amount ? addLiquidityInputA.amount : ''} onChange={e => onChangeAddLiquidityInput(e, addLiquidityInputA, setAddLiquidityInputA)} />
+                                    <input id="Create_0_Preview" type="text" placeholder={'0.0'} value={addLiquidityInputA.amount ? addLiquidityInputA.amount : ''} onChange={e => { if (addLiquidityInputA.symbol !== 'Select') onChangeAddLiquidityInput(e, addLiquidityInputA, setAddLiquidityInputA) }} />
                                     <div>
                                         {addLiquidityInputA.amount !== convertDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals) && Number(addLiquidityInputA.balance) ? (
                                             <MaxBtn onClick={() => setAddLiquidityInputA({ ...addLiquidityInputA, amount: convertDecimal(addLiquidityInputA.balance, addLiquidityInputA.decimals) })} >Max</MaxBtn>
@@ -287,7 +292,7 @@ const AddLiquidity = ({ location }) => {
                                     <p>{`Balance: ${convertDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals)} `}</p>
                                 </div>
                                 <div className="fr">
-                                    <input id="Create_1_Preview" type="text" placeholder={'0.0'} value={addLiquidityInputB.amount ? addLiquidityInputB.amount : ''} onChange={e => onChangeAddLiquidityInput(e, addLiquidityInputB, setAddLiquidityInputB)} />
+                                    <input id="Create_1_Preview" type="text" placeholder={'0.0'} value={addLiquidityInputB.amount ? addLiquidityInputB.amount : ''} onChange={e => { if (addLiquidityInputB.symbol !== 'Select') onChangeAddLiquidityInput(e, addLiquidityInputB, setAddLiquidityInputB) }} />
                                     <div className="token">
                                         {pageType === 'create pair' && addLiquidityInputB.amount !== convertDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals) && Number(addLiquidityInputB.balance) ? (
                                             <strong onClick={() => setAddLiquidityInputB({ ...addLiquidityInputB, amount: convertDecimal(addLiquidityInputB.balance, addLiquidityInputB.decimals) })} >Max</strong>

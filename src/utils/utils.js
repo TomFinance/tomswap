@@ -42,7 +42,7 @@ export const convertDecimal = (value, decimals, persent) => {
         calcValue *= persent
     }
 
-    const temp = `${calcValue}`.includes('.') ? calcValue.toFixed(100).split('.') : [calcValue, '0']
+    const temp = `${calcValue}`.includes('.') ? calcValue.toFixed(100).split('.') : [calcValue, '0'.repeat(12 - `${calcValue}`.length)]
     return `${temp[0]}.${temp[1].slice(0, 12 - (temp.length - 1))}`
 
 }

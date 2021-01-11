@@ -78,21 +78,17 @@ const RemoveLiquidity = ({ history, location }) => {
                 balance: await getBalance(myAccount.address)
             })
             if (action === 'approve') {
-                setShowModal({
-                    loading: false,
-                    success: false
-                })
+                setShowModal({ loading: false, success: false })
             } else {
-                setShowModal({
-                    loading: true,
-                    success: true
-                })
+                setShowModal({ loading: true, success: true })
             }
         } catch (error) {
-            setShowModal({
-                loading: false,
-                success: false
-            })
+            // eslint-disable-next-line no-cond-assign
+            if (error.code = '-32602') {
+                setShowModal({ loading: true, success: true })
+            } else {
+                setShowModal({ loading: false, success: false })
+            }
         }
     }
 

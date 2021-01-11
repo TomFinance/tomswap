@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet'
 
 const Farm = () => {
     const [apyList, setApyList] = useState([])
+
     const getApyList = useCallback(async () => {
         const apyList = await Promise.all(Object.keys(MINING_POOLS)
             .map(key => {
