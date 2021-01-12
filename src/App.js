@@ -10,6 +10,7 @@ import { accountLocalStorage } from 'utils/utils'
 import { myAccountReducer, myAccountDispatch } from 'contextAPI'
 
 function App({ history }) {
+  console.log(process.env.NODE_ENV)
   const [myAccount, setMyAccount] = useReducer(myAccountReducer, myAccountDispatch)
 
   const handleConnectMetaMask = async () => {

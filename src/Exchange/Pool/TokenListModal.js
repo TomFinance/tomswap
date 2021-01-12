@@ -51,6 +51,7 @@ const TokenListModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
         setAddLiquidityInput({
             ...addLiquidityInput,
             ...tokenInfo,
+            amount: '',
             show: false
         })
     }
