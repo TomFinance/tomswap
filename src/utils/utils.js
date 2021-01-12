@@ -1,5 +1,21 @@
 import { ETH_ADDRESS, WETH_ADDRESS } from "config"
 
+export const numberPattern = /(^\d+$)|(^\d+[.]\d{0,11}$)/
+
+export const accountLocalStorage = {
+    getMyAccount: () => {
+        return JSON.parse(localStorage.getItem('myAccount'))
+    },
+
+    setMyAccount: account => {
+        return localStorage.setItem('myAccount', JSON.stringify(account))
+    },
+
+    removeMyAccount: () => {
+        return localStorage.removeItem('myAccount')
+    }
+}
+
 export const positionLocalStorage = {
     getMyPositionList: () => {
         return JSON.parse(localStorage.getItem('myPositionList'))

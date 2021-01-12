@@ -97,7 +97,7 @@ const ImportPool = ({ history }) => {
                     </div>
                     {pairData !== null && (
                         <>
-                            {pairData ? (
+                            {pairData.lpToken > 0 ? (
                                 <>
                                     <div className="position">
                                         <p>Your position</p>

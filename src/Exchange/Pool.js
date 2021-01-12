@@ -109,7 +109,6 @@ const Pool = () => {
                                                         </div>
                                                         {position.show && (
                                                             <div className="btns">
-                                                                <a href="#;">View pair analytics</a>
                                                                 <div className="two_btn">
                                                                     <Link to={{ pathname: '/exchange/pool/add-liquidity', data: position }} className="add">Add</Link>
                                                                     <Link to={{ pathname: '/exchange/pool/remove-liquidity', data: position }} className="remove">Remove</Link>

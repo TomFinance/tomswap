@@ -116,8 +116,8 @@ footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
 .exchange > div .fl span {float:left; color:#141414; font-size:12px;}
 .exchange > div .fl p {float:right; color:#141414; font-size:12px;}
 
-.exchange > div .fr input{width:calc(100% - 126px); height:39px; padding:0; margin-top:10px; color:#141414; font-size:30px; border:0;}
-.exchange > div .fr input::placeholder {color:#ddd; font-size:30px;}
+.exchange > div .fr input{width:calc(100% - 126px); height:39px; padding:0; margin-top:10px; color:#141414; font-size:20px; border:0;}
+.exchange > div .fr input::placeholder {color:#ddd; font-size:20px;}
 
 .exchange > div .max > div {position:absolute; bottom:22px; right:13px; background:#fff;}
 .exchange > div .max > div > a {padding-right: 16px;}
@@ -266,7 +266,7 @@ footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
 /* .liquidity .btns {display:none;} */
 .liquidity .btns > a {display:block; width:100%; height:26px; margin:10px 0 20px; color:#141414; font-size:12px; text-align:center; border-radius:6px; border:solid 1px #ddd; line-height:26px;}
 .liquidity .btns > a:after {content:''; display:inline-block; position:relative; top:-2px; width:6px; height:6px; margin-left:4px; background:url(./images/ico/ico_call_made.png) no-repeat 0 0; background-size:100%;}
-.two_btn {display: flex; width:100%; margin-bottom:25px;}
+.two_btn {display: flex; width:100%; margin-top:25px; margin-bottom:25px;}
 .two_btn:after {content:''; display:block; clear:both;}
 .two_btn a, button { display:block; width:calc(50% - 5px); height:40px; font-size:14px; font-weight:500; line-height:40px; text-align:center; border-radius:50px;}
 .two_btn a + a {margin-left:10px;}

@@ -85,15 +85,22 @@ const TokenListModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
                                 ) : (
                                         <>
                                             {tempTokenList.map((tempToken, idx) => {
+                                                const tempTokenSymbol = tempToken.symbol.toLowerCase()
+
                                                 return (
                                                     <TokenItem key={idx} onClick={() => onClickToken(tempToken)}>
-                                                        <dt className="not-found">{tempToken.symbol}</dt>
-                                                        <dd className="stv_value">{convertDecimal(tempToken.balance, tempToken.decimals)}</dd>
+                                                        <dt className={`${tempTokenSymbol === 'weth' ? 'eth' : tempTokenSymbol}`}>{tempTokenSymbol === 'weth' ? 'ETH' : tempToken.symbol}</dt>
+                                                        {tempToken.balance ? (
+                                                            <dd className="stv_value">{convertDecimal(tempToken.balance, tempToken.decimals)}</dd>
+                                                        ) : (
+                                                                <dd className="stv_value">{0}</dd>
+                                                            )}
                                                     </TokenItem>
                                                 )
                                             })}
                                         </>
-                                    )}
+                                    )
+                                }
                             </div>
                         </dl>
                     </div>

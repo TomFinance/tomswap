@@ -464,9 +464,12 @@ export const requestRemoveLiquidity = async (myPosition, removePersent) => {
                 value: 0x0
             })
         }
-        positionLocalStorage.removeMyPositionList(myPosition.tokenAddressA, myPosition.tokenAddressB)
+
+        if (removePersent === 1) {
+            positionLocalStorage.removeMyPositionList(myPosition.tokenAddressA, myPosition.tokenAddressB)
+        }
     } catch (error) {
-        console.log(error)
+        return error
     }
 }
 // #endregion

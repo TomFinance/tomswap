@@ -134,11 +134,16 @@ const Swap = () => {
             })
             setShowModal({ showModal, loading: true, success: true })
         } catch (error) {
-            // eslint-disable-next-line no-cond-assign
-            if (error.code = '-32602') {
-                setShowModal({ showModal, loading: true, success: true })
-            } else {
-                setShowModal({ showModal, loading: false })
+            switch (error.code) {
+                case 4001:
+                    setShowModal({ showModal, loading: false })
+                    break
+                case -32602:
+                    setShowModal({ showModal, loading: true, success: true })
+                    break
+                default:
+                    setShowModal({ showModal, loading: false })
+                    break
             }
         }
     }

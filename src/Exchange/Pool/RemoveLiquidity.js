@@ -83,11 +83,16 @@ const RemoveLiquidity = ({ history, location }) => {
                 setShowModal({ loading: true, success: true })
             }
         } catch (error) {
-            // eslint-disable-next-line no-cond-assign
-            if (error.code = '-32602') {
-                setShowModal({ loading: true, success: true })
-            } else {
-                setShowModal({ loading: false, success: false })
+            switch (error.code) {
+                case 4001:
+                    setShowModal({ loading: false, success: false })
+                    break
+                case -32602:
+                    setShowModal({ loading: true, success: true })
+                    break
+                default:
+                    setShowModal({ loading: false, success: false })
+                    break
             }
         }
     }

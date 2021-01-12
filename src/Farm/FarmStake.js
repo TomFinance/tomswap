@@ -65,11 +65,16 @@ const FarmStake = ({ match: { params: { route } }, history }) => {
             await processFunc()
             setShowModal({ stake: false, unStake: false, loading: true, success: true })
         } catch (error) {
-            // eslint-disable-next-line no-cond-assign
-            if (error.code = '-32602') {
-                setShowModal({ stake: false, unStake: false, loading: true, success: true })
-            } else {
-                setShowModal({ stake: false, unStake: false, loading: false, success: false })
+            switch (error.code) {
+                case 4001:
+                    setShowModal({ stake: false, unStake: false, loading: false, success: false })
+                    break
+                case -32602:
+                    setShowModal({ stake: false, unStake: false, loading: true, success: true })
+                    break
+                default:
+                    setShowModal({ stake: false, unStake: false, loading: false, success: false })
+                    break
             }
         }
     }

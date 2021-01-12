@@ -3,7 +3,7 @@ import { convertDecimal } from 'utils/utils'
 
 const SettingModal = ({ myAccount }) => {
     // const [showSetting, setShowSetting] = useState(false)
-    const [showMore, setShowMore] = useState(false)
+    // const [showMore, setShowMore] = useState(false)
     const [showUpdate, setShowUpdate] = useState(false)
 
     return myAccount.address ? (
@@ -64,7 +64,7 @@ const SettingModal = ({ myAccount }) => {
                         </div>
                     )}
                 </div> */}
-                <div className="more" onClick={() => setShowMore(!showMore)}>
+                {/* <div className="more" onClick={() => setShowMore(!showMore)}>
                     {showMore && (
                         <ul>
                             <li className="set01"><a href="#;">Analytics</a></li>
@@ -74,7 +74,7 @@ const SettingModal = ({ myAccount }) => {
                             <li className="set05"><a href="#;">Code</a></li>
                         </ul>
                     )}
-                </div>
+                </div> */}
             </div>
             {showUpdate && (
                 <div className="update_box">

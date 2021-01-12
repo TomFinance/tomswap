@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from '@emotion/styled'
-import { convertDecimal } from 'utils/utils'
+import { convertDecimal, numberPattern } from 'utils/utils'
 import { lpTokenRequestTx } from 'utils/web3Utils'
 
 const Title = styled.div`
@@ -55,11 +55,26 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
     const [amount, setAmount] = useState('')
     const [fakeAmount, setFakeAmount] = useState('')
 
-    const onChange = e => {
+    const onChange = (e, action) => {
         const { target: { value } } = e
 
-        setAmount(value)
-        setFakeAmount(value)
+        if (value === '') {
+            setAmount('')
+            setFakeAmount('')
+        } else {
+            if (action === 'stake') {
+                if (convertDecimal(stakeData.lpTokenBalance, stakeData.lpTokenDecimals) >= 0 && numberPattern.test(value)) {
+                    setAmount(value)
+                    setFakeAmount(value)
+                }
+            } else if (action === 'unStake') {
+                if (convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals) >= 0 && numberPattern.test(value)) {
+                    setAmount(value)
+                    setFakeAmount(value)
+                }
+            }
+        }
+
     }
 
     return showModal.stake ? (
@@ -73,7 +88,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                         <p>{`Available : ${convertDecimal(stakeData.lpTokenBalance, stakeData.lpTokenDecimals)}`}</p>
                         <p>{`${splitPoolNameObj.lpTokenSymbol} UNI-V2 LP`}</p>
                         <InputBox>
-                            <input type="text" value={fakeAmount} onChange={onChange} />
+                            <input type="text" placeholder="Input amount" value={fakeAmount} onChange={e => onChange(e, 'stake')} />
                             <button onClick={() => {
                                 setAmount(stakeData.lpTokenBalance / Math.pow(10, stakeData.lpTokenDecimals))
                                 setFakeAmount(convertDecimal(stakeData.lpTokenBalance, stakeData.lpTokenDecimals))
@@ -83,7 +98,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                 </div>
                 <ButtonWrap>
                     <button className="pop_call pop_close" onClick={() => setShowModal({ ...showModal, stake: false })}>Cancel</button>
-                    <button className={`pop_call pop_close ${Number(amount) > 0 ? '' : 'disabled'}`} onClick={() => {
+                    <button className={`pop_call pop_close ${Number(amount) > 0 && fakeAmount <= convertDecimal(stakeData.lpTokenBalance, stakeData.lpTokenDecimals) ? '' : 'disabled'}`} onClick={() => {
                         handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'stake', amount, stakeData.lpTokenDecimals))
                     }}>Confirm</button>
                 </ButtonWrap>
@@ -100,7 +115,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                         <p>{`Available : ${convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals)}`}</p>
                         <p>{`${splitPoolNameObj.lpTokenSymbol} UNI-V2 LP`}</p>
                         <InputBox>
-                            <input type="number" placeholder="Input amount" value={amount} onChange={onChange} />
+                            <input type="number" placeholder="Input amount" value={fakeAmount} onChange={e => onChange(e, 'unStake')} />
                             <button onClick={() => {
                                 setAmount(stakeData.stakedToken / Math.pow(10, stakeData.lpTokenDecimals))
                                 setFakeAmount(convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals))
@@ -110,7 +125,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                 </div>
                 <ButtonWrap>
                     <button className="pop_call pop_close" onClick={() => setShowModal({ ...showModal, unStake: false })}>Cancel</button>
-                    <button className={`pop_call pop_close ${Number(amount) > 0 ? '' : 'disabled'}`} onClick={() => {
+                    <button className={`pop_call pop_close ${Number(amount) > 0 && fakeAmount <= convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals) ? '' : 'disabled'}`} onClick={() => {
                         handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'unStake', amount, stakeData.lpTokenDecimals))
                     }}>Confirm</button>
                 </ButtonWrap>

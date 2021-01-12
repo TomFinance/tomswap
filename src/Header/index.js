@@ -13,7 +13,8 @@ const Header = ({ myAccount, setMyAccount, history }) => {
             ...myAccount,
             balance: await getBalance(await getMetaMaskMyAccount())
         })
-    }, [myAccount, setMyAccount])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     useEffect(() => {
         getMyBalance()
@@ -56,7 +57,7 @@ const Header = ({ myAccount, setMyAccount, history }) => {
                                 <strong>{convertDecimal(myAccount.balance, 18)}</strong>
                                 <p>TOM2 Balance</p>
                             </div>
-                            <a href="#;">View on Etherscan</a>
+                            <a href={myAccount.address ? `https://etherscan.io/address/${myAccount.address}` : '#'} target="_blank" rel="noreferrer">View on Etherscan</a>
                         </div>
                         <a href="#;" className="pop_close" onClick={() => setShowMyAccount(false)}>Cancel</a>
                     </div>
