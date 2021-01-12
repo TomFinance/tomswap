@@ -68,7 +68,7 @@ function App({ history }) {
   }, [handleIsUnlocked])
 
   const handleIsNetwork = useCallback(() => {
-    if (process.env.REACT_APP_ENV === 'mainnet') {
+    if (process.env.NODE_ENV === 'production') {
       // Ethereum Mainnet
       if (window.ethereum.chainId !== '0x1') {
         alert('Mainnet으로 변경해주십시오.')
