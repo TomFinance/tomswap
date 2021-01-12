@@ -20,7 +20,6 @@
   "scripts": {
     "start:testnet": "react-scripts start",
     "start": "NODE_ENV=production react-scripts start",
-    "build:testnet": "NODE_ENV=development GENERATE_SOURCEMAP=false react-scripts build",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

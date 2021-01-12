@@ -5,7 +5,7 @@ export const COF_ADDRESS = '0xF7970499814654CD13Cb7B6E7634A12a7A8A9ABc'
 export const TMTG_LBXC_POOL = '0x2A70605e53a2a596E04df8A775E0e8C9fEd62F9a'
 
 export const ETH_ADDRESS = 'ETHER'
-export const WETH_ADDRESS = process.env.NODE_ENV === 'production'
+export const WETH_ADDRESS = !process.env.REACT_APP_ENV && process.env.NODE_ENV === 'production'
     ? '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
     : '0x0a180A76e4466bF68A7F86fB029BEd3cCcFaAac5'
 
@@ -21,7 +21,7 @@ export const MINING_POOLS = {
     'LBXC-TOM': '0xe1261C3702E1434223e47e9e49D0995599FA0a11',
 }
 
-export const PRESET_TOKEN = process.env.NODE_ENV === 'production' ? {
+export const PRESET_TOKEN = !process.env.REACT_APP_ENV && process.env.NODE_ENV === 'production' ? {
     "ETH": ETH_ADDRESS,
     'TMTG': '0x10086399dd8c1e3de736724af52587a2044c9fa2',
     'LBXC': '0xffe510a92434a0df346c5e72a3494b043cf249eb',
@@ -35,7 +35,7 @@ export const PRESET_TOKEN = process.env.NODE_ENV === 'production' ? {
         'TOM2': '0x91445f403A7b8D892c878FAA9F5aF4584FF0B8E5',
     }
 
-export const CONTRACT_ADDRESS = process.env.NODE_ENV === 'production' ? {
+export const CONTRACT_ADDRESS = !process.env.REACT_APP_ENV && process.env.NODE_ENV === 'production' ? {
     FACTORY: '0xf2b666B5636331CAb5afb981933CE5153AAe0cc9',
     ROUTER: '0x9d4a5448B9f8272603f22F2D3bF2D5F0f2C3C5A5',
 } : {
