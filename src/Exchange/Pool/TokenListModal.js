@@ -60,8 +60,9 @@ const TokenListModal = ({ addLiquidityInput, setAddLiquidityInput }) => {
         <div id="token_pop" className="popup_wrap">
             <div className="popup">
                 <div className="pop_con">
-                    <h3>Select a token
-                        <HelpBox helpText={''} />
+                    <h3 style={{ display: 'flex', alignItems: 'center' }}>
+                        Select a token
+                        <HelpBox id={11} helpText={'Find a token by searching for its name or symbol or by pasting its address below.'} />
                     </h3>
                     <input type="text" placeholder="Paste Address" value={searchTokenInput.value} onChange={searchTokenInputOnchange} />
                     <div className="token_name">

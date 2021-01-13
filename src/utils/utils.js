@@ -16,6 +16,20 @@ export const accountLocalStorage = {
     }
 }
 
+export const networkLocalStorage = {
+    getMyNetwork: () => {
+        return JSON.parse(localStorage.getItem('myNetwork'))
+    },
+
+    setMyNetwork: network => {
+        return localStorage.setItem('myNetwork', JSON.stringify(network))
+    },
+
+    removeMyNetwork: () => {
+        return localStorage.removeItem('myNetwork')
+    }
+}
+
 export const positionLocalStorage = {
     getMyPositionList: () => {
         return JSON.parse(localStorage.getItem('myPositionList'))

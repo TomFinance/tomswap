@@ -6,7 +6,7 @@ import SettingModal from 'Header/Setting'
 import Body from 'Body'
 import Footer from 'Footer/Footer'
 import { getBalance } from 'utils/web3Utils'
-import { accountLocalStorage } from 'utils/utils'
+import { accountLocalStorage, networkLocalStorage } from 'utils/utils'
 import { myAccountReducer, myAccountDispatch } from 'contextAPI'
 
 function App({ history }) {
@@ -68,10 +68,21 @@ function App({ history }) {
   }, [handleIsUnlocked])
 
   const handleIsNetwork = useCallback(() => {
-    if (!process.env.REACT_APP_ENV && process.env.NODE_ENV === 'production') {
-      // Ethereum Mainnet
-      if (window.ethereum.chainId && window.ethereum.chainId !== '0x1') {
-        alert('Mainnet으로 변경해주십시오.')
+    const newNewwork = window.ethereum.chainId
+
+    if (newNewwork) {
+      const perNetwork = networkLocalStorage.getMyNetwork()
+
+      if (perNetwork !== newNewwork) {
+        networkLocalStorage.setMyNetwork(newNewwork)
+        window.location.reload()
+      } else {
+        // Ethereum Mainnet
+        if (newNewwork !== '0x1') {
+          if (!process.env.REACT_APP_ENV && process.env.NODE_ENV === 'production') {
+            alert('Mainnet으로 변경해주십시오.')
+          }
+        }
       }
     }
   }, [])

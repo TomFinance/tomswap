@@ -274,7 +274,7 @@ const AddLiquidity = ({ location }) => {
                             <Link to="/exchange/pool" className="prev"><img src="/images/ico/ico_arrow_back.png"
                                 alt="뒤로가기" /></Link>
                             <span>{pageType === 'add liquidity' ? 'Add Liquidity' : 'Create Pair'}</span>
-                            <HelpBox helpText={'When you add liquidity, you are given pool tokens representing your position. These tokens automatically earn fees proportional to your share of the pool, and can be redeemed at any time.'} />
+                            <HelpBox id={10} helpText={'When you add liquidity, you are given pool tokens representing your position. These tokens automatically earn fees proportional to your share of the pool, and can be redeemed at any time.'} />
                         </div>
                         <div className="exchange">
                             <div className="top">
