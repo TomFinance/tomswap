@@ -104,7 +104,7 @@ const Swap = () => {
     }
 
     const swapPreview = useCallback(async () => {
-        if (tokenA.tokenAddress && tokenB.tokenAddress) {
+        if (tokenA.tokenAddress && tokenB.tokenAddress && tokenA.symbol !== 'TOM2' && tokenB.symbol !== 'TOM2') {
             if (tokenA.amount > 0) {
                 const calcText = await swapPreviewPrice(tokenA, tokenB)
 
@@ -199,7 +199,9 @@ const Swap = () => {
                         </>
                     )}
                 </div>
-                <button className={`enter enter02 ${(tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance / Math.pow(10, tokenA.decimals)) && calcSwapData ? 'on' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
+                {tokenA.symbol !== 'TOM2' && tokenB.symbol !== 'TOM2' && (
+                    <button className={`enter enter02 ${(tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance / Math.pow(10, tokenA.decimals)) && calcSwapData ? 'on' : 'disabledz'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
+                )}
             </div>
             {tokenA.amount && tokenB.amount && calcSwapData !== null ? (
                 <div className="analy">
