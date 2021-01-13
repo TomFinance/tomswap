@@ -60,6 +60,10 @@ export const positionLocalStorage = {
 export const convertDecimal = (value, decimals, persent) => {
     let calcValue = Number(value)
 
+    if (isNaN(calcValue)) {
+        return ''
+    }
+
     if (calcValue <= 0) {
         return '0.00000000000'
     }
