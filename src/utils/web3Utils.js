@@ -95,20 +95,20 @@ export async function calculateAPY(poolAddress) {
     ).pair //tmtg/lbxc
 
     try {
-    const tom_price = COFPairData.reserve0 / COFPairData.reserve1
-    const totalStaked = await poolContract.methods.TOTAL_STAKED().call()
+        const tom_price = COFPairData.reserve0 / COFPairData.reserve1
+        const totalStaked = await poolContract.methods.TOTAL_STAKED().call()
 
-    if (Number(totalStaked) === 0) {
-        return 'Infinity'
-    }
+        if (Number(totalStaked) === 0) {
+            return 'Infinity'
+        }
 
-    const rewardPerBlock = await poolContract.methods.rewardPerBlock().call()
+        const rewardPerBlock = await poolContract.methods.rewardPerBlock().call()
 
-    const PPB = (tom_price * rewardPerBlock)
-        / totalStaked
-        / (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
+        const PPB = (tom_price * rewardPerBlock)
+            / totalStaked
+            / (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
 
-    return `${(((PPB * 86400 * 365) / 13) * 100).toFixed(2)}%`
+        return `${(((PPB * 86400 * 365) / 13) * 100).toFixed(2)}%`
     } catch (error) {
         console.log(error)
     }
@@ -151,7 +151,7 @@ export const confirmLpTokenApprove = async lpTokenSymbol => {
     })
 }
 
-export const lpTokenRequestTx = async (lpTokenSymbol, action, amount, lpTokenDecimals) => {
+export const lpTokenRequestTx = async (lpTokenSymbol, action, amount, lpTokenDecimals, stakeData) => {
     const poolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.POOL, LP_TOKEN_PAIRS[lpTokenSymbol])
 
     const txObject = {
@@ -163,12 +163,16 @@ export const lpTokenRequestTx = async (lpTokenSymbol, action, amount, lpTokenDec
     switch (action) {
         case 'stake':
             txObject.data = poolContract.methods.stake(
-                bigInt(Math.floor(amount * Math.pow(10, lpTokenDecimals))).value
+                stakeData.lpTokenBalance === amount
+                    ? bigInt(stakeData.lpTokenBalance).value
+                    : bigInt(Math.floor(amount * Math.pow(10, lpTokenDecimals))).value
             ).encodeABI()
             break
         case 'unStake':
             txObject.data = poolContract.methods.claimAndUnstake(
-                bigInt(Math.floor(amount * Math.pow(10, lpTokenDecimals))).value
+                stakeData.stakedToken === amount
+                    ? bigInt(stakeData.stakedToken).value
+                    : bigInt(Math.floor(amount * Math.pow(10, lpTokenDecimals))).value
             ).encodeABI()
             break
         case 'claim':

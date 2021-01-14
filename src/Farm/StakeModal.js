@@ -90,7 +90,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                         <InputBox>
                             <input type="text" placeholder="Input amount" value={fakeAmount} onChange={e => onChange(e, 'stake')} />
                             <button onClick={() => {
-                                setAmount(stakeData.lpTokenBalance / Math.pow(10, stakeData.lpTokenDecimals))
+                                setAmount(stakeData.lpTokenBalance)
                                 setFakeAmount(convertDecimal(stakeData.lpTokenBalance, stakeData.lpTokenDecimals))
                             }}>Max</button>
                         </InputBox>
@@ -99,7 +99,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                 <ButtonWrap>
                     <button className="pop_call pop_close" onClick={() => setShowModal({ ...showModal, stake: false })}>Cancel</button>
                     <button className={`pop_call pop_close ${Number(amount) > 0 && fakeAmount <= convertDecimal(stakeData.lpTokenBalance, stakeData.lpTokenDecimals) ? '' : 'disabled'}`} onClick={() => {
-                        handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'stake', amount, stakeData.lpTokenDecimals))
+                        handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'stake', amount, stakeData.lpTokenDecimals, stakeData))
                     }}>Confirm</button>
                 </ButtonWrap>
             </div>
@@ -117,7 +117,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                         <InputBox>
                             <input type="number" placeholder="Input amount" value={fakeAmount} onChange={e => onChange(e, 'unStake')} />
                             <button onClick={() => {
-                                setAmount(stakeData.stakedToken / Math.pow(10, stakeData.lpTokenDecimals))
+                                setAmount(stakeData.stakedToken)
                                 setFakeAmount(convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals))
                             }}>Max</button>
                         </InputBox>
@@ -126,7 +126,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                 <ButtonWrap>
                     <button className="pop_call pop_close" onClick={() => setShowModal({ ...showModal, unStake: false })}>Cancel</button>
                     <button className={`pop_call pop_close ${Number(amount) > 0 && fakeAmount <= convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals) ? '' : 'disabled'}`} onClick={() => {
-                        handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'unStake', amount, stakeData.lpTokenDecimals))
+                        handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'unStake', amount, stakeData.lpTokenDecimals, stakeData))
                     }}>Confirm</button>
                 </ButtonWrap>
             </div>
