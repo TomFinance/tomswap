@@ -42,7 +42,7 @@ const Home = () => {
     return (
         <div>
             <Helmet>
-                <title>TOM2 FANANCE - HOME</title>
+                <title>TOMSWAP - HOME</title>
             </Helmet>
             <div className="main_top">
                 <div className="wrapper">

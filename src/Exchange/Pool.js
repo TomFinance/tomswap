@@ -57,7 +57,7 @@ const Pool = () => {
     return (
         <div>
             <Helmet>
-                <title>TOM2 FANANCE - POOL</title>
+                <title>TOMSWAP - POOL</title>
             </Helmet>
             <Wrapper className="wrapper">
                 <div className="sub_wrap sub_wrap04">

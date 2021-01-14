@@ -65,7 +65,7 @@ const ImportPool = ({ history }) => {
     return (
         <>
             <Helmet>
-                <title>TOM2 FANANCE - IMPORT POOL</title>
+                <title>TOMSWAP - IMPORT POOL</title>
             </Helmet>
             <div className="wrapper">
                 <div className="sub_wrap liqu_wrap sub_wrap05">

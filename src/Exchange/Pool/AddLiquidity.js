@@ -265,7 +265,7 @@ const AddLiquidity = ({ location }) => {
     return (
         <>
             <Helmet>
-                <title>{`TOM2 FANANCE - ${pageType.toUpperCase()}`}</title>
+                <title>{`TOMSWAP - ${pageType.toUpperCase()}`}</title>
             </Helmet>
             <Wrapper className="wrapper">
                 <div id="jsAddLiquidityPage" className="wrapper">

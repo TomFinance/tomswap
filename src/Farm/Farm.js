@@ -25,7 +25,7 @@ const Farm = () => {
     return (
         <div>
             <Helmet>
-                <title>TOM2 FANANCE - FARM</title>
+                <title>TOMSWAP - FARM</title>
             </Helmet>
             <div className="main_top">
                 <div className="wrapper">

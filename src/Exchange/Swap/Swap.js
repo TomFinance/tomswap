@@ -197,7 +197,7 @@ const Swap = () => {
     return (
         <div className="wrapper">
             <Helmet>
-                <title>TOM2 FANANCE - SWAP</title>
+                <title>TOMSWAP - SWAP</title>
             </Helmet>
             <div className="sub_wrap sub_wrap03">
                 <ul>
