@@ -1,5 +1,5 @@
 import Web3 from "web3"
-import { checkETH, filterdETH, positionLocalStorage } from "./utils"
+import { checkETH, convertDecimal, filterdETH, positionLocalStorage } from "./utils"
 import { getMetaMaskMyAccount, metaMaskSendTx } from "./metaMask"
 import { MINING_POOLS, LP_TOKEN_PAIRS, THEGRAGH_API_URL, ETH_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
 import axios from "axios"
@@ -263,7 +263,9 @@ export const createImportCreate = async (aToken, bToken) => {
             to: CONTRACT_ADDRESS.ROUTER,
             data: routerContract.methods.addLiquidityETH(
                 token.tokenAddress,
-                bigInt(Math.floor(Number(token.amount) * Math.pow(10, token.decimals))).value,
+                token.amount === convertDecimal(token.balance, token.decimals)
+                    ? bigInt(token.balance).value
+                    : bigInt(Math.floor(Number(token.amount) * Math.pow(10, token.decimals))).value,
                 bigInt(Math.floor(Number(token.amount) * 0.995 * Math.pow(10, aToken.decimals))).value,
                 bigInt(Math.floor(Number(ethToken.amount) * 0.995 * Math.pow(10, bToken.decimals))).value,
                 await getMetaMaskMyAccount(),
@@ -278,8 +280,12 @@ export const createImportCreate = async (aToken, bToken) => {
             data: routerContract.methods.addLiquidity(
                 aToken.tokenAddress,
                 bToken.tokenAddress,
-                bigInt(Math.floor(Number(aToken.amount) * Math.pow(10, aToken.decimals))).value,
-                bigInt(Math.floor(Number(bToken.amount) * Math.pow(10, bToken.decimals))).value,
+                aToken.amount === convertDecimal(aToken.balance, aToken.decimals)
+                    ? bigInt(aToken.balance).value
+                    : bigInt(Math.floor(Number(aToken.amount) * Math.pow(10, aToken.decimals))).value,
+                bToken.amount === convertDecimal(bToken.balance, bToken.decimals)
+                    ? bigInt(bToken.balance).value
+                    : bigInt(Math.floor(Number(bToken.amount) * Math.pow(10, bToken.decimals))).value,
                 bigInt(Math.floor(Number(aToken.amount) * 0.995 * Math.pow(10, aToken.decimals))).value,
                 bigInt(Math.floor(Number(bToken.amount) * 0.995 * Math.pow(10, bToken.decimals))).value,
                 await getMetaMaskMyAccount(),
@@ -592,7 +598,9 @@ export const swapRequestTx = async (tokenA, tokenB) => {
                 from: await getMetaMaskMyAccount(),
                 to: CONTRACT_ADDRESS.ROUTER,
                 data: routerContract.methods.swapExactTokensForETH(
-                    bigInt(Math.floor(token.amount * Math.pow(10, token.decimals))).value,
+                    convertDecimal(token.balance, token.decimals) === token.amount
+                        ? bigInt(token.balance).value
+                        : bigInt(Math.floor(token.amount * Math.pow(10, token.decimals))).value,
                     bigInt(Math.floor(quotePrice.token1MinOut * Math.pow(10, ethToken.decimals))).value,
                     [
                         token.tokenAddress,
@@ -610,7 +618,9 @@ export const swapRequestTx = async (tokenA, tokenB) => {
             from: await getMetaMaskMyAccount(),
             to: CONTRACT_ADDRESS.ROUTER,
             data: routerContract.methods.swapExactTokensForTokens(
-                bigInt(Math.floor(tokenA.amount * Math.pow(10, tokenA.decimals))).value,
+                convertDecimal(tokenA.balance, tokenA.decimals) === tokenA.amount
+                    ? bigInt(tokenA.balance).value
+                    : bigInt(Math.floor(tokenA.amount * Math.pow(10, tokenA.decimals))).value,
                 bigInt(Math.floor(quotePrice.token1MinOut * Math.pow(10, tokenB.decimals))).value,
                 [
                     tokenA.tokenAddress,
