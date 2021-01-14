@@ -315,8 +315,8 @@ export const addLiquidityGatherPairData = async (tokenAddressA, tokenAddressB) =
     const token1Decimals = await token1Contract.methods.decimals().call()
 
     const tokenReserves = await pairContract.methods.getReserves().call()
-    const token0Reserve = pairToken0 === tokenAddressA ? tokenReserves._reserve0 : tokenReserves._reserve1
-    const token1Reserve = pairToken1 === tokenAddressB ? tokenReserves._reserve1 : tokenReserves._reserve0
+    const token0Reserve = pairToken0.toLowerCase() === tokenAddressA ? tokenReserves._reserve0 : tokenReserves._reserve1
+    const token1Reserve = pairToken1.toLowerCase() === tokenAddressB ? tokenReserves._reserve1 : tokenReserves._reserve0
 
     const pairSupply = await pairContract.methods.totalSupply().call()
     const pairDecimals = await pairContract.methods.decimals().call()
@@ -503,8 +503,8 @@ export const swapGatherPairData = async (tokenAddressA, tokenAddressB) => {
     const token1Decimals = await token1Contract.methods.decimals().call()
 
     const tokenReserves = await pairContract.methods.getReserves().call()
-    const token0Reserve = pairToken0 === tokenAddressA ? tokenReserves._reserve0 : tokenReserves._reserve1
-    const token1Reserve = pairToken1 === tokenAddressB ? tokenReserves._reserve1 : tokenReserves._reserve0
+    const token0Reserve = pairToken0.toLowerCase() === tokenAddressA ? tokenReserves._reserve0 : tokenReserves._reserve1
+    const token1Reserve = pairToken1.toLowerCase() === tokenAddressB ? tokenReserves._reserve1 : tokenReserves._reserve0
 
     const pairSupply = await pairContract.methods.totalSupply().call()
     const pairDecimals = await pairContract.methods.decimals().call()
