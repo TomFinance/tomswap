@@ -200,7 +200,7 @@ const Swap = () => {
                     )}
                 </div>
                 {tokenA.symbol !== 'TOM2' && tokenB.symbol !== 'TOM2' && (
-                    <button className={`enter enter02 ${(tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance / Math.pow(10, tokenA.decimals)) && calcSwapData ? 'on' : 'disabledz'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
+                    <button className={`enter enter02 ${(tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance / Math.pow(10, tokenA.decimals)) && calcSwapData ? 'on' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
                 )}
             </div>
             {tokenA.amount && tokenB.amount && calcSwapData !== null ? (
