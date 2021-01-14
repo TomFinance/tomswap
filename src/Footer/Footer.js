@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TOM_Finance_Litepaper_Ver from 'assets/TOM_Finance_Litepaper_Ver2.0.0.pdf'
+import Litepapaer_TOM2 from 'assets/Litepapaer_TOM2 Finance_Jan 14th (ENG).pdf'
 
 const Footer = () => {
     return (
@@ -11,7 +11,7 @@ const Footer = () => {
             <a href="#">Telegram</a>
             <a href="https://twitter.com/defi_tom">Twitter</a>
             <a href="https://github.com/TomFinance">Github</a>
-            <a href={TOM_Finance_Litepaper_Ver} target="_blank" rel="noreferrer">Docs</a>
+            <a href={Litepapaer_TOM2} target="_blank" rel="noreferrer">Docs</a>
         </footer>
     )
 }
