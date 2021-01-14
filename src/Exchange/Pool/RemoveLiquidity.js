@@ -88,7 +88,11 @@ const RemoveLiquidity = ({ history, location }) => {
                     setShowModal({ loading: false, success: false })
                     break
                 case -32602:
-                    setShowModal({ loading: true, success: true })
+                    if (action === 'approve') {
+                        setShowModal({ loading: false, success: false })
+                    } else {
+                        setShowModal({ loading: true, success: true })
+                    }
                     break
                 default:
                     setShowModal({ loading: false, success: false })
@@ -151,7 +155,7 @@ const RemoveLiquidity = ({ history, location }) => {
                         <WarningText>Output is estimated. If the price changes by more than 0.5% your transaction will revert.</WarningText>
                         <div className="two_btn">
                             <button className={`approve ${(abledApprove !== null && abledApprove) ? 'disabled' : 'on'}`} onClick={() => onClickRemoveLiquidity(() => onClickApprove(), 'approve')}>Approve</button>
-                            <button className={`amount ${abledApprove && removeValue && myPosition ? 'on' : 'disabled'}`} onClick={() => onClickRemoveLiquidity(() => requestRemoveLiquidity(myPosition, (removeValue / 100)))}>{abledApprove && removeValue && myPosition ? 'Remove' : 'Enter an amount'}</button>
+                            <button className={`amount ${abledApprove && removeValue && myPosition ? 'on' : 'disabled'}`} onClick={() => onClickRemoveLiquidity(() => requestRemoveLiquidity(myPosition, removeValue))}>{abledApprove && removeValue && myPosition ? 'Remove' : 'Enter an amount'}</button>
                         </div>
                     </div>
                     <div className="position">

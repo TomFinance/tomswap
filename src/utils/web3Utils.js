@@ -95,20 +95,20 @@ export async function calculateAPY(poolAddress) {
     ).pair //tmtg/lbxc
 
     try {
-        const tom_price = COFPairData.reserve0 / COFPairData.reserve1
-        const totalStaked = await poolContract.methods.TOTAL_STAKED().call()
+    const tom_price = COFPairData.reserve0 / COFPairData.reserve1
+    const totalStaked = await poolContract.methods.TOTAL_STAKED().call()
 
-        if (Number(totalStaked) === 0) {
-            return 'Infinity'
-        }
+    if (Number(totalStaked) === 0) {
+        return 'Infinity'
+    }
 
-        const rewardPerBlock = await poolContract.methods.rewardPerBlock().call()
+    const rewardPerBlock = await poolContract.methods.rewardPerBlock().call()
 
-        const PPB = (tom_price * rewardPerBlock)
-            / totalStaked
-            / (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
+    const PPB = (tom_price * rewardPerBlock)
+        / totalStaked
+        / (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
 
-        return `${(((PPB * 86400 * 365) / 13) * 100).toFixed(2)}%`
+    return `${(((PPB * 86400 * 365) / 13) * 100).toFixed(2)}%`
     } catch (error) {
         console.log(error)
     }
@@ -160,27 +160,23 @@ export const lpTokenRequestTx = async (lpTokenSymbol, action, amount, lpTokenDec
         value: 0x0
     }
 
-    try {
-        switch (action) {
-            case 'stake':
-                txObject.data = poolContract.methods.stake(
-                    bigInt(Math.floor(amount * Math.pow(10, lpTokenDecimals))).value
-                ).encodeABI()
-                break
-            case 'unStake':
-                txObject.data = poolContract.methods.claimAndUnstake(
-                    bigInt(Math.floor(amount * Math.pow(10, lpTokenDecimals))).value
-                ).encodeABI()
-                break
-            case 'claim':
-                txObject.data = poolContract.methods.claimAllReward(
-                ).encodeABI()
-                break
-            default:
-                return false
-        }
-    } catch (error) {
-        console.log(error)
+    switch (action) {
+        case 'stake':
+            txObject.data = poolContract.methods.stake(
+                bigInt(Math.floor(amount * Math.pow(10, lpTokenDecimals))).value
+            ).encodeABI()
+            break
+        case 'unStake':
+            txObject.data = poolContract.methods.claimAndUnstake(
+                bigInt(Math.floor(amount * Math.pow(10, lpTokenDecimals))).value
+            ).encodeABI()
+            break
+        case 'claim':
+            txObject.data = poolContract.methods.claimAllReward(
+            ).encodeABI()
+            break
+        default:
+            return false
     }
 
     await metaMaskSendTx(txObject)
@@ -233,18 +229,15 @@ export const createCheckApprove = async (tokenAddress, amount, decimals) => {
 
 export const createConfirmApprove = async tokenAddress => {
     const token0Contract = new etherWeb3.eth.Contract(CONTRACT_ABI.ERC, tokenAddress)
-    try {
-        await metaMaskSendTx({
-            from: await getMetaMaskMyAccount(),
-            to: tokenAddress,
-            data: token0Contract.methods.approve(
-                CONTRACT_ADDRESS.ROUTER,
-                INFINITY
-            ).encodeABI()
-        })
-    } catch (error) {
-        console.log(error)
-    }
+
+    await metaMaskSendTx({
+        from: await getMetaMaskMyAccount(),
+        to: tokenAddress,
+        data: token0Contract.methods.approve(
+            CONTRACT_ADDRESS.ROUTER,
+            INFINITY
+        ).encodeABI()
+    })
 }
 
 export const createImportCreate = async (aToken, bToken) => {
@@ -430,47 +423,43 @@ export const requestRemoveLiquidityApprove = async (tokenAddressA, tokenAddressB
 export const requestRemoveLiquidity = async (myPosition, removePersent) => {
     const routerContract = new etherWeb3.eth.Contract(CONTRACT_ABI.ROUTER, CONTRACT_ADDRESS.ROUTER)
 
-    try {
-        if (myPosition.tokenAddressA === ETH_ADDRESS || myPosition.tokenAddressB === ETH_ADDRESS) {
-            const token = myPosition.tokenAddressA === ETH_ADDRESS ? 'B' : 'A'
-            const tokenNumber = myPosition.tokenAddressA === ETH_ADDRESS ? '1' : '0'
-            const ethTokenNumber = myPosition.tokenAddressA === ETH_ADDRESS ? '0' : '1'
+    if (myPosition.tokenAddressA === ETH_ADDRESS || myPosition.tokenAddressB === ETH_ADDRESS) {
+        const token = myPosition.tokenAddressA === ETH_ADDRESS ? 'B' : 'A'
+        const tokenNumber = myPosition.tokenAddressA === ETH_ADDRESS ? '1' : '0'
+        const ethTokenNumber = myPosition.tokenAddressA === ETH_ADDRESS ? '0' : '1'
 
-            await metaMaskSendTx({
-                from: await getMetaMaskMyAccount(),
-                to: CONTRACT_ADDRESS.ROUTER,
-                data: routerContract.methods.removeLiquidityETH(
-                    myPosition[`tokenAddress${token}`],
-                    bigInt(Math.floor(Number(myPosition.lpToken) * Number(removePersent))).value,
-                    bigInt(Math.floor(Number(myPosition[`token${tokenNumber}Value`]) * Number(removePersent) * 0.995)).value,
-                    bigInt(Math.floor(Number(myPosition[`token${ethTokenNumber}Value`]) * Number(removePersent) * 0.995)).value,
-                    await getMetaMaskMyAccount(),
-                    Math.floor((+new Date()) / 1000) + 3600
-                ).encodeABI(),
-                value: 0x0
-            })
-        } else {
-            await metaMaskSendTx({
-                from: await getMetaMaskMyAccount(),
-                to: CONTRACT_ADDRESS.ROUTER,
-                data: routerContract.methods.removeLiquidity(
-                    myPosition.tokenAddressA,
-                    myPosition.tokenAddressB,
-                    bigInt(Math.floor(Number(myPosition.lpToken) * Number(removePersent))).value,
-                    bigInt(Math.floor(Number(myPosition.token0Value) * Number(removePersent) * 0.995)).value,
-                    bigInt(Math.floor(Number(myPosition.token1Value) * Number(removePersent) * 0.995)).value,
-                    await getMetaMaskMyAccount(),
-                    Math.floor((+new Date()) / 1000) + 3600
-                ).encodeABI(),
-                value: 0x0
-            })
-        }
+        await metaMaskSendTx({
+            from: await getMetaMaskMyAccount(),
+            to: CONTRACT_ADDRESS.ROUTER,
+            data: routerContract.methods.removeLiquidityETH(
+                myPosition[`tokenAddress${token}`],
+                bigInt(myPosition.lpToken).value * bigInt(removePersent).value / 100n,
+                bigInt(Math.floor(Number(myPosition[`token${tokenNumber}Value`]) * Number(removePersent) / 100 * 0.995)).value,
+                bigInt(Math.floor(Number(myPosition[`token${ethTokenNumber}Value`]) * Number(removePersent) / 100 * 0.995)).value,
+                await getMetaMaskMyAccount(),
+                Math.floor((+new Date()) / 1000) + 3600
+            ).encodeABI(),
+            value: 0x0
+        })
+    } else {
+        await metaMaskSendTx({
+            from: await getMetaMaskMyAccount(),
+            to: CONTRACT_ADDRESS.ROUTER,
+            data: routerContract.methods.removeLiquidity(
+                myPosition.tokenAddressA,
+                myPosition.tokenAddressB,
+                bigInt(myPosition.lpToken).value * bigInt(removePersent).value / 100n,
+                bigInt(Math.floor(Number(myPosition.token0Value) * Number(removePersent) / 100 * 0.995)).value,
+                bigInt(Math.floor(Number(myPosition.token1Value) * Number(removePersent) / 100 * 0.995)).value,
+                await getMetaMaskMyAccount(),
+                Math.floor((+new Date()) / 1000) + 3600
+            ).encodeABI(),
+            value: 0x0
+        })
+    }
 
-        if (removePersent === 1) {
-            positionLocalStorage.removeMyPositionList(myPosition.tokenAddressA, myPosition.tokenAddressB)
-        }
-    } catch (error) {
-        return error
+    if (removePersent === 1) {
+        positionLocalStorage.removeMyPositionList(myPosition.tokenAddressA, myPosition.tokenAddressB)
     }
 }
 // #endregion
