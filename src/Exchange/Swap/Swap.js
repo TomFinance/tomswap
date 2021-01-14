@@ -6,11 +6,12 @@ import { Link } from 'react-router-dom'
 import LoadingModal from '../LoadingModal'
 import TokenListModal from '../Pool/TokenListModal'
 import SwapConfirm from './SwapConfirm'
-import { getBalance, swapPreviewPrice, swapRequestTx } from 'utils/web3Utils'
+import { createCheckApprove, createConfirmApprove, getBalance, swapPreviewPrice, swapRequestTx } from 'utils/web3Utils'
 import { convertDecimal } from 'utils/utils'
 import { Helmet } from 'react-helmet'
 import HelpBox from 'Global/HelpBox'
 import { myAccountDispatch, myAccountReducer } from 'contextAPI'
+import { ETH_ADDRESS } from 'config'
 
 const MaxBtn = styled.strong`
     display: inline-block;
@@ -26,6 +27,19 @@ const MaxBtn = styled.strong`
     background: rgba(234,182,64,0.2);
 `
 
+const AppoveBtnWrap = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 30px 0 10px;
+`
+
+const AppoveBtn = styled.button`
+    background-color: ${props => props.disabledBtn
+        ? '#ddd'
+        : 'rgba(234,182,64,0.3)'};
+`
 
 const Swap = () => {
     const [myAccount, setMyAccount] = useReducer(myAccountReducer, myAccountDispatch)
@@ -87,6 +101,10 @@ const Swap = () => {
         })
         setCalcSwapData(null)
     }
+    const [checkApprove, setCheckApprove] = useState({
+        a: null,
+        b: null
+    })
 
     const onChangeAmount = (e, state, setState) => {
         const { target: { value: amount } } = e
@@ -124,14 +142,38 @@ const Swap = () => {
         swapPreview()
     }, [swapPreview])
 
-    const onClickSwap = async () => {
+    const checkoutApproved = useCallback(async () => {
+        if (tokenA.tokenAddress && tokenB.tokenAddress && tokenA.amount && tokenB.amount) {
+            setCheckApprove({
+                a: await createCheckApprove(tokenA.tokenAddress, tokenA.amount, tokenA.decimals),
+                b: await createCheckApprove(tokenB.tokenAddress, tokenB.amount, tokenB.decimals),
+            })
+        } else {
+            setCheckApprove({
+                a: null,
+                b: null,
+            })
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tokenA.amount, tokenA.tokenAddress, tokenB.amount, tokenB.tokenAddress])
+
+    useEffect(() => {
+        checkoutApproved()
+    }, [checkoutApproved])
+
+    const loadingConfirm = async (processFunc, action) => {
         setShowModal({ showModal, loading: true })
         try {
-            await swapRequestTx(tokenA, tokenB)
+            await processFunc()
             setMyAccount({
                 ...myAccount,
                 balance: await getBalance(myAccount.address)
             })
+            if (action === 'approve') {
+                setShowModal({ showModal, loading: false })
+            } else {
+                setShowModal({ showModal, loading: true, success: true })
+            }
             setShowModal({ showModal, loading: true, success: true })
         } catch (error) {
             switch (error.code) {
@@ -139,7 +181,11 @@ const Swap = () => {
                     setShowModal({ showModal, loading: false })
                     break
                 case -32602:
-                    setShowModal({ showModal, loading: true, success: true })
+                    if (action === 'approve') {
+                        setShowModal({ showModal, loading: false })
+                    } else {
+                        setShowModal({ showModal, loading: true, success: true })
+                    }
                     break
                 default:
                     setShowModal({ showModal, loading: false })
@@ -199,8 +245,20 @@ const Swap = () => {
                         </>
                     )}
                 </div>
-                {tokenA.symbol !== 'TOM2' && tokenB.symbol !== 'TOM2' && (
-                    <button className={`enter enter02 ${(tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance / Math.pow(10, tokenA.decimals)) && calcSwapData ? 'on' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
+                {tokenA.symbol === 'TOM2' || tokenB.symbol === 'TOM2' ? null : (
+                    <>
+                        {tokenA.tokenAddress && tokenB.tokenAddress && (
+                            <AppoveBtnWrap>
+                                {tokenA.tokenAddress !== ETH_ADDRESS && (!checkApprove.a && checkApprove.a !== null) ? (
+                                    <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(tokenA.tokenAddress); await checkoutApproved() }, 'approve')}>{`Approve ${tokenA.symbol.toUpperCase()} `}</AppoveBtn>
+                                ) : null}
+                                {tokenB.symbol !== ETH_ADDRESS && (!checkApprove.b && checkApprove.b !== null) ? (
+                                    <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(tokenB.tokenAddress); await checkoutApproved() }, 'approve')}>{`Approve ${tokenB.symbol.toUpperCase()} `}</AppoveBtn>
+                                ) : null}
+                            </AppoveBtnWrap>
+                        )}
+                        <button className={`enter enter02 ${(checkApprove.a && checkApprove.b) && (tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance / Math.pow(10, tokenA.decimals)) && calcSwapData ? 'on' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
+                    </>
                 )}
             </div>
             {tokenA.amount && tokenB.amount && calcSwapData !== null ? (
@@ -234,7 +292,7 @@ const Swap = () => {
                 </div>
             ) : null}
             {showModal.confirm && (
-                <SwapConfirm tokenA={tokenA} tokenB={tokenB} calcSwapData={calcSwapData} showModal={showModal} setShowModal={setShowModal} onClickSwap={onClickSwap} />
+                <SwapConfirm tokenA={tokenA} tokenB={tokenB} calcSwapData={calcSwapData} showModal={showModal} setShowModal={setShowModal} onClickSwap={() => loadingConfirm(async () => await swapRequestTx(tokenA, tokenB))} />
             )}
             {showModal.loading && (
                 <LoadingModal init={{ reversePrice: false, confirm: false, loading: false, success: false }} initialFunc={initialFunc} showModal={showModal} setShowModal={setShowModal} />
