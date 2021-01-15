@@ -122,7 +122,7 @@ const Swap = () => {
     }
 
     const swapPreview = useCallback(async () => {
-        if (tokenA.tokenAddress && tokenB.tokenAddress && tokenA.symbol !== 'TOM2' && tokenB.symbol !== 'TOM2') {
+        if ((tokenA.tokenAddress && tokenB.tokenAddress) && (tokenA.symbol !== tokenB.symbol)) {
             if (tokenA.amount > 0) {
                 const calcText = await swapPreviewPrice(tokenA, tokenB)
 
@@ -245,21 +245,17 @@ const Swap = () => {
                         </>
                     )}
                 </div>
-                {tokenA.symbol === 'TOM2' || tokenB.symbol === 'TOM2' ? null : (
-                    <>
-                        {tokenA.tokenAddress && tokenB.tokenAddress && (
-                            <AppoveBtnWrap>
-                                {tokenA.tokenAddress !== ETH_ADDRESS && (!checkApprove.a && checkApprove.a !== null) ? (
-                                    <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(tokenA.tokenAddress); await checkoutApproved() }, 'approve')}>{`Approve ${tokenA.symbol.toUpperCase()} `}</AppoveBtn>
-                                ) : null}
-                                {tokenB.symbol !== ETH_ADDRESS && (!checkApprove.b && checkApprove.b !== null) ? (
-                                    <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(tokenB.tokenAddress); await checkoutApproved() }, 'approve')}>{`Approve ${tokenB.symbol.toUpperCase()} `}</AppoveBtn>
-                                ) : null}
-                            </AppoveBtnWrap>
-                        )}
-                        <button className={`enter enter02 ${(checkApprove.a && checkApprove.b) && (tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance / Math.pow(10, tokenA.decimals)) && calcSwapData ? 'on' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
-                    </>
+                {tokenA.tokenAddress && tokenB.tokenAddress && (
+                    <AppoveBtnWrap>
+                        {tokenA.tokenAddress !== ETH_ADDRESS && (!checkApprove.a && checkApprove.a !== null) ? (
+                            <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(tokenA.tokenAddress); await checkoutApproved() }, 'approve')}>{`Approve ${tokenA.symbol.toUpperCase()} `}</AppoveBtn>
+                        ) : null}
+                        {tokenB.symbol !== ETH_ADDRESS && (!checkApprove.b && checkApprove.b !== null) ? (
+                            <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(tokenB.tokenAddress); await checkoutApproved() }, 'approve')}>{`Approve ${tokenB.symbol.toUpperCase()} `}</AppoveBtn>
+                        ) : null}
+                    </AppoveBtnWrap>
                 )}
+                <button className={`enter enter02 ${(checkApprove.a && checkApprove.b) && (tokenA.amount && tokenB.amount) && (tokenA.amount <= tokenA.balance / Math.pow(10, tokenA.decimals)) && calcSwapData ? 'on' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, confirm: true })}>{calcSwapData || calcSwapData === null ? 'Swap' : 'There is no pair pool'}</button>
             </div>
             {tokenA.amount && tokenB.amount && calcSwapData !== null ? (
                 <div className="analy">

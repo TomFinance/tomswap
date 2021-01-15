@@ -174,7 +174,7 @@ const AddLiquidity = ({ location }) => {
     }, [checkoutApproved])
 
     const checkClacPrice = useCallback(async () => {
-        if (addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress && addLiquidityInputA.symbol !== 'TOM2' && addLiquidityInputB.symbol !== 'TOM2') {
+        if ((addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress) && (addLiquidityInputA.symbol !== addLiquidityInputB.symbol)) {
             if (addLiquidityInputA.amount > 0) {
                 if (pageType === 'add liquidity') {
                     const calcText = await addLiquidityPreview(addLiquidityInputA, addLiquidityInputB)
@@ -238,7 +238,11 @@ const AddLiquidity = ({ location }) => {
                     setShowModal({ confirm: false, loading: false, success: false })
                     break
                 case -32602:
-                    setShowModal({ confirm: false, loading: true, success: true })
+                    if (action === 'approve') {
+                        setShowModal({ confirm: false, loading: false, success: false })
+                    } else {
+                        setShowModal({ confirm: false, loading: true, success: true })
+                    }
                     break
                 default:
                     setShowModal({ confirm: false, loading: false, success: false })
@@ -334,21 +338,17 @@ const AddLiquidity = ({ location }) => {
                                 </div>
                             </div>
                         ) : null}
-                        {addLiquidityInputA.symbol === 'TOM2' || addLiquidityInputB.symbol === 'TOM2' ? null : (
-                            <>
-                                {addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress && (
-                                    <AppoveBtnWrap>
-                                        {addLiquidityInputA.tokenAddress !== ETH_ADDRESS && (!checkApprove.a && checkApprove.a !== null) ? (
-                                            <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputA.tokenAddress, addLiquidityInputA); await checkoutApproved(); await checkPairContract() }, 'approve')}>{`Approve ${addLiquidityInputA.symbol.toUpperCase()} `}</AppoveBtn>
-                                        ) : null}
-                                        {addLiquidityInputB.symbol !== ETH_ADDRESS && (!checkApprove.b && checkApprove.b !== null) ? (
-                                            <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputB.tokenAddress, addLiquidityInputB); await checkoutApproved(); await checkPairContract() }, 'approve')}>{`Approve ${addLiquidityInputB.symbol.toUpperCase()} `}</AppoveBtn>
-                                        ) : null}
-                                    </AppoveBtnWrap>
-                                )}
-                                <button className={`enter pop_call ${(checkApprove.a && checkApprove.b) && (addLiquidityInputA.amount <= addLiquidityInputA.balance / Math.pow(10, addLiquidityInputA.decimals) && addLiquidityInputB.amount <= addLiquidityInputB.balance / Math.pow(10, addLiquidityInputB.decimals)) ? 'on' : 'disabled'}`} disabled={(!checkApprove.a || !checkApprove.b) && (addLiquidityInputA.amount <= addLiquidityInputA.balance / Math.pow(10, addLiquidityInputA.decimals) || addLiquidityInputB.amount <= addLiquidityInputB.balance / Math.pow(10, addLiquidityInputA.decimals))} onClick={() => setShowModal({ confirm: true, loading: false })} >{pageType === 'add liquidity' ? 'Supply' : 'Create'}</button>
-                            </>
+                        {addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress && (
+                            <AppoveBtnWrap>
+                                {addLiquidityInputA.tokenAddress !== ETH_ADDRESS && (!checkApprove.a && checkApprove.a !== null) ? (
+                                    <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputA.tokenAddress, addLiquidityInputA); await checkoutApproved(); await checkPairContract() }, 'approve')}>{`Approve ${addLiquidityInputA.symbol.toUpperCase()} `}</AppoveBtn>
+                                ) : null}
+                                {addLiquidityInputB.symbol !== ETH_ADDRESS && (!checkApprove.b && checkApprove.b !== null) ? (
+                                    <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputB.tokenAddress, addLiquidityInputB); await checkoutApproved(); await checkPairContract() }, 'approve')}>{`Approve ${addLiquidityInputB.symbol.toUpperCase()} `}</AppoveBtn>
+                                ) : null}
+                            </AppoveBtnWrap>
                         )}
+                        <button className={`enter pop_call ${(checkApprove.a && checkApprove.b) && (addLiquidityInputA.amount <= addLiquidityInputA.balance / Math.pow(10, addLiquidityInputA.decimals) && addLiquidityInputB.amount <= addLiquidityInputB.balance / Math.pow(10, addLiquidityInputB.decimals)) ? 'on' : 'disabled'}`} disabled={(!checkApprove.a || !checkApprove.b) && (addLiquidityInputA.amount <= addLiquidityInputA.balance / Math.pow(10, addLiquidityInputA.decimals) || addLiquidityInputB.amount <= addLiquidityInputB.balance / Math.pow(10, addLiquidityInputA.decimals))} onClick={() => setShowModal({ confirm: true, loading: false })} >{pageType === 'add liquidity' ? 'Supply' : 'Create'}</button>
                     </div>
                 </div>
             </Wrapper>
