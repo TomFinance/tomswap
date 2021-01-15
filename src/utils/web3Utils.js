@@ -351,13 +351,14 @@ export const addLiquidityPreview = async (aToken, bToken) => {
 
     const token0Price = token1Reserve / token0Reserve
 
-    const calcTokenAmountB = aToken.amount * token0Price
+    const pairSupply = Math.sqrt(token0Reserve * token1Reserve)
+    // const pairSupply = pairData.pairSupply / Math.pow(10, pairData.pairDecimals)
 
-    const pairSupply = pairData.pairSupply / Math.pow(10, pairData.pairDecimals)
+    const calcTokenAmountB = aToken.amount * token0Price
 
     const token0Expect = token0Reserve + Number(aToken.amount)
     const token1Expect = token1Reserve + Number(calcTokenAmountB)
-    const totalShare = Math.sqrt(token0Expect * token1Expect / 1e36 * Math.pow(10, pairData.token0Decimals) * Math.pow(10, pairData.token1Decimals))
+    const totalShare = Math.sqrt(token0Expect * Math.pow(10, pairData.token0Decimals) * token1Expect * Math.pow(10, pairData.token1Decimals) / 1e36)
 
     const calcText = await createPreviewPrice(aToken, { ...bToken, amount: calcTokenAmountB })
 
@@ -378,14 +379,13 @@ export const myPositionCheck = async (tokenAddressA, tokenAddressB) => {
     if (!pairData) {
         return false
     }
-
     const lpToken = pairData.pairContractBalance
     const lpTokenView = pairData.pairContractBalance / Math.pow(10, pairData.pairDecimals)
     const persent = pairData.pairContractBalance / pairData.pairSupply
     const token0Value = pairData.token0Reserve * persent
     const token1Value = pairData.token1Reserve * persent
-    const token0ViewValue = token0Value / Math.pow(10, pairData.token0Decimals) * persent
-    const token1ViewValue = token1Value / Math.pow(10, pairData.token1Decimals) * persent
+    const token0ViewValue = pairData.token0Reserve / Math.pow(10, pairData.token0Decimals) * persent
+    const token1ViewValue = pairData.token1Reserve / Math.pow(10, pairData.token1Decimals) * persent
 
     return {
         lpToken,

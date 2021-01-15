@@ -339,10 +339,10 @@ const AddLiquidity = ({ location }) => {
                                 {addLiquidityInputA.tokenAddress && addLiquidityInputB.tokenAddress && (
                                     <AppoveBtnWrap>
                                         {addLiquidityInputA.tokenAddress !== ETH_ADDRESS && (!checkApprove.a && checkApprove.a !== null) ? (
-                                            <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputA.tokenAddress); await checkoutApproved(); await checkPairContract() }, 'approve')}>{`Approve ${addLiquidityInputA.symbol.toUpperCase()} `}</AppoveBtn>
+                                            <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputA.tokenAddress, addLiquidityInputA); await checkoutApproved(); await checkPairContract() }, 'approve')}>{`Approve ${addLiquidityInputA.symbol.toUpperCase()} `}</AppoveBtn>
                                         ) : null}
                                         {addLiquidityInputB.symbol !== ETH_ADDRESS && (!checkApprove.b && checkApprove.b !== null) ? (
-                                            <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputB.tokenAddress); await checkoutApproved(); await checkPairContract() }, 'approve')}>{`Approve ${addLiquidityInputB.symbol.toUpperCase()} `}</AppoveBtn>
+                                            <AppoveBtn className={`enter enter02 on`} onClick={() => loadingConfirm(async () => { await createConfirmApprove(addLiquidityInputB.tokenAddress, addLiquidityInputB); await checkoutApproved(); await checkPairContract() }, 'approve')}>{`Approve ${addLiquidityInputB.symbol.toUpperCase()} `}</AppoveBtn>
                                         ) : null}
                                     </AppoveBtnWrap>
                                 )}

@@ -86,7 +86,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                     </Title>
                     <DescriptionWrap>
                         <p>{`Available : ${convertDecimal(stakeData.lpTokenBalance, stakeData.lpTokenDecimals)}`}</p>
-                        <p>{`${splitPoolNameObj.lpTokenSymbol} UNI-V2 LP`}</p>
+                        <p>{`${splitPoolNameObj.lpTokenSymbol} tomswap LP`}</p>
                         <InputBox>
                             <input type="text" placeholder="Input amount" value={fakeAmount} onChange={e => onChange(e, 'stake')} />
                             <button onClick={() => {
@@ -113,7 +113,7 @@ const StakeModal = ({ splitPoolNameObj, stakeData, showModal, setShowModal, hand
                     </Title>
                     <DescriptionWrap>
                         <p>{`Available : ${convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals)}`}</p>
-                        <p>{`${splitPoolNameObj.lpTokenSymbol} UNI-V2 LP`}</p>
+                        <p>{`${splitPoolNameObj.lpTokenSymbol} tomswap LP`}</p>
                         <InputBox>
                             <input type="number" placeholder="Input amount" value={fakeAmount} onChange={e => onChange(e, 'unStake')} />
                             <button onClick={() => {

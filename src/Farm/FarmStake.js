@@ -107,14 +107,14 @@ const FarmStake = ({ match: { params: { route } }, history }) => {
                 </div>
                 <div className="main_btm">
                     <div className="figure">
-                        <div className="tmtg">
+                        <div className="tom2">
                             <p>{convertDecimal(stakeData.tom2Amount, 18)}</p>
                             <span>TOM2</span>
                             <button className={`main_btn pop_call ${Number(stakeData.tom2Amount) > 0 ? '' : 'disabled'}`} onClick={() => handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'claim'))}>Harvest</button>
                         </div>
-                        <div className="lbxc">
+                        <div className={`${splitPoolNameObj.aTokenName}-${splitPoolNameObj.bTokenName}`}>
                             <p>{convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals)}</p>
-                            <span>{`Desposit ${`${splitPoolNameObj.aTokenName.toUpperCase()}-${splitPoolNameObj.bTokenName.toUpperCase()}`} UNI-V2 LP Staked`}</span>
+                            <span>{`Desposit ${`${splitPoolNameObj.aTokenName.toUpperCase()}-${splitPoolNameObj.bTokenName.toUpperCase()}`} tomswap LP Staked`}</span>
                             {stakeData.lpTokenAllowance ? (
                                 <StakeButtonWrap>
                                     <button className={`main_btn pop_call ${Number(stakeData.lpTokenBalance) > 0 ? '' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, stake: true })}>Stake</button>

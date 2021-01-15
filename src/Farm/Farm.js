@@ -44,7 +44,7 @@ const Farm = () => {
                         return (
                             <div className={`tmtg ${alias}`} key={poolName}>
                                 <p>{`${splitName[0]}/${splitName[1]} Pool`}</p>
-                                <span>{`Desposit ${splitName[0]}/${splitName[1]} UNI-V2 LP Earn TOM2`}</span>
+                                <span>{`Desposit ${splitName[0]}/${splitName[1]} tomswap LP Earn TOM2`}</span>
                                 <Link className={'main_btn'} to={`/farm/detail/${alias}`}>Select</Link>
                                 <div className="pend">
                                     <p>APY</p>
@@ -55,7 +55,7 @@ const Farm = () => {
                     })}
                     {/* <div className="lbxc coming red_mark">
                         <p>TOM/TMTG Pool</p>
-                        <span>Desposit TMTG-LBXC UNI-V2 LP Earn TOM2</span>
+                        <span>Desposit TMTG-LBXC tomswap LP Earn TOM2</span>
                         <a href="#;" className="main_btn">COMING SOON</a>
                         <div className="pend">
                             <p>APY</p>
@@ -64,7 +64,7 @@ const Farm = () => {
                     </div>
                     <div className="tom_lb coming red_mark red_mark02">
                         <p>TOM/LBXC Pool</p>
-                        <span>Desposit TMTG-LBXC UNI-V2 LP Earn TOM2</span>
+                        <span>Desposit TMTG-LBXC tomswap LP Earn TOM2</span>
                         <a href="#;" className="main_btn">COMING SOON</a>
                         <div className="pend">
                             <p>APY</p>
