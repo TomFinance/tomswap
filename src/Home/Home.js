@@ -35,7 +35,7 @@ const Home = () => {
             <div className="main_top">
                 <div className="wrapper">
                     <div className="tit">
-                        <p className="img"><img src="/images/ico/ico_main.png" alt="" /></p>
+                        <p className="img"><img src="/images/ico/tom2_logo.png" alt="" /></p>
                         <p className="txt"><img src="/images/ico/ico_tit.png" alt="" /></p>
                         <h3>Stake TOM LP tokens to get TOM2!</h3>
                     </div>

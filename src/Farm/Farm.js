@@ -31,7 +31,7 @@ const Farm = () => {
             <div className="main_top">
                 <div className="wrapper">
                     <div className="tit">
-                        <p className="img"><img src="/images/ico/ico_main.png" alt="" /></p>
+                        <p className="img"><img src="/images/ico/tom2_logo.png" alt="" /></p>
                         <p className="txt txt02"><img src="/images/ico/ico_tit02.png" alt="" /></p>
                         <h3>Get TOM2 by staking TOM LP tokens.</h3>
                     </div>
