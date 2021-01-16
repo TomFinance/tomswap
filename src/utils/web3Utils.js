@@ -3,6 +3,8 @@ import { checkETH, convertDecimal, filterdETH, positionLocalStorage } from "./ut
 import { getMetaMaskMyAccount, metaMaskSendTx } from "./metaMask"
 import { MINING_POOLS, LP_TOKEN_PAIRS, PAIR_POOL_ADDRESS_FOR_APY, ETH_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
 import bigInt from "big-integer"
+import { WETH_ADDRESS } from "config"
+import { PRESET_TOKEN } from "config"
 
 const INFINITY = '115792089237316195423570985008687907853269984665640564039457584007913129639935' //(2n ** 256n - 1n).toString()
 const etherWeb3 = new Web3(window.ethereum)
@@ -52,34 +54,44 @@ export async function calculateAPY(lpTokenSymbol) {
     const ethTomPairContract = new etherWeb3.eth.Contract(CONTRACT_ABI.PAIR, PAIR_POOL_ADDRESS_FOR_APY['ETH-TOM2'])
     const ethTomReserves = await ethTomPairContract.methods.getReserves().call()
 
-    const tom_price = ethTomReserves._reserve0 / ethTomReserves._reserve1
+    const tom_price = (ethTomReserves._reserve0 / ethTomReserves._reserve1)
 
     const lpTokenPoolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.POOL, MINING_POOLS[lpTokenSymbol])
 
     const rewardPerBlock = await lpTokenPoolContract.methods.rewardPerBlock().call()
     const totalStaked = await lpTokenPoolContract.methods.TOTAL_STAKED().call()
 
-    // console.log(`내가 번 돈: ${tom_price * Number(rewardPerBlock) / Number(totalStaked)}`)
+    // console.log(`번 돈: ${tom_price * Number(rewardPerBlock) / Number(totalStaked)}`)
 
     if (totalStaked > 0) {
-        const lPTokenEthSymbol = `ETH-${lpTokenSymbol.split('-')[1]}`
+        const targetSymbol = lpTokenSymbol.split('-')[0]
+        const lPTokenEthSymbol = `ETH-${targetSymbol}`
+
         const ethLpTokenContract = new etherWeb3.eth.Contract(CONTRACT_ABI.PAIR, PAIR_POOL_ADDRESS_FOR_APY[lPTokenEthSymbol])
         const ethLpTokenReserves = await ethLpTokenContract.methods.getReserves().call()
 
-        const lpTokenPrice = ethLpTokenReserves._reserve0 / ethLpTokenReserves._reserve1
+        const ethLpTokenToken0 = await ethLpTokenContract.methods.token0().call()
+        const ethLpTokenToken1 = await ethLpTokenContract.methods.token1().call()
+
+        const ethReserve = ethLpTokenToken0.toLowerCase() === WETH_ADDRESS.toLowerCase() ? ethLpTokenReserves._reserve0 : ethLpTokenReserves._reserve1
+        const lpTokenReserve = ethLpTokenToken1.toLowerCase() === WETH_ADDRESS.toLowerCase() ? ethLpTokenReserves._reserve0 : ethLpTokenReserves._reserve1
+
+        const lpTokenPrice = (ethReserve / lpTokenReserve)
 
         const lpTokenPairContract = new etherWeb3.eth.Contract(CONTRACT_ABI.PAIR, LP_TOKEN_PAIRS[lpTokenSymbol])
-        const lpTokenReserves = await lpTokenPairContract.methods.getReserves().call()
+        const notEthlpTokenReserve = await lpTokenPairContract.methods.getReserves().call()
 
+        const lpTokenToken0 = await ethLpTokenContract.methods.token0().call()
+
+        const exacTokenReserve = lpTokenToken0.toLowerCase() === PRESET_TOKEN[targetSymbol].toLowerCase() ? notEthlpTokenReserve._reserve0 : notEthlpTokenReserve._reserve1
         const lpTokenTotalSuply = await lpTokenPairContract.methods.totalSupply().call()
-        const lpTokenReserve0 = lpTokenReserves._reserve0
 
-        // console.log(`내가 넣은 돈: ${lpTokenPrice * (lpTokenReserve0 * 2) / lpTokenTotalSuply}`)
+        // console.log(`넣은 돈: ${lpTokenPrice * (exacTokenReserve * 2) / lpTokenTotalSuply}`)
 
-        const PPB = (tom_price * Number(rewardPerBlock) / Number(totalStaked)) / (lpTokenPrice * (lpTokenReserve0 * 2) / lpTokenTotalSuply)
+        const PPB = (tom_price * Number(rewardPerBlock) / Number(totalStaked)) / (lpTokenPrice * (exacTokenReserve * 2) / lpTokenTotalSuply)
 
         // console.log(`블럭당 수익률: ${PPB}`)
-        // console.log(`연간 수익률: ${(((PPB.toFixed(2) * 86400 * 365) / 13) * 100)}`)
+        // console.log(`연간 수익률: ${(((PPB * 86400 * 365) / 13) * 100)}`)
 
         return ((PPB * 86400 * 365) / 13) * 100
     }
