@@ -1,8 +1,7 @@
 import Web3 from "web3"
 import { checkETH, convertDecimal, filterdETH, positionLocalStorage } from "./utils"
 import { getMetaMaskMyAccount, metaMaskSendTx } from "./metaMask"
-import { MINING_POOLS, LP_TOKEN_PAIRS, THEGRAGH_API_URL, ETH_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
-import axios from "axios"
+import { MINING_POOLS, LP_TOKEN_PAIRS, PAIR_POOL_ADDRESS_FOR_APY, ETH_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ABI } from "config"
 import bigInt from "big-integer"
 
 const INFINITY = '115792089237316195423570985008687907853269984665640564039457584007913129639935' //(2n ** 256n - 1n).toString()
@@ -18,7 +17,7 @@ export const getBalance = async account => {
 export const getTotalSupply = async () => {
     const res = await etherWeb3.eth.getBlockNumber()
 
-    return res ? Number((res - 11234809) * 0.0558) : 0
+    return res ? Number((res - 11652418) * 0.0182) : 0
 }
 // #endregion
 
@@ -49,70 +48,43 @@ export const getTokenBalance = async (tokenAddress, account) => {
 // #endregion
 
 // #region - Tom2
-function callUniswap(query) {
-    return new Promise((resolve) => {
-        axios({
-            url: THEGRAGH_API_URL,
-            method: 'POST',
-            data: {
-                query,
-            },
-        }).then((res) => {
-            resolve(res.data.data)
-        })
-    })
-}
+export async function calculateAPY(lpTokenSymbol) {
+    const ethTomPairContract = new etherWeb3.eth.Contract(CONTRACT_ABI.PAIR, PAIR_POOL_ADDRESS_FOR_APY['ETH-TOM2'])
+    const ethTomReserves = await ethTomPairContract.methods.getReserves().call()
 
-export async function calculateAPY(poolAddress) {
-    const poolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.POOL, poolAddress)
-    const COFPairData = (
-        await callUniswap(`{
-                pair (id:"0x6b16a8e3697e9690cf17a9f5203e0ce1350b4ca6"){
-                    id
-                    reserve0
-                    reserve1
-                }
-            }`)
-    ).pair //tom/eth reserve0 -> ETH  reserve1 -> TOM
-    const LPPairData = (
-        await callUniswap(`{
-                pair (id:"0x096df24df15b00891b647b6ddbe3fc825841d090"){
-                    id
-                    totalSupply
-                    reserveETH
-                    token1Price
-                }
-            }`)
-    ).pair //tmgeth
-    const LP1PairData = (
-        await callUniswap(`{
-                pair (id:"0x25ea93b7432fed90758828691897901a30b4c7d9"){
-                    id
-                    totalSupply
-                    reserve0
-                }
-            }`)
-    ).pair //tmtg/lbxc
+    const tom_price = ethTomReserves._reserve0 / ethTomReserves._reserve1
 
-    try {
-        const tom_price = COFPairData.reserve0 / COFPairData.reserve1
-        const totalStaked = await poolContract.methods.TOTAL_STAKED().call()
+    const lpTokenPoolContract = new etherWeb3.eth.Contract(CONTRACT_ABI.POOL, MINING_POOLS[lpTokenSymbol])
 
-        if (Number(totalStaked) === 0) {
-            return 'Infinity'
-        }
+    const rewardPerBlock = await lpTokenPoolContract.methods.rewardPerBlock().call()
+    const totalStaked = await lpTokenPoolContract.methods.TOTAL_STAKED().call()
 
-        const rewardPerBlock = await poolContract.methods.rewardPerBlock().call()
+    // console.log(`내가 번 돈: ${tom_price * Number(rewardPerBlock) / Number(totalStaked)}`)
 
-        const PPB = (tom_price * rewardPerBlock)
-            / totalStaked
-            / (LPPairData.token1Price * ((LP1PairData.reserve0 * 2) / LP1PairData.totalSupply))
+    if (totalStaked > 0) {
+        const lPTokenEthSymbol = `ETH-${lpTokenSymbol.split('-')[1]}`
+        const ethLpTokenContract = new etherWeb3.eth.Contract(CONTRACT_ABI.PAIR, PAIR_POOL_ADDRESS_FOR_APY[lPTokenEthSymbol])
+        const ethLpTokenReserves = await ethLpTokenContract.methods.getReserves().call()
 
-        return `${(((PPB * 86400 * 365) / 13) * 100).toFixed(2)}%`
-    } catch (error) {
-        console.log(error)
+        const lpTokenPrice = ethLpTokenReserves._reserve0 / ethLpTokenReserves._reserve1
+
+        const lpTokenPairContract = new etherWeb3.eth.Contract(CONTRACT_ABI.PAIR, LP_TOKEN_PAIRS[lpTokenSymbol])
+        const lpTokenReserves = await lpTokenPairContract.methods.getReserves().call()
+
+        const lpTokenTotalSuply = await lpTokenPairContract.methods.totalSupply().call()
+        const lpTokenReserve0 = lpTokenReserves._reserve0
+
+        // console.log(`내가 넣은 돈: ${lpTokenPrice * (lpTokenReserve0 * 2) / lpTokenTotalSuply}`)
+
+        const PPB = (tom_price * Number(rewardPerBlock) / Number(totalStaked)) / (lpTokenPrice * (lpTokenReserve0 * 2) / lpTokenTotalSuply)
+
+        // console.log(`블럭당 수익률: ${PPB}`)
+        // console.log(`연간 수익률: ${(((PPB.toFixed(2) * 86400 * 365) / 13) * 100)}`)
+
+        return ((PPB * 86400 * 365) / 13) * 100
     }
 
+    return 'Infinity'
 }
 
 export const getMyLpTokenBalance = async lpTokenSymbol => {

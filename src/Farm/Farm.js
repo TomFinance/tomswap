@@ -4,14 +4,15 @@ import { MINING_POOLS } from 'config'
 
 import { calculateAPY } from 'utils/web3Utils'
 import { Helmet } from 'react-helmet'
+import { convertDecimal } from 'utils/utils'
 
 const Farm = () => {
     const [apyList, setApyList] = useState([])
 
     const getApyList = useCallback(async () => {
         const apyList = await Promise.all(Object.keys(MINING_POOLS)
-            .map(key => {
-                return calculateAPY(MINING_POOLS[key])
+            .map(async key => {
+                return await calculateAPY(key)
             })
         )
 
@@ -48,7 +49,7 @@ const Farm = () => {
                                 <Link className={'main_btn'} to={`/farm/detail/${alias}`}>Select</Link>
                                 <div className="pend">
                                     <p>APY</p>
-                                    <span>{`${apyList[idx]}`}</span>
+                                    <span>{`${convertDecimal(apyList[idx])}%`}</span>
                                 </div>
                             </div>
                         )

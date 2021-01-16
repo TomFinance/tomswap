@@ -68,7 +68,7 @@ footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
 .sub .main_btm .figure > .tmtg-tom:before {background-image:url(./images/ico/ico_figure02.png);}
 .sub .main_btm .figure > .lbxc-tom:before {background-image:url(./images/ico/ico_pool.png);}
 .sub .main_btm .figure > div > p {margin:10px 0 8px; color:#141414; font-size:30px;}
-.sub .main_btm .figure > div > span {color:#666; font-size:16px;}
+.sub .main_btm .figure > div > span {color:#666; font-size:15px;}
 .sub .main_btm .figure > div .pend {font-weight:700;}
 .sub .main_btm .figure > .red_mark:after {content:''; position:absolute; top:-25px; right:-10px; width:180px; height:134px; background-image:url(./images/ico/ico_redmark.png); background-repeat:no-repeat; background-position:0 0; background-size:100%;}
 .sub .main_btm .figure > .red_mark.red_mark02:after {background-image:url(./images/ico/ico_redmark02.png);}

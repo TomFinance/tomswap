@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 
-import { LP_TOKEN_PAIRS } from 'config'
+import { PRESET_TOKEN } from 'config'
+
 import { convertDecimal } from 'utils/utils'
-import { getMyLpTokenBalance, getTotalSupply } from 'utils/web3Utils'
+import { getTokenBalance, getTotalSupply } from 'utils/web3Utils'
+import { getMetaMaskMyAccount } from 'utils/metaMask'
 
 const Home = () => {
     const [balanceObj, setBalanceObj] = useState({
@@ -14,27 +16,13 @@ const Home = () => {
 
     useEffect(() => {
         getTotalSupply()
-            .then(res => {
+            .then(async totalSupply => {
+                const myTomBalance = await getTokenBalance(PRESET_TOKEN['TOM2'], await getMetaMaskMyAccount())
+
                 setBalanceObj({
-                    ...balanceObj,
-                    totalSupply: res
+                    myTomBalance: myTomBalance.balance > 0 ? convertDecimal(myTomBalance.balance, myTomBalance.decimals) : 0,
+                    totalSupply: totalSupply > 0 ? convertDecimal(totalSupply) : 0,
                 })
-            })
-            .then(async () => {
-                const dataList = await Promise.all(
-                    Object.keys(LP_TOKEN_PAIRS)
-                        .map(lpTokenSymbol => {
-                            return getMyLpTokenBalance(lpTokenSymbol)
-                        }))
-                setBalanceObj(dataList.reduce((acc, { tom2Amount, stakedToken }) => {
-                    return {
-                        myTomBalance: acc.myTomBalance + Number(tom2Amount),
-                        totalSupply: acc.totalSupply + Number(stakedToken),
-                    }
-                }, {
-                    myTomBalance: 0,
-                    totalSupply: 0
-                }))
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -56,8 +44,8 @@ const Home = () => {
             <div id="jsHomeMyBalance" className="main_btm wrapper">
                 <div className="figure">
                     <div className="balance">
-                        <p>My TOM Balance</p>
-                        <strong>{convertDecimal(Number(balanceObj.myTomBalance), 18)}</strong>
+                        <p>My TOM2 Balance</p>
+                        <strong>{balanceObj.myTomBalance}</strong>
                         {/* <div className="pend">
                             <p>Pending harvest</p>
                             <span>0.00000000</span>
@@ -65,7 +53,7 @@ const Home = () => {
                     </div>
                     <div className="supply">
                         <p>Current Total supply</p>
-                        <strong>{convertDecimal(Number(balanceObj.totalSupply), 18)}</strong>
+                        <strong>{balanceObj.totalSupply}</strong>
                         {/* <div className="pend">
                             <p>APY</p>
                             <span>10.00000000 TOM2</span>
