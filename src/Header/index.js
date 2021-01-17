@@ -1,18 +1,23 @@
+import { PRESET_TOKEN } from 'config'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getMetaMaskMyAccount } from 'utils/metaMask'
 import { convertDecimal } from 'utils/utils'
-import { getBalance } from 'utils/web3Utils'
+import { getBalance, getTokenBalance } from 'utils/web3Utils'
 
 const Header = ({ myAccount, setMyAccount, history }) => {
+    const [tom2Balance, setTom2Balance] = useState(0)
     const [showMyAccount, setShowMyAccount] = useState(false)
     const [mobileMenu, setMobileMenu] = useState(false)
 
     const getMyBalance = useCallback(async () => {
+        const myTomBalance = await getTokenBalance(PRESET_TOKEN['TOM2'], await getMetaMaskMyAccount())
+
         setMyAccount({
             ...myAccount,
-            balance: await getBalance(await getMetaMaskMyAccount())
+            balance: await getBalance(await getMetaMaskMyAccount()),
         })
+        setTom2Balance(myTomBalance.balance > 0 ? convertDecimal(myTomBalance.balance, myTomBalance.decimals) : 0)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -54,7 +59,7 @@ const Header = ({ myAccount, setMyAccount, history }) => {
                             <h3>My Account</h3>
                             <div className="my_icon">
                                 <i><img src="../assets/images/ico/ico_my_account.png" alt="" /></i>
-                                <strong>{convertDecimal(myAccount.balance, 18)}</strong>
+                                <strong>{tom2Balance}</strong>
                                 <p>TOM2 Balance</p>
                             </div>
                             <a href={myAccount.address ? `https://etherscan.io/address/${myAccount.address}` : '#'} target="_blank" rel="noreferrer">View on Etherscan</a>
