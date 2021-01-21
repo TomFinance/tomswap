@@ -70,8 +70,8 @@ footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
 .sub .main_btm .figure > div > p {margin:10px 0 8px; color:#141414; font-size:30px;}
 .sub .main_btm .figure > div > span {color:#666; font-size:15px;}
 .sub .main_btm .figure > div .pend {font-weight:700;}
-.sub .main_btm .figure > .red_mark:after {content:''; position:absolute; top:-25px; right:-10px; width:180px; height:134px; background-image:url(./images/ico/ico_redmark.png); background-repeat:no-repeat; background-position:0 0; background-size:100%;}
-.sub .main_btm .figure > .red_mark.red_mark02:after {background-image:url(./images/ico/ico_redmark02.png);}
+.sub .main_btm .figure > .red_mark:after {content:''; position:absolute; top:-25px; right:-10px; width:180px; height:134px; background-image:url(./images/ico/4x.png); background-repeat:no-repeat; background-position:0 0; background-size:100%;}
+.sub .main_btm .figure > .red_mark.red_mark02:after {background-image:url(./images/ico/4x.png);}
 .sub .main_btm .figure > .coming .main_btn {color:#eab645; background:rgba(234,182,64,0.2);}
 
 
@@ -81,7 +81,7 @@ footer a {display:inline-block; padding:0 32px; color:#666; font-size:14px;}
 .main_top .tit {width:519px;}
 .main_top .tit .txt03 {width:519px; height:41px;}
 .sub .stack .main_btm .main_btn {margin:72px 0 0;}
-.sub .stack .main_btm .figure > div {padding: 34px 42px 45px 42px}
+.sub .stack .main_btm .figure > div {padding: 34px 42px 45px 42px} 
 .sub .stack .main_btm .figure {width:840px;}
 .sub .stack .main_btm .figure > div:nth-child(2n){margin-right:0;}
 .sub .stack .main_btm .btn_wrap {margin-top:72px;}
