@@ -99,15 +99,12 @@ const Home = () => {
                     <div className="popup">
                         <div className="pop_con">
                             <Title className="will">
-                                <strong>TOMSWAP TOM2 Mining End</strong>
+                                <strong>Important Notice</strong>
                             </Title>
                             <DescriptionWrap>
-                                <p>TOMSWAP’s TOM2 mining is expected to end soon.</p>
-                                <p>Mining start and end schedules are as follows, and the exact time can be checked on the Etherscan block countdown page.</p>
-                                <p>* Mining start block: 11,652,418</p>
-                                <p>* Mining end block: 12,064,479</p>
-                                <p>* etherscan view blocks : <a href="https://etherscan.io/blocks" target="_blank" rel="noreferrer">https://etherscan.io/blocks</a></p>
-                                <p>LP tokens deposited in TOMSWAP must be unstaked prior to the end of mining in order to receive the tokens back. We recommend that you unstake with sufficient time, and you are responsible for any losses incurred in this regard.</p>
+                                <p>You must unstake the deposited LP tokens until the end of TOM2 mining.</p>
+                                <p>TMTG, LBXC, TOM tokens can be returned only by canceling the liquidity supply.</p>
+                                <p>* You must cancel the LP token by 19:00 on Thursday, March 18 at the latest, and you are responsible for any loss incurred in this regard.</p>
                             </DescriptionWrap>
                             <CloseBtn onClick={() => setShowModal(false)}>Confirm</CloseBtn>
                         </div>
