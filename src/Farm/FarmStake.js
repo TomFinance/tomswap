@@ -7,10 +7,18 @@ import LoadingModal from 'Exchange/LoadingModal'
 import { convertDecimal } from 'utils/utils'
 
 const StakeButtonWrap = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+    & > div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        & > button {
+            margin-top: 16px !important;
+        }
+    }
+    & > button {
+        margin-top: 16px !important;
+    }
 `
 
 const FarmStake = ({ match: { params: { route } }, history }) => {
@@ -116,13 +124,18 @@ const FarmStake = ({ match: { params: { route } }, history }) => {
                             <p>{convertDecimal(stakeData.stakedToken, stakeData.lpTokenDecimals)}</p>
                             <span>{`Desposit ${`${splitPoolNameObj.aTokenName.toUpperCase()}-${splitPoolNameObj.bTokenName.toUpperCase()}`} tomswap LP Staked`}</span>
                             {stakeData.lpTokenAllowance ? (
-                                <StakeButtonWrap>
-                                    <button className={`main_btn pop_call ${Number(stakeData.lpTokenBalance) > 0 ? '' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, stake: true })}>Stake</button>
-                                    <button className={`main_btn pop_call ${Number(stakeData.stakedToken) > 0 ? '' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, unStake: true })}>Unstake</button>
-                                </StakeButtonWrap>
+                                <>
+                                    <StakeButtonWrap>
+                                        <div>
+                                            <button className={`main_btn pop_call ${Number(stakeData.lpTokenBalance) > 0 ? '' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, stake: true })}>Stake</button>
+                                            <button className={`main_btn pop_call ${Number(stakeData.stakedToken) > 0 ? '' : 'disabled'}`} onClick={() => setShowModal({ ...showModal, unStake: true })}>Unstake</button>
+                                        </div>
+                                        <button className={`main_btn pop_call ${Number(stakeData.stakedToken) > 0 ? '' : 'disabled'}`} onClick={() => { handleLpTokenRequestTx(() => lpTokenRequestTx(splitPoolNameObj.lpTokenSymbol, 'emergencyExit')) }}>Emergency Exit</button>
+                                    </StakeButtonWrap>
+                                </>
                             ) : (
-                                    <button className={`main_btn pop_call ${stakeData.lpTokenAllowance === null && 'disabled'}`} onClick={() => handleLpTokenRequestTx(() => confirmLpTokenApprove(splitPoolNameObj.lpTokenSymbol))}>Approve</button>
-                                )}
+                                <button className={`main_btn pop_call ${stakeData.lpTokenAllowance === null && 'disabled'}`} onClick={() => handleLpTokenRequestTx(() => confirmLpTokenApprove(splitPoolNameObj.lpTokenSymbol))}>Approve</button>
+                            )}
                         </div>
                     </div>
                 </div>

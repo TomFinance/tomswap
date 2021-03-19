@@ -159,6 +159,9 @@ export const lpTokenRequestTx = async (lpTokenSymbol, action, amount, lpTokenDec
                     : bigInt(Math.floor(amount * Math.pow(10, lpTokenDecimals))).value
             ).encodeABI()
             break
+        case 'emergencyExit':
+            txObject.data = poolContract.methods.emergencyExit().encodeABI()
+            break
         case 'claim':
             txObject.data = poolContract.methods.claimAllReward(
             ).encodeABI()
