@@ -33,6 +33,12 @@ const DescriptionWrap = styled.div`
     }
 `
 
+const ButtonWrap = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+`
+
 const CloseBtn = styled.button`
     margin: 40px auto 0;
 `
@@ -99,14 +105,24 @@ const Home = () => {
                     <div className="popup">
                         <div className="pop_con">
                             <Title className="will">
-                                <strong>Important Notice</strong>
+                                <strong>TOM2 Mining C-BANK Airdrop Event</strong>
                             </Title>
                             <DescriptionWrap>
-                                <p>You must unstake the deposited LP tokens until the end of TOM2 mining.</p>
-                                <p>TMTG, LBXC, TOM tokens can be returned only by canceling the liquidity supply.</p>
-                                <p>* You must cancel the LP token by 19:00 on Thursday, March 18 at the latest, and you are responsible for any loss incurred in this regard.</p>
+                                <p>Event content</p>
+                                <p>-Airdrop to 100 million C-BANK, TOM2 miners in total</p>
+                                <p>-Payment settlement after mining</p>
+                                <p>-Payment in installments for 300 days of C-BANK 6 months from the date of payment</p>
+                                <p>How to receive C-BANK</p>
+                                <p>-Application period C-BANK Airdrop Fill out Google form and submit</p>
+                                <p>-Reception period: March 19 (Fri) ~ 29 (Mon)</p>
+                                <p>-Payment date: April 1 (Thursday)</p>
+                                <p>-Contents of Google Form: Wallet address that participated in Tom 2 mining, COINZEUS account, TOM2 mining capture screen</p>
+                                <p>-Notes: C-BANK withdrawal is possible 6 months after payment is received. Payment will not be made if the Google form is not submitted within the application period.</p>
                             </DescriptionWrap>
-                            <CloseBtn onClick={() => setShowModal(false)}>Confirm</CloseBtn>
+                            <ButtonWrap>
+                                <CloseBtn onClick={() => window.open('https://forms.gle/RbxDCRtqPA5DG7H38')}>Create Google Form</CloseBtn>
+                                <CloseBtn onClick={() => setShowModal(false)}>Cancel</CloseBtn>
+                            </ButtonWrap>
                         </div>
                     </div>
                 </div>
