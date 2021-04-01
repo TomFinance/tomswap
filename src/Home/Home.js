@@ -108,19 +108,10 @@ const Home = () => {
                                 <strong>TOM2 Mining C-BANK Airdrop Event</strong>
                             </Title>
                             <DescriptionWrap>
-                                <p>Event content</p>
-                                <p>-Airdrop to 100 million C-BANK, TOM2 miners in total</p>
-                                <p>-Payment settlement after mining</p>
-                                <p>-Payment in installments for 300 days of C-BANK 6 months from the date of payment</p>
-                                <p>How to receive C-BANK</p>
-                                <p>-Application period C-BANK Airdrop Fill out Google form and submit</p>
-                                <p>-Reception period: March 19 (Fri) ~ 29 (Mon)</p>
-                                <p>-Payment date: April 1 (Thursday)</p>
-                                <p>-Contents of Google Form: Wallet address that participated in Tom 2 mining, COINZEUS account, TOM2 mining capture screen</p>
-                                <p>-Notes: C-BANK withdrawal is possible 6 months after payment is received. Payment will not be made if the Google form is not submitted within the application period.</p>
+                                <p>TOM2 Mining Qualified ppl for the C-Bank Airdrop</p>
                             </DescriptionWrap>
                             <ButtonWrap>
-                                <CloseBtn onClick={() => window.open('https://forms.gle/RbxDCRtqPA5DG7H38')}>Create Google Form</CloseBtn>
+                                <CloseBtn onClick={() => window.open('https://medium.com/defi-tom/tom2-mining-qualified-ppl-for-the-c-bank-airdrop-d3386a1149a8')}>Detail</CloseBtn>
                                 <CloseBtn onClick={() => setShowModal(false)}>Cancel</CloseBtn>
                             </ButtonWrap>
                         </div>
